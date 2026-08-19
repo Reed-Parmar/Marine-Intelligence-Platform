@@ -4,27 +4,15 @@
 
 **Working title:** AI-Driven Unified Data Platform for Oceanographic, Fisheries, and Molecular Biodiversity Insights
 
-**Organisation/context:** CMLRE, Kochi (Centre for Marine Living Resources & Ecology), an attached office under the Ministry of Earth Sciences, Government of India. CMLRE works on mapping, assessment, monitoring and scientific understanding of marine living resources in India's EEZ.
+**Organisation/context:** CMLRE, Kochi (Centre for Marine Living Resources & Ecology), an attached office under the Ministry of Earth Sciences, Government of India.
 
-The platform is intended to bring heterogeneous marine datasets and scientific analyses into one unified environment instead of forcing researchers to work with disconnected datasets and specialised tools.
-
----
-
-## 2. Problem Statement
-
-The core requirement is:
-
-> Develop an AI-driven unified platform that integrates oceanographic, fisheries, and molecular biodiversity datasets into a single intelligent system to support marine research, sustainable fisheries management, biodiversity conservation, and data-driven decision-making through advanced analytics and predictive insights.
-
-The platform is not intended to be merely a dashboard. Its central workflow is:
-
-**heterogeneous marine data → standardisation → unified data → domain-specific analysis → scientific analysis → AI-assisted interpretation → researcher-facing outputs**
+The platform brings heterogeneous marine datasets and scientific analyses into one unified environment instead of forcing researchers to work across disconnected datasets and specialised tools.
 
 ---
 
-## 3. Problem Being Solved
+# 2. Core Problem
 
-Marine scientific information exists in different forms and formats:
+Marine scientific information exists in heterogeneous forms:
 
 - Oceanographic observations
 - CTD data
@@ -34,22 +22,24 @@ Marine scientific information exists in different forms and formats:
 - Biodiversity / occurrence records
 - Darwin Core data
 - Molecular / eDNA sequences
-- FASTA files
+- FASTA / FASTQ files
 - Otolith images
 - Taxonomic information
 - Scientific literature and metadata
 
 These sources differ in format, schema, units, naming conventions, metadata, provenance, spatial representation and temporal representation.
 
-The platform therefore needs a common ingestion and standardisation layer before analysis.
+The platform therefore needs to:
+
+> **Ingest → validate → standardise → fuse → analyse → interpret → visualise**
 
 The central value proposition is:
 
-> Convert heterogeneous marine scientific inputs into a unified, queryable and analysable marine data layer, then combine computational analysis with scientific knowledge to generate useful research insights.
+> Convert heterogeneous marine scientific inputs into a unified, queryable and analysable marine data layer, then combine scientific analysis with AI-assisted interpretation to generate useful research insights.
 
 ---
 
-## 4. Target Users
+# 3. Target Users
 
 - Marine Scientists
 - Researchers
@@ -61,814 +51,250 @@ The platform is primarily research/science oriented while also supporting conser
 
 ---
 
-# 5. High-Level Solution
-
-The agreed process flow is:
+# 4. Core Scientific Workflow
 
 ```text
 Marine Data
     ↓
-Data Ingestion & Standardisation
+Data Ingestion
+    ↓
+Data Quality Control
+    ↓
+Data Standardisation
+    ↓
+Data Fusion & Spatial-Temporal Alignment
     ↓
 Unified Marine Data
     ↓
-Specialized Analysis
+Scientific / Domain Analysis
     ↓
-Scientific Analysis
-    ↓
-AI-Assisted Insights
+AI / ML Insights
     ↓
 Dashboard / Research Workspace
     ↓
 End Users
 ```
 
-Supporting relationships:
+The core innovation is the **Data Fusion & Spatial-Temporal Alignment** layer.
 
-```text
-Marine Data ─────────────→ AI-Assisted Insights
-       Scientific Knowledge
+The platform must connect data using common dimensions such as:
 
-Specialized Analysis ───→ Scientific Analysis
-       Scientific Evidence
-
-Scientific Analysis ────→ AI-Assisted Insights
-       Scientific Context
-
-Scientific Analysis ────→ Dashboard
-       Results / Visualisation
-
-AI-Assisted Insights ───→ Dashboard
-       AI Insights
-
-Dashboard ──────────────→ End Users
-       Research Insights
-```
+- Time
+- Latitude
+- Longitude
+- Depth
+- Species
+- Sample
+- Station
+- Dataset
 
 ---
 
-# 6. Two Diagram Levels
+# 5. Final Technology Decisions
 
-Two representations were intentionally developed.
-
-### Detailed Technical Architecture
-
-Contains:
-
-- Frontend container
-- Backend container
-- Supabase Auth
-- Supabase PostgreSQL + PostGIS
-- ChromaDB
-- External LLM provider
-- Scientific analysis modules
-- Deployment
-- API relationships
-- Authentication flow
-- Storage and retrieval relationships
-
-This is for explaining **how the software is implemented**.
-
-### Process Flow Architecture
-
-Contains the scientific workflow:
-
-**Marine Data → Ingestion → Unified Data → Analysis → AI Insights → Dashboard → End Users**
-
-This is for the PPT and judges. It intentionally avoids exposing every software component.
-
-The process-flow diagram should remain a **conceptual scientific workflow**, not become another technical architecture diagram.
-
----
-
-# 7. Marine Data
-
-The process-flow input block is deliberately named simply **Marine Data**.
-
-It represents:
-
-- Oceanography
-- Fisheries & Biodiversity
-- Taxonomy
-- Otoliths
-- eDNA
-- Research Literature
-
-The detailed architecture further specifies:
-
-- Oceanographic Data — CTD / NetCDF / Sensor Data
-- Fisheries & Biodiversity — Darwin Core / Occurrence Records
-- Molecular Data — FASTA / eDNA Sequences
-- Otolith Data — Otolith Images
-- Research Literature — Scientific Documents / Metadata
-
----
-
-# 8. Data Ingestion & Standardisation
-
-Responsibilities:
-
-- Upload
-- Format detection
-- Schema mapping
-- Cleaning
-- Unit standardisation
-- Metadata handling
-- Validation
-- Provenance
-
-Conceptually:
-
-> Convert heterogeneous scientific inputs into a common structure.
-
-The detailed architecture considers formats including:
-
-- CSV
-- TSV
-- NetCDF
-- CTD
-- TXT
-
-A specific architecture correction was made:
-
-> The **validate** arrow goes from **Data Ingestion & Standardisation → Data Quality Control**.
-
----
-
-# 9. Data Quality Control
-
-Responsibilities include:
-
-- Missing-value checks
-- Range checks
-- Consistency checks
-- Quality scoring
-- QARTOD-style oceanographic QC concepts
-
-QC happens after ingestion/standardisation and before the data is trusted for downstream analysis.
-
----
-
-# 10. Unified Marine Data
-
-This represents the integrated marine data layer.
-
-Conceptually it contains:
-
-- Standardised observations
-- Species and taxonomy
-- Spatial and temporal records
-- Otolith / eDNA records
-- Metadata
-- Provenance
-
-The detailed architecture maps this layer to:
-
-**Supabase PostgreSQL + PostGIS**
-
-PostGIS is used for spatial queries.
-
----
-
-# 11. Specialized Analysis
-
-Domain-specific scientific processing is performed for:
-
-### Otolith Analysis
-
-Potential processing:
-
-- Image preprocessing
-- Shape / morphometric feature extraction
-- CNN / ONNX inference
-- Species classification
-- Confidence score
-
-### eDNA / Molecular Analysis
-
-Potential processing:
-
-- FASTA validation
-- Sequence preprocessing
-- Barcode / reference matching
-- Species detection
-
-### Taxonomy & Species Identification
-
-Potential processing:
-
-- Taxonomic hierarchy
-- Species lookup
-- Image-based identification where applicable
-- Reference metadata
-
-These modules turn standardised/domain-specific data into **scientific evidence** for broader scientific analysis.
-
----
-
-# 12. Scientific Analysis
-
-The cross-domain analytical stage includes:
-
-- Spatial analysis
-- Temporal analysis / trends
-- Cross-domain correlation
-- Biodiversity indicators
-- Species analysis
-- Ecosystem relationships
-- Ecosystem insights
-
-The intended idea is:
-
-```text
-Oceanographic conditions
-        +
-Fisheries observations
-        +
-Biodiversity / taxonomy
-        +
-eDNA evidence
-        +
-Otolith / species evidence
-        ↓
-Cross-domain scientific analysis
-```
-
-The purpose is to derive meaningful scientific relationships rather than simply display raw records.
-
----
-
-# 13. AI-Assisted Insights
-
-The AI layer helps researchers interact with analysed data and scientific knowledge.
-
-Planned capabilities:
-
-- Scientific querying
-- Knowledge retrieval
-- RAG
-- Evidence-backed summaries
-- AI-generated research insights
-
-Important decision:
-
-> **RAG is part of the current target solution and is not marked optional.**
-
-However, RAG is intentionally implemented **last**.
-
-Reason:
-
-- The core data pipeline must work first.
-- Scientific analysis must work first.
-- The dashboard must work first.
-- RAG can then be connected to stable data and analysis layers.
-- If RAG cannot be completed reliably, it can be removed without destroying the core platform.
-
-So the implementation strategy is:
-
-**Core platform → Scientific analysis → Dashboard → RAG/AI enhancement**
-
----
-
-# 14. RAG / AI Technical Direction
-
-### Vector store
-
-**ChromaDB**
-
-Intended use:
-
-- Scientific literature embeddings
-- Marine dataset embeddings
-- Semantic retrieval
-
-### LLM provider
-
-External LLM provider represented by:
-
-- Gemini
-- Groq
-
-Conceptual flow:
-
-```text
-User scientific question
-        ↓
-Relevant scientific / marine context retrieval
-        ↓
-Prompt/context construction
-        ↓
-External LLM
-        ↓
-Structured / evidence-backed response
-        ↓
-Research workspace
-```
-
-The detailed architecture represented the RAG engine as:
-
-**Semantic Retrieval + ChromaDB + Gemini/Groq + Structured Scientific Summary**
-
-The final provider choice can be made during implementation based on access, cost, latency and reliability.
-
----
-
-# 15. Research Workspace / Dashboard
-
-The frontend is a single research-facing application.
-
-Planned capabilities include:
-
-### Frontend Dashboard
-
-- Visualisation
-- Maps
-- Analytics
-- AI Results
-
-### Marine Globe / Map
-
-- Species locations
-- Bathymetry
-- Spatial exploration
-
-### Multi-Parameter Dashboard
-
-- Oceanographic trends
-- Fisheries
-- Biodiversity
-- Cross-domain visualisation
-
-### Study Workbench
-
-- Otolith
-- eDNA
-- Taxonomy
-- Species identification
-
-### Natural Language Query
-
-- Scientific questions
-- RAG-powered insights
-
-### Project & Research Workspace
-
-- Projects
-- Study notes
-- Query history
-
-### Report Export
-
-- Academic PDF reports
-
----
-
-# 16. Frontend Technology
+## Frontend
 
 - React
 - Vite
 - Tailwind CSS
-- Three.js
+- Leaflet or MapLibre for 2D maps
+- Recharts / Plotly for visualisation
 
-Three.js is intended for the 3D marine globe/map and related spatial visualisation.
+A 2D interactive marine map is preferred for the MVP. A 3D globe is not a core requirement.
 
-The frontend communicates with the backend through REST/JSON APIs.
+## Backend
 
----
-
-# 17. Backend Technology
-
-- Python 3.11
+- Python 3.11+
 - FastAPI
+- SQLAlchemy
+- Pydantic
 - Modular monolith architecture
 
-Important principle:
+All scientific operations should be accessed through FastAPI rather than the frontend directly accessing internal processing code.
 
-> All scientific operations should go through FastAPI rather than the frontend directly accessing internal processing modules.
-
-Conceptual flow:
-
-```text
-Frontend
-   ↓
-FastAPI
-   ↓
-Scientific/service modules
-   ↓
-Database / processing
-   ↓
-Structured response
-   ↓
-Frontend visualisation
-```
-
----
-
-# 18. Backend Functional Modules
-
-### Data Ingestion & Standardisation
-
-- File upload
-- Format detection
-- Schema mapping
-- Cleaning
-- Validation
-- Unit standardisation
-- Metadata
-- Provenance
-
-### Data Quality Control
-
-- Missing values
-- Range checks
-- Consistency checks
-- Quality scoring
-- QARTOD-style QC
-
-### Scientific Analytics
-
-- Spatial analysis
-- Temporal analysis
-- Cross-domain correlation
-- Biodiversity indicators
-- Ecosystem insights
-
-### FastAPI REST endpoints
-
-The detailed architecture previously represented endpoints along the lines of:
-
-```text
-/api/ingest
-/api/rag/query
-/api/otolith
-/api/edna
-/api/taxonomy
-/api/qc
-```
-
-These are the intended functional API areas, not a rigid requirement that every endpoint must retain exactly these names.
-
----
-
-# 19. Database and Storage
-
-## Supabase
-
-Primary structured data store:
+## Primary Database
 
 **Supabase PostgreSQL + PostGIS**
 
-Intended contents:
+This is the primary structured and spatial database.
 
-- Marine observations
-- CTD / oceanographic records
-- Fisheries & biodiversity records
-- Taxonomy
-- Otolith metadata
-- eDNA results
+It stores:
+
+- Users / application profiles
 - Projects
-- Query history
-- Study notes
+- Datasets
+- Data sources
+- Stations
+- Samples
+- Oceanographic observations
+- Fisheries records
+- Species / taxonomy
+- Species occurrences
+- eDNA results
+- Otolith metadata/results
+- Scientific analysis results
+- ML model metadata
+- Predictions
+- Alerts
+- Audit/provenance information
 
-PostGIS supports spatial queries.
+## Authentication
+
+**Supabase Auth + JWT**
+
+Do not build a custom password/authentication database.
+
+Application-level user information and roles are stored in PostgreSQL and linked to Supabase Auth.
+
+Example roles:
+
+- Admin
+- Researcher
+- Marine Scientist
+- Fisheries Manager
+- Decision Maker
+- Viewer
+
+## File Storage
+
+**Supabase Storage**
+
+Raw and large files are stored outside PostgreSQL:
+
+- CSV
+- Excel
+- JSON
+- NetCDF
+- CTD files
+- FASTA / FASTQ
+- Images
+- Otolith images
+- Reports
+
+PostgreSQL stores the file metadata and storage path.
+
+## MongoDB
+
+**MongoDB is removed from the architecture.**
+
+Do not introduce MongoDB unless a real future requirement justifies it.
+
+PostgreSQL JSONB is sufficient for flexible metadata at the current project scale.
+
+## RAG / Vector Store
+
+**ChromaDB**
+
+Used only for semantic/vector retrieval, not as the primary scientific database.
+
+Planned content:
+
+- Scientific literature embeddings
+- Marine research documents
+- Species knowledge
+- Useful dataset/document metadata
+
+## LLM
+
+External LLM provider:
+
+- Gemini
+- Groq
+
+The final provider can be selected during implementation based on access, reliability, latency and cost.
+
+## Scientific / Data Libraries
+
+- Pandas / Polars
+- NumPy
+- GeoPandas
+- Xarray
+- SciPy
+- Biopython
+- OpenCV
+
+## ML
+
+- Scikit-learn
+- XGBoost
+- PyTorch
+- ONNX where useful for deployment
+
+## Containerisation / Deployment
+
+Docker and Docker Compose will be introduced in a later phase.
+
+Do not create the `docker/` directory during Phase 0.
 
 ---
 
-# 20. Authentication
+# 6. Repository Structure
 
-The detailed architecture includes:
-
-**Supabase Auth**
-
-with:
-
-- Authenticated session
-- JWT
-- JWT verification
-
-Conceptually:
+The locked top-level structure is:
 
 ```text
-Frontend
-   ↓
-Authenticated session / JWT
-   ↓
-Supabase Auth
-   ↓
-JWT verification
-   ↓
-Backend/API
+/
+├── context.md
+├── README.md
+├── .gitignore
+├── .env.example
+│
+├── frontend/
+├── backend/
+├── ml/
+├── analysis/
+├── rag/
+├── scripts/
+├── docs/
+└── data_pipeline/
 ```
 
-Authentication is part of the technical architecture but is intentionally omitted from the simplified process-flow diagram.
+The `docker/` directory is intentionally introduced only in a later implementation phase.
 
----
-
-# 21. Deployment
-
-Planned deployment concept:
-
-**Docker Compose**
-
-with:
-
-- Frontend container
-- Backend container
-- Supabase Cloud
-
-Architecture wording:
-
-> Reproducible • Environment-based configuration • Cloud-ready
-
-A diagram correction was made during iteration:
-
-> Do not show a misleading direct **Backend → Supabase** arrow where the intended meaning is deployment. Runtime data access and deployment topology should be represented separately.
-
----
-
-# 22. Important Architecture Decisions
-
-### Specialized scientific modules
-
-The specialised analysis boxes may visually sit outside the backend container while still being backend functionality.
-
-If asked:
-
-> “Why are these outside the backend container?”
-
-Answer:
-
-> “They are specialised scientific processing modules functionally executed by the backend. They are shown separately to make the scientific workflow readable rather than overcrowding the backend container.”
-
-### RAG
-
-RAG is included in the current solution and implemented last.
-
-### Scientific Analysis → RAG
-
-A direct Scientific Analysis → RAG arrow was removed from the detailed architecture.
-
-The conceptual process-flow relationship is:
-
-**Scientific Analysis → AI-Assisted Insights**, labelled **Scientific Context**.
-
-### Validate
-
-The correct relationship is:
-
-**Data Ingestion & Standardisation → Data Quality Control**
-
-### Simplification
-
-The process-flow diagram should not expose React, FastAPI, Supabase, ChromaDB, JWT, containers or endpoint names unless the slide specifically calls for technical architecture.
-
----
-
-# 23. Input-to-Output Logic
-
-Complete conceptual pipeline:
+Suggested responsibilities:
 
 ```text
-1. Marine Data
-   ↓
-2. Ingestion & Standardisation
-   ↓
-3. Unified Marine Data
-   ↓
-4. Domain-Specific / Specialized Analysis
-   ↓
-5. Scientific Evidence
-   ↓
-6. Scientific Analysis
-   ↓
-7. Scientific Context
-   ↓
-8. AI-Assisted Insights
-   ↓
-9. AI Insights
-   ↓
-10. Dashboard / Research Workspace
-   ↓
-11. Research Insights
-   ↓
-12. End Users
-```
-
-Additional knowledge path:
-
-```text
-Marine Data
-    ↓
-Scientific Knowledge
-    ↓
-AI-Assisted Insights
-```
-
-Visualisation path:
-
-```text
-Scientific Analysis
-    ↓
-Results / Visualisation
-    ↓
-Dashboard
+frontend/       → React/Vite/Tailwind UI
+backend/        → FastAPI application and service layer
+ml/             → ML training/inference/model utilities
+analysis/       → scientific and cross-domain analysis
+rag/            → embeddings/retrieval/LLM functionality
+scripts/        → setup, utility and seed scripts
+docs/           → architecture, API, database and developer documentation
+data_pipeline/  → ingestion, QC, standardisation, transformation and provenance
 ```
 
 ---
 
-# 24. Example End-to-End Scenario
+# 7. Git Workflow
 
-1. A researcher supplies CTD/oceanographic data, fisheries records, eDNA sequences, otolith images, taxonomy or literature.
-2. The ingestion layer detects formats and converts heterogeneous inputs into a common structure.
-3. Cleaning, unit standardisation, schema mapping, metadata and provenance handling are performed.
-4. Data is stored in the unified marine data layer.
-5. Relevant specialised modules process eDNA, otolith and taxonomy data.
-6. Scientific analysis performs spatial, temporal and cross-domain analysis and derives biodiversity/ecosystem indicators.
-7. AI-assisted functionality combines analysed results with scientific knowledge.
-8. RAG can retrieve relevant context and generate evidence-backed summaries.
-9. Results are presented through maps, dashboards, species information, analytical results, AI insights and reports.
-10. Marine scientists and other target users consume the results.
-
----
-
-# 25. MVP Philosophy
-
-The MVP should demonstrate the complete value chain rather than trying to fully implement every possible scientific capability.
-
-Minimum convincing demonstration:
+Branches:
 
 ```text
-Realistic marine input
-        ↓
-Ingestion
-        ↓
-Standardisation / QC
-        ↓
-Storage
-        ↓
-Meaningful scientific analysis
-        ↓
-Visualisation
-        ↓
-Research-facing result
+main
+└── dev
+    ├── feature/*
+    ├── fix/*
+    ├── experiment/*
+    └── chore/*
 ```
 
-AI/RAG is an enhancement to this core pipeline and comes after the foundational system works.
+Rules:
 
-Prioritise **working integration** over a large number of partially implemented features.
-
----
-
-# 26. Implementation Order
-
-## Phase 1 — Foundation
-
-- Repository/project setup
-- Frontend/backend structure
-- Docker setup
-- Environment configuration
-- Supabase setup
-- Database schema
-- Basic authentication
-- API skeleton
-
-## Phase 2 — Data Ingestion
-
-- File upload
-- Format detection
-- Schema mapping
-- Cleaning
-- Standardisation
-- Metadata/provenance
-- Data quality checks
-
-## Phase 3 — Unified Marine Data
-
-- PostgreSQL schema
-- PostGIS spatial storage
-- Ingestion persistence
-- Querying
-- Sample marine datasets
-
-## Phase 4 — Scientific Processing
-
-Implement the core specialised modules and scientific analytics required for the MVP.
-
-Priority areas:
-
-- Taxonomy/species identification
-- eDNA processing
-- Otolith analysis
-- Spatial/temporal analysis
-- Cross-domain/biodiversity analysis
-
-Keep depth realistic for the available implementation time.
-
-## Phase 5 — Frontend Research Workspace
-
-Build:
-
-- Dashboard
-- Maps
-- Marine-data visualisation
-- Scientific-analysis views
-- Study/workbench interface
-- Result presentation
-
-## Phase 6 — Integration
-
-Connect:
-
-```text
-Frontend
-   ↕
-FastAPI
-   ↕
-Scientific modules
-   ↕
-Supabase/PostGIS
-```
-
-Verify that the complete data journey works.
-
-## Phase 7 — RAG / AI
-
-Only after the core system is stable:
-
-- Prepare scientific documents/data for retrieval
-- Generate embeddings
-- Populate ChromaDB
-- Implement semantic retrieval
-- Integrate Gemini/Groq
-- Build scientific query flow
-- Produce structured/evidence-backed summaries
-- Connect AI results to the dashboard
-
-## Phase 8 — Final Hardening
-
-- Testing
-- Error handling
-- Performance checks
-- UI cleanup
-- Deployment
-- Demo data
-- Presentation workflow
-- Documentation
+- `main` is the stable branch.
+- `dev` is the integration branch.
+- Every working branch is created from `dev`.
+- Feature/fix/experiment/chore branches are merged into `dev`.
+- `main` receives stable releases from `dev`.
+- Do not develop directly on `main`.
 
 ---
 
-# 27. Two-Person Team
+# 8. Database Philosophy
 
-The project is being implemented by a **two-person team**.
+PostgreSQL/PostGIS is the system of record for structured marine data.
 
-A practical split is:
-
-## Person 1 — Frontend + Integration
-
-Primary responsibility:
-
-- React/Vite/Tailwind application
-- Dashboard
-- Maps / Three.js
-- Visualisation
-- Study workspace
-- API integration
-- Frontend authentication handling
-- Final user workflow
-
-## Person 2 — Backend + Data/Scientific Pipeline
-
-Primary responsibility:
-
-- FastAPI
-- Ingestion
-- Standardisation
-- QC
-- Supabase/PostGIS schema
-- Scientific processing
-- Domain-specific modules
-- Analytics
-- Later RAG/ChromaDB/LLM integration
-
-## Shared
-
-Both jointly handle:
-
-- Architecture decisions
-- API contracts
-- Testing
-- Git integration
-- Demo workflow
-- Documentation
-- Final presentation
-
-RAG is deliberately delayed so it does not block the core MVP.
-
----
-
-# 28. Data Model Philosophy
-
-The unified data model should preserve:
+The database should preserve:
 
 - Original source information
 - Standardised values
@@ -879,224 +305,1214 @@ The unified data model should preserve:
 - Provenance
 - Quality information
 
-Do not discard useful provenance simply because values have been standardised.
+Do not discard provenance merely because values have been cleaned or standardised.
 
-The goal is not merely to store a cleaned number; the platform should retain enough context to explain where the information came from and how it was processed.
+The goal is not only to store a cleaned value, but to preserve enough context to explain:
 
----
-
-# 29. Scientific Quality and Trust
-
-Because this is a scientific platform, AI output should not be treated as scientific ground truth.
-
-The system therefore emphasises:
-
-- Validated data
-- Quality control
-- Provenance
-- Scientific evidence
-- Scientific context
-- Evidence-backed summaries
-
-The AI layer assists researchers rather than silently replacing scientific judgement.
+> where it came from → how it was processed → how it was analysed → which result used it
 
 ---
 
-# 30. Presentation Narrative
+# 9. Data Quality Philosophy
 
-Do not begin the solution explanation with:
+The data pipeline must explicitly handle:
 
-> “We have React, FastAPI, Supabase, ChromaDB and Gemini.”
+- Missing values
+- Duplicate records
+- Invalid coordinates
+- Invalid timestamps
+- Outliers
+- Unit inconsistencies
+- Schema mismatches
+- Range/consistency violations
 
-The stronger story is:
+Each dataset should have a quality status/score and validation information where appropriate.
 
-> “Marine data exists in many heterogeneous forms. We first ingest and standardise it into a unified marine data layer. Domain-specific analyses such as eDNA, otolith and taxonomy processing generate scientific evidence. We then perform cross-domain scientific analysis and present the results through a research workspace. Finally, an AI-assisted layer can combine the analysed data with scientific knowledge to let researchers ask questions and receive evidence-backed insights.”
-
-If judges ask about implementation:
-
-> “The frontend is React/Vite/Tailwind/Three.js, the backend is Python/FastAPI, structured data is stored in Supabase PostgreSQL/PostGIS, and ChromaDB is used for semantic retrieval in the RAG layer, with Gemini/Groq as the external LLM layer and Supabase Auth/JWT for authentication.”
-
----
-
-# 31. Technology Stack
-
-| Layer | Technology / Choice |
-|---|---|
-| Frontend | React |
-| Build tool | Vite |
-| Styling | Tailwind CSS |
-| 3D / spatial visualisation | Three.js |
-| Backend | Python 3.11 |
-| API | FastAPI |
-| Backend architecture | Modular monolith |
-| Primary database | Supabase PostgreSQL |
-| Spatial database | PostGIS |
-| Authentication | Supabase Auth / JWT |
-| Vector store | ChromaDB |
-| LLM | Gemini / Groq |
-| Containerisation | Docker |
-| Local orchestration | Docker Compose |
-| Deployment concept | Supabase Cloud + application containers |
+Oceanographic quality-control concepts such as QARTOD-style checks may be incorporated where useful.
 
 ---
 
-# 32. External / Existing Data Integrations Mentioned Earlier
+# 10. Scientific Modules
 
-Earlier planning referenced sources such as:
+## Oceanographic Analysis
 
-- GBIF
-- Wikipedia APIs
+Examples:
 
-These were described as already implemented/functionally available in the prior project context. Treat them as existing/possible integrations rather than automatically requiring every external source to be rebuilt for the MVP.
+- Temperature trends
+- Salinity trends
+- Dissolved oxygen trends
+- Chlorophyll trends
+- Environmental anomaly detection
+- Spatial/temporal analysis
 
----
+## Fisheries Analysis
 
-# 33. What the Platform Is NOT
+Examples:
 
-It is not merely:
+- Catch trends
+- Species distribution
+- Fishing pressure
+- Fishing effort
+- Catch/environment relationships
+- Habitat suitability
 
-- A file uploader
-- A database
-- A dashboard
-- A chatbot
-- An image classifier
-- An eDNA tool
+## Biodiversity / Taxonomy
 
-Its differentiating concept is the **integration of these scientific workflows into one unified marine-data platform**.
+Examples:
 
-The important chain is:
+- Species lookup
+- Taxonomic hierarchy
+- Species occurrences
+- Species distribution
+- Biodiversity indicators
 
-> **Integration → Standardisation → Analysis → Cross-domain understanding → AI-assisted interpretation → Decision support**
+## eDNA / Molecular Analysis
 
-The technologies support this chain; they are not the product by themselves.
-
----
-
-# 34. Process-Flow Diagram Baseline
-
-The current conceptual diagram is:
+Potential pipeline:
 
 ```text
-                 ┌──────────────────────────┐
-                 │       MARINE DATA        │
-                 └────────────┬─────────────┘
-                              │ Data Intake
-                              ↓
-                 ┌──────────────────────────┐
-                 │ INGEST & STANDARDISE     │
-                 └────────────┬─────────────┘
-                              │ Standardised Data
-                              ↓
-                 ┌──────────────────────────┐
-                 │   UNIFIED MARINE DATA    │
-                 └───────┬───────────┬──────┘
-                         │           │
-          Domain-specific Data       │ Marine Data
-                         ↓           ↓
-                ┌─────────────┐  ┌─────────────────┐
-                │ SPECIALIZED │  │   SCIENTIFIC    │
-                │   ANALYSIS  │→ │    ANALYSIS     │
-                └─────────────┘  └────────┬────────┘
-                                          │
-                                  Scientific Context
-                                          ↓
-                               ┌─────────────────────┐
-Scientific Knowledge ────────→ │ AI-ASSISTED         │
-                               │ INSIGHTS             │
-                               │ Scientific Querying  │
-                               │ Knowledge Retrieval  │
-                               │ RAG                  │
-                               │ Evidence-backed      │
-                               │ Summaries            │
-                               └──────────┬──────────┘
-                                          │ AI Insights
-                                          ↓
-                               ┌─────────────────────┐
-                               │      DASHBOARD      │
-                               └──────────┬──────────┘
-                                          │ Research Insights
-                                          ↓
-                               ┌─────────────────────┐
-                               │      END USERS      │
-                               └─────────────────────┘
-
-Scientific Analysis ─────────→ Dashboard
-        Results / Visualisation
+FASTA / FASTQ
+    ↓
+Validation
+    ↓
+Sequence preprocessing
+    ↓
+Reference / barcode matching
+    ↓
+Taxonomic identification
+    ↓
+Species detection + confidence
+    ↓
+PostgreSQL
 ```
 
-The actual PPT diagram may route arrows differently for space/readability, but the semantics should remain the same.
+The MVP does not need to implement a complete genomics research pipeline from scratch. The platform must demonstrate the integration and scientific result flow.
+
+## Otolith / Image Analysis
+
+Potential pipeline:
+
+```text
+Image
+    ↓
+Preprocessing
+    ↓
+Feature extraction
+    ↓
+CNN / transfer learning
+    ↓
+Species / age classification
+    ↓
+Confidence
+    ↓
+PostgreSQL
+```
+
+Keep this modular and realistic for the available data and time.
 
 ---
 
-# 35. Detailed Architecture Baseline
+# 11. Scientific Analysis Layer
 
-The detailed architecture previously contained:
+Scientific analysis operates across domains.
 
-### Inputs
+Core capabilities:
 
-- Oceanographic Data — CTD / NetCDF / Sensor Data
-- Fisheries & Biodiversity — Darwin Core / Occurrence Records
-- Molecular Data — FASTA / eDNA Sequences
-- Otolith Data — Otolith Images
-- Research Literature — Scientific Documents / Metadata
+- Spatial analysis
+- Temporal analysis
+- Cross-domain correlation
+- Biodiversity indicators
+- Species analysis
+- Ecosystem relationships
+- Ecosystem risk analysis
 
-### Frontend
+Examples:
 
-React + Vite + Tailwind CSS + Three.js
+```text
+Temperature ↔ Species Presence
+Oxygen ↔ Biodiversity
+Fishing Pressure ↔ Species Diversity
+Chlorophyll ↔ Fish Habitat
+Ocean Conditions ↔ Catch
+```
 
-Modules:
+Scientific analysis must remain distinct from generic AI.
 
-- Frontend Dashboard
-- Marine Globe / Map
-- Multi-Parameter Dashboard
-- Study Workbench
-- Natural Language Query
-- Project & Research Workspace
-- Report Export
+---
+
+# 12. AI / ML Strategy
+
+The project should use AI/ML where it provides meaningful scientific value.
+
+Do not build many models just for the sake of calling the system AI-powered.
+
+## ML Model 1 — Environmental Anomaly Detection
+
+Purpose:
+
+Detect unusual marine environmental conditions.
+
+Possible features:
+
+- Temperature
+- Salinity
+- Dissolved oxygen
+- Chlorophyll
+- Depth
+
+Possible model:
+
+- Isolation Forest
+- Other validated anomaly-detection methods
+
+Output:
+
+```text
+Normal / Anomalous
+```
+
+## ML Model 2 — Fish Habitat Suitability
+
+Purpose:
+
+Predict habitat suitability/species presence.
+
+Possible features:
+
+- SST
+- Salinity
+- Chlorophyll
+- Oxygen
+- Depth
+- Latitude
+- Longitude
+
+Possible models:
+
+- XGBoost
+- Random Forest
+
+Output:
+
+```text
+Habitat Suitability Score
+```
+
+## ML Model 3 — Fisheries / Catch Prediction
+
+Purpose:
+
+Forecast expected catch or catch intensity.
+
+Possible features:
+
+- Historical catch
+- Species
+- Temperature
+- Chlorophyll
+- Location
+- Season
+- Fishing effort
+
+Possible models:
+
+- XGBoost
+- Random Forest
+
+## Optional Model — Species/Image Classification
+
+Use image/eDNA evidence where the available dataset supports a meaningful prototype.
+
+ML models must be evaluated with appropriate metrics and must not be presented as scientific ground truth.
+
+---
+
+# 13. ML Model Management
+
+Maintain model metadata in PostgreSQL.
+
+Example fields:
+
+```text
+model_name
+version
+task
+algorithm
+features
+training_dataset
+metrics
+artifact_path
+created_at
+status
+```
+
+Predictions should retain:
+
+```text
+model_id
+model_version
+input/source reference
+prediction
+confidence/score
+location where relevant
+prediction_time
+metadata/explanation
+```
+
+MLflow can be introduced later if model versioning becomes complex, but it is not required for the foundation.
+
+---
+
+# 14. FastAPI Application Layer
+
+The API acts as the gateway between frontend and scientific/backend services.
+
+Planned functional areas:
+
+```text
+/api/auth
+/api/datasets
+/api/uploads
+/api/ocean
+/api/fisheries
+/api/species
+/api/edna
+/api/otolith
+/api/analysis
+/api/ml
+/api/alerts
+/api/reports
+/api/rag
+```
+
+Names may change during implementation. The functional responsibilities are more important than exact endpoint names.
+
+The frontend should never directly access internal scientific-processing modules.
+
+---
+
+# 15. RAG / LLM Strategy
+
+RAG is part of the target solution, but it is deliberately implemented **after the core platform is working**.
+
+Order:
+
+```text
+Core Platform
+    ↓
+Data + Scientific Analysis
+    ↓
+Dashboard
+    ↓
+RAG / AI Enhancement
+```
+
+RAG pipeline:
+
+```text
+Scientific Documents
+Research Literature
+Species Knowledge
+Project Notes
+Dataset Metadata
+        ↓
+Chunking
+        ↓
+Embeddings
+        ↓
+ChromaDB
+        ↓
+Semantic Retrieval
+        ↓
+Relevant Context
+        ↓
+LLM
+        ↓
+Evidence-backed Scientific Response
+```
+
+The AI should not invent scientific conclusions.
+
+Where possible, answers should be grounded in:
+
+- Database results
+- Scientific analysis
+- Retrieved documents
+- Dataset/source metadata
+
+The core platform must continue working even when the LLM is unavailable.
+
+---
+
+# 16. Research Dashboard
+
+The frontend is a single research-facing application.
+
+Planned modules:
+
+### Command Center
+
+- Dataset count
+- Observations
+- Species
+- eDNA records
+- Active analyses
+- Alerts
+
+### Data Engine
+
+- Dataset upload
+- Dataset explorer
+- Processing status
+- Quality score
+- Validation results
+- Provenance
+
+### Ocean Explorer
+
+- Temperature
+- Salinity
+- Oxygen
+- Chlorophyll
+- Depth
+- Time filters
+
+### Fisheries Explorer
+
+- Catch
+- Species
+- Fishing effort
+- Fishing zones
+- Trends
+
+### Species Explorer
+
+- Species search
+- Taxonomy
+- Distribution
+- Occurrences
+- eDNA detections
+
+### eDNA Explorer
+
+- Samples
+- Species detected
+- Confidence
+- Location
+- Time
+
+### AI Insights
+
+- Predictions
+- Anomalies
+- Risk scores
+- Scientific summaries
+
+### Alerts
+
+- Environmental anomalies
+- Biodiversity risk
+- Fisheries risk
+- Species alerts
+
+### Reports
+
+- PDF
+- CSV
+- Analysis summaries
+- Map/results export
+
+---
+
+# 17. Interactive Marine Map
+
+The map should be a major demonstration component.
+
+Potential layers:
+
+- Ocean observations
+- Fisheries activity
+- Species occurrences
+- eDNA detections
+- Biodiversity hotspots
+- AI predictions
+- Risk zones
+
+Filters:
+
+- Date
+- Depth
+- Species
+- Region
+- Dataset
+- Variable
+
+A location interaction should be able to combine:
+
+```text
+Location
+Time
+Depth
+Ocean condition
+Species
+Catch
+eDNA
+Scientific analysis
+AI prediction
+```
+
+This is the visible demonstration of cross-domain data fusion.
+
+---
+
+# 18. Alerts / Decision Support
+
+Connect analytics and ML outputs to an alert layer.
+
+Example:
+
+```text
+Environmental anomaly
+        ↓
+ML / scientific analysis
+        ↓
+Threshold / risk condition
+        ↓
+Alert
+        ↓
+Dashboard
+```
+
+Example alert:
+
+```text
+HIGH BIODIVERSITY RISK
+
+Region: Arabian Sea
+Confidence: 86%
+
+Potential contributing factors:
+↑ SST
+↓ Oxygen
+↑ Fishing pressure
+↓ Species diversity
+```
+
+Alerts are decision-support outputs, not automatic scientific truth.
+
+---
+
+# 19. Reports
+
+Users should be able to generate research-oriented reports containing:
+
+- Dataset/source
+- Region
+- Time range
+- Analysis
+- Charts
+- Map
+- ML prediction
+- Alerts
+- Relevant provenance/source information
+
+Possible formats:
+
+- PDF
+- CSV
+
+---
+
+# 20. Implementation Phases
+
+This is the **locked implementation plan**.
+
+## Phase 0 — Project Foundation
+
+Goal: establish the repository and development foundation only.
+
+Tasks:
+
+- Create Git repository
+- Create `main` and `dev` branches
+- Establish feature/fix/experiment/chore branching convention
+- Create top-level folder structure
+- Create placeholder files
+- Create `.gitignore`
+- Create `.env.example`
+- Create root README
+- Establish basic development conventions
+- Lock the project structure
+
+Do NOT:
+
+- Create database tables
+- Connect MCP
+- Implement APIs
+- Build frontend pages
+- Build ML models
+- Implement RAG
+- Add Docker
+
+**Deliverable:**
+
+```text
+Stable repository foundation
+```
+
+---
+
+## Phase 1 — Database Foundation
+
+Goal: establish the real Supabase backend foundation.
+
+Tasks:
+
+- Create Supabase project/connection
+- Enable PostGIS
+- Design and create relational schema
+- Create profiles/role structure linked to Supabase Auth
+- Create projects/datasets/data source tables
+- Create stations/samples
+- Create oceanographic tables
+- Create fisheries tables
+- Create species/taxonomy/occurrence tables
+- Create eDNA tables
+- Create otolith tables
+- Create analysis tables
+- Create ML metadata/prediction tables
+- Create alerts
+- Add provenance/audit information
+- Add required indexes and spatial indexes
+- Configure initial Row Level Security policies
+
+**Deliverable:**
+
+```text
+Working PostgreSQL + PostGIS schema
+```
+
+---
+
+## Phase 2 — File Storage + Authentication
+
+Goal: establish secure file and user foundations.
+
+Tasks:
+
+- Configure Supabase Storage buckets
+- Create file metadata relationships in PostgreSQL
+- Create minimal Supabase Auth flow
+- Add role handling
+- Implement JWT verification architecture
+- Verify protected access
+
+**Deliverable:**
+
+```text
+Login + file storage + protected user flow
+```
+
+---
+
+## Phase 3 — Data Ingestion Engine
+
+Goal: make the first real data path work.
+
+Tasks:
+
+- Upload files
+- Save files to Supabase Storage
+- Detect supported formats
+- Read schemas
+- Preview records
+- Create dataset metadata
+- Track processing status
+- Map incoming fields to the internal schema
+
+Initial supported formats can include:
+
+- CSV
+- Excel
+- JSON
+- NetCDF
+- CTD/TXT as appropriate
+
+**Deliverable:**
+
+```text
+Upload → Store → Detect → Preview → Register Dataset
+```
+
+---
+
+## Phase 4 — Data Quality + Standardisation
+
+Goal: turn raw inputs into reliable research data.
+
+Tasks:
+
+- Missing-value detection
+- Duplicate detection
+- Coordinate validation
+- Timestamp validation
+- Range checks
+- Outlier detection
+- Unit conversion
+- Schema validation
+- Quality score
+- Validation notes
+- Provenance recording
+
+Create the standard internal representation for:
+
+```text
+time
+latitude
+longitude
+depth
+station
+sample
+species
+dataset
+source
+```
+
+**Deliverable:**
+
+```text
+Raw dataset → Validated + standardised dataset
+```
+
+---
+
+## Phase 5 — Data Fusion + Unified Marine Data
+
+Goal: implement the core innovation.
+
+Tasks:
+
+- Spatial alignment
+- Temporal alignment
+- Depth alignment
+- Common Marine Data Model
+- Cross-domain linking
+- Spatial queries through PostGIS
+- Unified observation/query views
+- Ocean + fisheries + biodiversity integration
+
+**Deliverable:**
+
+```text
+Ocean + Fisheries + Biodiversity + eDNA
+        ↓
+Unified Marine Data
+```
+
+This phase is the core differentiator of the platform.
+
+---
+
+## Phase 6 — Scientific Analysis
+
+Goal: create useful scientific outputs before introducing heavy ML.
+
+Tasks:
+
+- Oceanographic trends
+- Fisheries trends
+- Species distribution
+- Biodiversity indicators
+- Spatial analysis
+- Temporal analysis
+- Cross-domain correlation
+- Ecosystem relationships
+
+Initial demonstrations:
+
+```text
+Temperature ↔ Species
+Oxygen ↔ Biodiversity
+Fishing Pressure ↔ Diversity
+Chlorophyll ↔ Habitat
+Ocean Conditions ↔ Catch
+```
+
+**Deliverable:**
+
+```text
+Unified Data → Scientific Results
+```
+
+---
+
+## Phase 7 — Domain-Specific Scientific Modules
+
+Goal: add the specialized marine-science capabilities.
+
+### eDNA
+
+- FASTA/FASTQ validation
+- Sequence preprocessing
+- Reference matching
+- Species detection
+- Confidence
+- Result storage
+
+### Otolith / Image
+
+- Image upload
+- Preprocessing
+- Feature extraction
+- Classification
+- Confidence
+- Result storage
+
+### Taxonomy
+
+- Species search
+- Taxonomic hierarchy
+- Synonym/reference handling
+- Species identification support
+
+**Deliverable:**
+
+```text
+Specialized scientific evidence
+```
+
+---
+
+## Phase 8 — AI / ML Engine
+
+Goal: add genuinely useful predictive intelligence.
+
+Implement in this order:
+
+### Model 1
+Environmental anomaly detection
+
+### Model 2
+Fish habitat suitability
+
+### Model 3
+Catch prediction
+
+### Optional
+Image/species classification
+
+For every model:
+
+- Prepare data
+- Engineer features
+- Train
+- Validate
+- Evaluate
+- Save model
+- Register metadata
+- Implement inference
+- Store predictions
+
+Do not create many weak models.
+
+**Deliverable:**
+
+```text
+Scientific Data → ML Prediction / Score
+```
+
+---
+
+## Phase 9 — FastAPI Integration
+
+Goal: expose the system cleanly through APIs.
+
+Tasks:
+
+- Dataset APIs
+- Upload APIs
+- Ocean APIs
+- Fisheries APIs
+- Species APIs
+- eDNA APIs
+- Otolith APIs
+- Scientific analysis APIs
+- ML inference APIs
+- Alert APIs
+- Report APIs
+- Authentication/authorization middleware
+
+**Deliverable:**
+
+```text
+Frontend ↔ FastAPI ↔ Services ↔ Supabase/ML
+```
+
+---
+
+## Phase 10 — Frontend Research Workspace
+
+Goal: build the real user experience on top of working APIs.
+
+Build in this order:
+
+1. Login
+2. Command Center
+3. Data Engine
+4. Dataset explorer
+5. Ocean Explorer
+6. Fisheries Explorer
+7. Species Explorer
+8. eDNA Explorer
+9. Scientific Analysis
+10. AI Insights
+11. Alerts
+12. Reports
+
+**Deliverable:**
+
+```text
+End-to-end researcher-facing application
+```
+
+---
+
+## Phase 11 — Interactive Marine Map
+
+Goal: turn data fusion into a visible feature.
+
+Implement:
+
+- Spatial layers
+- Time filter
+- Depth filter
+- Species filter
+- Dataset filter
+- Layer toggles
+- Point/region details
+- AI prediction layers
+- Risk zones
+
+**Deliverable:**
+
+```text
+Interactive Unified Marine Map
+```
+
+---
+
+## Phase 12 — RAG + LLM
+
+Goal: add scientific natural-language interaction after the core platform is stable.
+
+Tasks:
+
+- Prepare scientific documents
+- Chunk documents
+- Generate embeddings
+- Populate ChromaDB
+- Build retrieval
+- Integrate Gemini/Groq
+- Build scientific query service
+- Connect database results where appropriate
+- Generate evidence-backed summaries
+- Display source/context information
+
+Example:
+
+```text
+Question
+  ↓
+Query Understanding
+  ↓
+Database Analysis + Vector Retrieval
+  ↓
+Relevant Scientific Context
+  ↓
+LLM
+  ↓
+Evidence-backed Answer
+```
+
+**Deliverable:**
+
+```text
+Scientific Q&A / AI research assistant
+```
+
+---
+
+## Phase 13 — Alerts + Decision Support
+
+Goal: convert analysis/prediction into useful notifications.
+
+Tasks:
+
+- Define thresholds
+- Risk scoring
+- Environmental alerts
+- Biodiversity alerts
+- Fisheries alerts
+- Species alerts
+- Dashboard notification system
+
+**Deliverable:**
+
+```text
+AI / Analytics → Alert → Decision Support
+```
+
+---
+
+## Phase 14 — Reports + Export
+
+Goal: make results usable outside the platform.
+
+Tasks:
+
+- Research report
+- Analysis summary
+- Map export
+- CSV export
+- PDF generation
+- Source/provenance inclusion
+
+**Deliverable:**
+
+```text
+Decision-ready / research-ready report
+```
+
+---
+
+## Phase 15 — Testing + Hardening
+
+Goal: make the system reliable.
+
+Tasks:
 
 ### Backend
 
-Python 3.11 + FastAPI + Modular Monolith
-
-Modules:
-
-- Data Ingestion & Standardisation
-- Data Quality Control
-- Scientific Analytics
-- FastAPI REST Endpoints
-- RAG & AI Query Engine
-
-### Scientific Analysis
-
-- eDNA / Molecular Analysis
-- Otolith Analysis
-- Taxonomy & Species Identification
+- API tests
+- Authentication tests
+- Database tests
+- Validation tests
 
 ### Data
 
-Supabase PostgreSQL + PostGIS
+- Invalid coordinates
+- Bad timestamps
+- Missing values
+- Duplicates
+- Wrong units
+- Schema mismatches
 
-### AI / retrieval
+### ML
 
-ChromaDB + external LLM provider
+Use task-appropriate metrics:
 
-### Authentication
+- MAE
+- RMSE
+- R²
+- Precision
+- Recall
+- F1
+- Confusion matrix
 
-Supabase Auth / JWT
+### Frontend
 
-### Deployment
+- Login
+- Upload
+- Maps
+- Filters
+- Charts
+- Role permissions
+- Error states
 
-Docker Compose + frontend container + backend container + Supabase Cloud
+### System
+
+- Logging
+- Error handling
+- Performance checks
+- Security checks
+
+**Deliverable:**
+
+```text
+Stable MVP
+```
 
 ---
 
-# 36. Development Principles
+## Phase 16 — Docker + Deployment
+
+Docker is intentionally introduced here, not during Phase 0.
+
+Tasks:
+
+- Create `docker/`
+- Containerise frontend
+- Containerise backend
+- Docker Compose
+- Environment-based configuration
+- Production configuration
+- Deploy frontend
+- Deploy FastAPI
+- Connect Supabase Cloud
+- Smoke testing
+
+**Deliverable:**
+
+```text
+Reproducible + deployable platform
+```
+
+---
+
+# 21. MVP Priority
+
+The project must prioritise a working vertical path over breadth.
+
+## MVP-1
+
+```text
+Login
+ ↓
+Upload CSV
+ ↓
+Supabase Storage
+ ↓
+Validation
+ ↓
+PostgreSQL/PostGIS
+ ↓
+Display on map
+```
+
+## MVP-2
+
+```text
+Ocean + Fisheries + Biodiversity
+ ↓
+Fusion
+ ↓
+Unified Map
+```
+
+## MVP-3
+
+```text
+Scientific Analysis
+ ↓
+AI/ML Prediction
+ ↓
+Risk/Insight
+```
+
+## MVP-4
+
+```text
+eDNA + Otolith
+```
+
+## MVP-5
+
+```text
+RAG + LLM
+```
+
+## MVP-6
+
+```text
+Alerts + Reports + Deployment
+```
+
+A complete working path is more important than ten disconnected features.
+
+---
+
+# 22. Two-Person Team
+
+## Person 1 — Frontend + Integration
+
+Primary:
+
+- React/Vite/Tailwind
+- Dashboard
+- Maps
+- Charts
+- Research workspace
+- Authentication UI
+- API integration
+- Final user workflow
+
+## Person 2 — Backend + Data + Scientific/AI
+
+Primary:
+
+- Supabase/PostgreSQL/PostGIS
+- Storage
+- FastAPI
+- Data ingestion
+- QC
+- Standardisation
+- Data fusion
+- Scientific analysis
+- eDNA/otolith processing
+- ML
+- RAG backend
+
+## Shared
+
+Both jointly handle:
+
+- Architecture decisions
+- API contracts
+- Database/data-model decisions
+- Testing
+- Git integration
+- Demo workflow
+- Documentation
+- Deployment
+- Final presentation
+
+---
+
+# 23. AI-Assisted Development Rules
+
+AI coding assistants may be used extensively for:
+
+- Boilerplate
+- SQL
+- FastAPI scaffolding
+- Pydantic models
+- React components
+- API integration
+- Validation functions
+- Testing
+- Debugging
+- Documentation
+- ML preprocessing utilities
+
+Human validation is required for:
+
+- Scientific assumptions
+- Data-quality rules
+- eDNA interpretation
+- Taxonomic identification
+- ML evaluation
+- Model claims
+- Scientific conclusions
+
+AI-generated code must be reviewed before merging.
+
+---
+
+# 24. Development Principles
 
 ### Build vertically
 
-Whenever possible, make one complete scientific path work end-to-end before implementing many isolated features.
-
-Example:
+Prefer:
 
 ```text
 Upload
@@ -1107,181 +1523,146 @@ Upload
 → Display
 ```
 
-is more valuable for the MVP than ten disconnected screens.
+over building many disconnected components.
 
 ### Keep modules replaceable
 
-Specialised scientific algorithms should be isolated from the API layer so they can be improved without redesigning the entire system.
+Scientific algorithms should be isolated from API routing.
 
-### Keep the AI layer decoupled
+### Keep AI decoupled
 
-The core application must not depend on the LLM being available for basic ingestion, storage, analysis or visualisation.
+The core platform must work without the LLM.
 
 ### Preserve provenance
 
-Scientific users need to understand the origin and quality of data.
+Always retain source and processing context.
 
 ### Prefer reproducibility
 
 Use:
 
-- Docker
-- Environment-based configuration
+- Environment variables
+- Repeatable scripts
 - Documented setup
-- Repeatable data-processing steps
+- Later Dockerisation
+- Version control
+
+### Avoid unnecessary infrastructure
+
+Do not introduce another database or platform component unless there is a concrete requirement.
 
 ---
 
-# 37. Definition of a Convincing MVP
+# 25. What the Platform Is Not
 
-A convincing MVP should allow the team to demonstrate:
+It is not merely:
 
-1. A marine dataset can be supplied.
-2. The system recognises/handles the input.
-3. Data is cleaned/standardised.
-4. Data quality is checked.
-5. Data is stored in the unified marine data layer.
-6. Scientific analysis can be run.
-7. Results are visualised.
-8. A researcher can interact with the result.
-9. Specialised analyses demonstrate the marine-science focus.
-10. AI/RAG can be demonstrated after the core workflow is stable.
+- A file uploader
+- A database
+- A dashboard
+- A chatbot
+- An image classifier
+- An eDNA tool
 
-The demo should show a **complete story**, not isolated features.
+Its differentiating concept is:
+
+> **Integration → Standardisation → Fusion → Scientific Analysis → AI-assisted Intelligence → Decision Support**
 
 ---
 
-# 38. RAG Implementation Rule
+# 26. Scientific Trust
 
-Explicit project decision:
+AI output is not scientific ground truth.
 
-> **RAG is included in the target solution and should be implemented, but it comes last.**
+The platform must emphasize:
 
-Do not mark it optional in the current architecture.
+- Validated data
+- Quality control
+- Provenance
+- Scientific evidence
+- Reproducible analysis
+- Evidence-backed AI responses
 
-The sequence is:
-
-```text
-Core platform
-    ↓
-Data + scientific analysis
-    ↓
-Dashboard
-    ↓
-RAG / AI enhancement
-```
-
-If RAG works, it strengthens the final system.
-
-If RAG cannot be completed reliably, the team can remove that layer while retaining the core marine-data platform.
+AI assists researchers; it does not silently replace scientific judgement.
 
 ---
 
-# 39. Team Mental Model
-
-Every team member should understand the project at three levels.
-
-### Level 1 — One sentence
-
-> A unified marine-data platform that standardises heterogeneous marine datasets, performs cross-domain scientific analysis, and provides AI-assisted research insights.
-
-### Level 2 — Process
-
-> Data → Standardise → Unify → Specialised Analysis → Scientific Analysis → AI Insights → Dashboard → Researchers.
-
-### Level 3 — Implementation
-
-> React/Vite/Tailwind/Three.js → FastAPI/Python → scientific services → Supabase PostgreSQL/PostGIS, with ChromaDB + Gemini/Groq for the RAG layer and Supabase Auth/JWT for authentication.
-
----
-
-# 40. Final Working Baseline
-
-Unless the team deliberately changes the architecture during implementation, use this as the baseline:
-
-```text
-INPUTS
-Marine Data
-    │
-    ▼
-INGESTION
-Data Ingestion & Standardisation
-    │
-    ▼
-UNIFIED DATA
-Supabase PostgreSQL + PostGIS
-    │
-    ├──────────────► Specialized Analysis
-    │                 ├── Otolith
-    │                 ├── eDNA / Molecular
-    │                 └── Taxonomy
-    │
-    ▼
-SCIENTIFIC ANALYSIS
-Spatial / Temporal / Cross-domain /
-Biodiversity / Species / Ecosystem
-    │
-    ├──────────────► Dashboard
-    │                  Results / Visualisation
-    │
-    ▼
-AI-ASSISTED INSIGHTS
-Scientific Querying / Knowledge Retrieval /
-RAG / Evidence-backed Summaries
-    │
-    ▼
-RESEARCH WORKSPACE / DASHBOARD
-    │
-    ▼
-END USERS
-```
-
-Supporting knowledge:
+# 27. Final Architecture Baseline
 
 ```text
 Marine Data
-     │
-     └──── Scientific Knowledge ────► AI-Assisted Insights
+    ↓
+Data Ingestion
+    ↓
+Data Quality & Standardisation
+    ↓
+Data Fusion & Spatial-Temporal Alignment
+    ↓
+Unified Marine Data
+    │
+    ├── Oceanographic Analysis
+    ├── Fisheries Analysis
+    ├── Biodiversity / Taxonomy
+    ├── eDNA / Molecular
+    └── Otolith / Image
+    ↓
+Scientific Analysis
+    ↓
+AI / ML
+    ├── Anomaly Detection
+    ├── Habitat Suitability
+    └── Catch Prediction
+    ↓
+FastAPI
+    ↓
+React Research Workspace
+    ├── Dashboard
+    ├── Marine Map
+    ├── Data Engine
+    ├── Species Explorer
+    ├── eDNA Explorer
+    ├── AI Insights
+    ├── Alerts
+    └── Reports
+    ↓
+End Users
 ```
 
-RAG infrastructure:
+RAG/LLM sits as a later AI-assisted layer connected to the stable platform:
 
 ```text
-AI-Assisted Insights
-       │
-       ▼
-   ChromaDB
-       │
-   semantic retrieval
-       │
-       ▼
- Gemini / Groq
+Scientific Data + Analysis
+        +
+Scientific Documents / Knowledge
+        ↓
+Semantic Retrieval / ChromaDB
+        ↓
+Gemini / Groq
+        ↓
+Evidence-backed Scientific Q&A
 ```
 
-Application infrastructure:
+---
 
-```text
-React + Vite + Tailwind + Three.js
-                │
-                ▼
-       Python + FastAPI
-                │
-        ┌───────┴────────┐
-        ▼                ▼
-Scientific Services   Supabase
-                      PostgreSQL
-                      + PostGIS
+# 28. Definition of Done
 
-Supabase Auth / JWT
-```
+The MVP is considered convincing when a user can:
 
-Deployment:
+1. Authenticate.
+2. Upload a realistic marine dataset.
+3. Store the raw file in Supabase Storage.
+4. Register the dataset in PostgreSQL.
+5. Validate and standardise the data.
+6. Calculate a data-quality result.
+7. Store spatial/temporal observations in PostGIS.
+8. Combine at least oceanographic + fisheries + biodiversity data.
+9. Run meaningful scientific analysis.
+10. Visualise the result on a marine map/dashboard.
+11. Run at least one meaningful ML model.
+12. View a prediction/risk/insight.
+13. Demonstrate at least one specialized eDNA or otolith workflow.
+14. Generate a report/export.
+15. Demonstrate RAG/LLM after the core workflow is stable.
+16. Trace a result back to its source/provenance.
 
-```text
-Docker Compose
-├── Frontend Container
-├── Backend Container
-└── Supabase Cloud
-```
-
-This is the working project context to use when implementing the MVP and preparing the final presentation.
+The demo must show a **complete end-to-end scientific story**, not isolated features.

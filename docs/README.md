@@ -4,4 +4,4 @@ This directory hosts project documentation, architectural specifications, data d
 
 ## Contents
 - `context.md`: Authoritative CMLRE Marine Data Platform context document
-- Architecture designs, API specifications, and database schema documentation (to be added in subsequent phases)
+- [`database_schema.md`](database_schema.md): Complete schema reference for Supabase PostgreSQL + PostGIS across all 12 domains
