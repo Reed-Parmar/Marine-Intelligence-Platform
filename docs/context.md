@@ -869,7 +869,7 @@ Working PostgreSQL + PostGIS schema
 
 ---
 
-## Phase 2 — File Storage + Authentication — COMPLETED
+## Phase 2 — Supabase Storage & Authentication Foundation
 
 Goal: establish secure file and user foundations.
 
@@ -885,7 +885,13 @@ Tasks:
 **Deliverable:**
 
 ```text
-Login + file storage + protected user flow (COMPLETED)
+Phase 2 — Supabase Storage & Authentication Foundation COMPLETED
+
+Frontend/backend integration remains pending:
+- React authentication UI
+- FastAPI JWT verification
+- protected FastAPI endpoints
+- frontend/backend connection to Supabase
 ```
 
 ---
