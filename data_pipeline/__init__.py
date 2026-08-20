@@ -26,6 +26,16 @@ from data_pipeline.validators import (
     TimestampValidator,
 )
 from data_pipeline.phase4_boundary import integrate_with_phase4
+from data_pipeline.fusion import (
+    MarineObservation,
+    UnifiedQueryParams,
+    CrossDomainAssociation,
+    UnifiedSummary,
+    query_unified_observations,
+    get_domain_observations,
+    get_unified_summary,
+    get_cross_domain_context,
+)
 
 __all__ = [
     "QualityPipeline",
@@ -46,4 +56,13 @@ __all__ = [
     "OutlierDetector",
     "QualityScorer",
     "integrate_with_phase4",
+    # Phase 5 — Data Fusion & Unified Marine Data
+    "MarineObservation",
+    "UnifiedQueryParams",
+    "CrossDomainAssociation",
+    "UnifiedSummary",
+    "query_unified_observations",
+    "get_domain_observations",
+    "get_unified_summary",
+    "get_cross_domain_context",
 ]
