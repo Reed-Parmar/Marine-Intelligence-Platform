@@ -49,3 +49,6 @@ artifacts/
 # Data directories
 data/raw/
 data/processed/
+
+#dataset
+dataset/
