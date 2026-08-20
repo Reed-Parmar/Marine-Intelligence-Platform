@@ -869,23 +869,23 @@ Working PostgreSQL + PostGIS schema
 
 ---
 
-## Phase 2 — File Storage + Authentication
+## Phase 2 — File Storage + Authentication — COMPLETED
 
 Goal: establish secure file and user foundations.
 
 Tasks:
 
-- Configure Supabase Storage buckets
-- Create file metadata relationships in PostgreSQL
-- Create minimal Supabase Auth flow
-- Add role handling
+- Configure Supabase Storage `marine-files` bucket
+- Create file metadata relationships in PostgreSQL (`public.datasets`)
+- Create minimal Supabase Auth flow with automated profile generation
+- Add role handling (`admin`, `user`)
 - Implement JWT verification architecture
-- Verify protected access
+- Verify protected access and Storage RLS policies
 
 **Deliverable:**
 
 ```text
-Login + file storage + protected user flow
+Login + file storage + protected user flow (COMPLETED)
 ```
 
 ---
