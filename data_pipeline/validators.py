@@ -378,6 +378,8 @@ class TimestampValidator:
     - If explicit timezone is present (e.g. 'Z', '+05:30', 'UTC'): normalizes to ISO-8601 UTC ('...Z').
     - If no timezone is present (naive): preserves timestamp representation ('YYYY-MM-DDTHH:MM:SS' or 'YYYY-MM-DD')
       WITHOUT appending 'Z' or assuming UTC, and records a validation note (timezone unknown).
+    - If an ISO-8601 date range interval is present (e.g. 'YYYY-MM-DD/YYYY-MM-DD'): parses and validates both endpoints.
+    - If year-only (e.g. '2009') or year-month (e.g. '2009-02'): validates and standardizes as date.
     """
 
     KNOWN_NAIVE_FORMATS = [
@@ -402,12 +404,79 @@ class TimestampValidator:
         "%Y-%m-%dT%H:%M:%S"
     ]
 
+    def _parse_single_datetime(self, str_val: str) -> Tuple[Optional[datetime], bool, bool, bool]:
+        """
+        Parses a single datetime string.
+        Returns: (parsed_dt, has_explicit_tz, is_utc, is_date_only)
+        """
+        str_clean = str(str_val).strip()
+        str_upper = str_clean.upper()
+        
+        # 1. Year only (e.g. "2009")
+        if re.match(r"^\d{4}$", str_clean):
+            try:
+                yr = int(str_clean)
+                return datetime(yr, 1, 1), False, False, True
+            except ValueError:
+                pass
+
+        # 2. Year-Month (e.g. "2009-02" or "2009/02")
+        if re.match(r"^\d{4}[-\/]\d{1,2}$", str_clean):
+            try:
+                parts = re.split(r"[-\/]", str_clean)
+                yr, mo = int(parts[0]), int(parts[1])
+                if 1 <= mo <= 12:
+                    return datetime(yr, mo, 1), False, False, True
+            except ValueError:
+                pass
+
+        # 3. Explicit UTC/GMT marker
+        if str_upper.endswith("Z") or " UTC" in str_upper or " GMT" in str_upper:
+            cleaned_str = re.sub(r"\s*(UTC|GMT|Z)$", "", str_clean, flags=re.IGNORECASE).strip()
+            try:
+                dt = datetime.fromisoformat(cleaned_str.replace(" ", "T"))
+                is_date_only = (dt.hour == 0 and dt.minute == 0 and dt.second == 0 and "T" not in cleaned_str and ":" not in cleaned_str)
+                return dt.replace(tzinfo=timezone.utc), True, True, is_date_only
+            except ValueError:
+                for fmt in self.KNOWN_NAIVE_FORMATS:
+                    try:
+                        dt = datetime.strptime(cleaned_str, fmt).replace(tzinfo=timezone.utc)
+                        is_date_only = ("%H" not in fmt and "%M" not in fmt)
+                        return dt, True, True, is_date_only
+                    except ValueError:
+                        continue
+
+        # 4. Explicit offset (+HH:MM, -HH:MM, +HHMM, -HHMM)
+        elif re.search(r"[\+\-]\d{2}:?\d{2}$", str_clean):
+            try:
+                dt_with_tz = datetime.fromisoformat(str_clean.replace(" ", "T"))
+                return dt_with_tz.astimezone(timezone.utc), True, True, False
+            except ValueError:
+                pass
+
+        # 5. Naive standard ISO / known formats
+        else:
+            try:
+                dt = datetime.fromisoformat(str_clean.replace(" ", "T"))
+                is_date_only = (dt.hour == 0 and dt.minute == 0 and dt.second == 0 and "T" not in str_clean and ":" not in str_clean)
+                return dt, False, False, is_date_only
+            except ValueError:
+                for fmt in self.KNOWN_NAIVE_FORMATS:
+                    try:
+                        dt = datetime.strptime(str_clean, fmt)
+                        is_date_only = ("%H" not in fmt and "%M" not in fmt)
+                        return dt, False, False, is_date_only
+                    except ValueError:
+                        continue
+
+        return None, False, False, False
+
     def validate(
         self,
         records: List[Dict[str, Any]]
     ) -> Tuple[List[Dict[str, Any]], List[ValidationIssue], List[TransformationRecord], int]:
         """
-        Standardizes 'time' column with strict timezone awareness.
+        Standardizes 'time' / 'timestamp' column with strict timezone awareness.
         """
         if not records:
             return [], [], [], 0
@@ -420,78 +489,60 @@ class TimestampValidator:
 
         for row_idx, row in enumerate(records):
             new_row = dict(row)
-            raw_time = row.get("time")
+            # Support both 'time' and 'timestamp' column keys
+            time_col = "time" if "time" in row else ("timestamp" if "timestamp" in row else None)
+            raw_time = row.get(time_col) if time_col else None
 
-            if raw_time is not None:
+            if raw_time is not None and time_col is not None:
                 parsed_dt: Optional[datetime] = None
                 has_explicit_tz = False
                 is_utc = False
+                is_interval = False
+                iso_str: Optional[str] = None
+                rule_text = ""
 
-                # 1. Already datetime instance
-                if isinstance(raw_time, datetime):
-                    if raw_time.tzinfo is not None:
-                        parsed_dt = raw_time.astimezone(timezone.utc)
-                        has_explicit_tz = True
-                        is_utc = True
-                    else:
-                        parsed_dt = raw_time
-                        has_explicit_tz = False
+                # 1. Check for ISO Date Interval (e.g. "2009-02-16/2009-02-23" or "2009/2010")
+                if isinstance(raw_time, str) and "/" in raw_time and not re.search(r"^\d{1,2}/\d{1,2}/\d{2,4}", raw_time):
+                    parts = raw_time.strip().split("/")
+                    if len(parts) == 2:
+                        dt_start, tz_start, utc_start, d_only_start = self._parse_single_datetime(parts[0])
+                        dt_end, tz_end, utc_end, d_only_end = self._parse_single_datetime(parts[1])
+                        if dt_start and dt_end:
+                            if 1800 <= dt_start.year <= current_year + 1 and 1800 <= dt_end.year <= current_year + 1:
+                                s1 = dt_start.strftime("%Y-%m-%d") if d_only_start else dt_start.strftime("%Y-%m-%dT%H:%M:%S")
+                                s2 = dt_end.strftime("%Y-%m-%d") if d_only_end else dt_end.strftime("%Y-%m-%dT%H:%M:%S")
+                                iso_str = f"{s1}/{s2}"
+                                is_interval = True
+                                rule_text = "Standardized ISO-8601 date range interval (start/end)"
+                                parsed_dt = dt_start
 
-                # 2. Numeric timestamp (unix seconds/millis, UTC by definition)
-                elif isinstance(raw_time, (int, float)):
-                    try:
-                        ts_val = raw_time / 1000.0 if raw_time > 1e11 else raw_time
-                        parsed_dt = datetime.fromtimestamp(ts_val, tz=timezone.utc)
-                        has_explicit_tz = True
-                        is_utc = True
-                    except (ValueError, OSError, OverflowError):
-                        parsed_dt = None
-
-                # 3. String representation
-                elif isinstance(raw_time, str):
-                    str_clean = raw_time.strip()
-                    str_upper = str_clean.upper()
-
-                    # Check for explicit UTC/GMT marker
-                    if str_upper.endswith("Z") or " UTC" in str_upper or " GMT" in str_upper:
-                        has_explicit_tz = True
-                        is_utc = True
-                        cleaned_str = re.sub(r"\s*(UTC|GMT|Z)$", "", str_clean, flags=re.IGNORECASE).strip()
-                        # Try parsing remaining ISO / standard string
-                        try:
-                            parsed_dt = datetime.fromisoformat(cleaned_str.replace(" ", "T"))
-                            parsed_dt = parsed_dt.replace(tzinfo=timezone.utc)
-                        except ValueError:
-                            for fmt in self.KNOWN_NAIVE_FORMATS:
-                                try:
-                                    parsed_dt = datetime.strptime(cleaned_str, fmt).replace(tzinfo=timezone.utc)
-                                    break
-                                except ValueError:
-                                    continue
-
-                    # Check for explicit offset (+HH:MM, -HH:MM, +HHMM, -HHMM)
-                    elif re.search(r"[\+\-]\d{2}:?\d{2}$", str_clean):
-                        has_explicit_tz = True
-                        try:
-                            # Python 3.11 fromisoformat supports offsets
-                            dt_with_tz = datetime.fromisoformat(str_clean.replace(" ", "T"))
-                            parsed_dt = dt_with_tz.astimezone(timezone.utc)
+                # 2. Already datetime instance
+                if not is_interval:
+                    if isinstance(raw_time, datetime):
+                        if raw_time.tzinfo is not None:
+                            parsed_dt = raw_time.astimezone(timezone.utc)
+                            has_explicit_tz = True
                             is_utc = True
-                        except ValueError:
-                            parsed_dt = None
+                        else:
+                            parsed_dt = raw_time
+                            has_explicit_tz = False
+                        is_date_only = False
 
-                    # Timezone-less / Naive string
-                    else:
-                        has_explicit_tz = False
+                    # 3. Numeric timestamp (unix seconds/millis, UTC by definition)
+                    elif isinstance(raw_time, (int, float)):
                         try:
-                            parsed_dt = datetime.fromisoformat(str_clean.replace(" ", "T"))
-                        except ValueError:
-                            for fmt in self.KNOWN_NAIVE_FORMATS:
-                                try:
-                                    parsed_dt = datetime.strptime(str_clean, fmt)
-                                    break
-                                except ValueError:
-                                    continue
+                            ts_val = raw_time / 1000.0 if raw_time > 1e11 else float(raw_time)
+                            parsed_dt = datetime.fromtimestamp(ts_val, tz=timezone.utc)
+                            has_explicit_tz = True
+                            is_utc = True
+                            is_date_only = False
+                        except (ValueError, OSError, OverflowError):
+                            parsed_dt = None
+                            is_date_only = False
+
+                    # 4. String representation
+                    elif isinstance(raw_time, str):
+                        parsed_dt, has_explicit_tz, is_utc, is_date_only = self._parse_single_datetime(raw_time)
 
                 if parsed_dt is not None:
                     # Validate year reasonableness (1800 to next year)
@@ -500,7 +551,7 @@ class TimestampValidator:
                         issues.append(
                             ValidationIssue(
                                 check="timestamp_range",
-                                column="time",
+                                column=time_col,
                                 severity=IssueSeverity.ERROR,
                                 row_index=row_idx,
                                 value=str(raw_time),
@@ -509,34 +560,33 @@ class TimestampValidator:
                             )
                         )
                     else:
-                        if has_explicit_tz and is_utc:
-                            # Format as UTC with Z
-                            iso_str = parsed_dt.strftime("%Y-%m-%dT%H:%M:%SZ") if (parsed_dt.hour != 0 or parsed_dt.minute != 0 or parsed_dt.second != 0) \
-                                else parsed_dt.strftime("%Y-%m-%d")
-                            rule_text = "Normalized timezone-aware timestamp to UTC"
-                        else:
-                            # Naive format WITHOUT 'Z' (preserves timestamp without inventing timezone)
-                            iso_str = parsed_dt.strftime("%Y-%m-%dT%H:%M:%S") if (parsed_dt.hour != 0 or parsed_dt.minute != 0 or parsed_dt.second != 0) \
-                                else parsed_dt.strftime("%Y-%m-%d")
-                            rule_text = "Standardized naive timestamp (timezone unknown, preserved as-is)"
-                            issues.append(
-                                ValidationIssue(
-                                    check="timestamp_timezone",
-                                    column="time",
-                                    severity=IssueSeverity.INFO,
-                                    row_index=row_idx,
-                                    value=str(raw_time),
-                                    expected="Explicit timezone offset or UTC marker",
-                                    message=f"Row {row_idx}: Timestamp '{raw_time}' has no timezone information; preserved as naive local representation",
-                                    details={"timezone_status": "unknown"}
+                        if not is_interval:
+                            if has_explicit_tz and is_utc:
+                                # Format as UTC with Z
+                                iso_str = parsed_dt.strftime("%Y-%m-%d") if is_date_only else parsed_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+                                rule_text = "Normalized timezone-aware timestamp to UTC"
+                            else:
+                                # Naive format WITHOUT 'Z' (preserves timestamp without inventing timezone)
+                                iso_str = parsed_dt.strftime("%Y-%m-%d") if is_date_only else parsed_dt.strftime("%Y-%m-%dT%H:%M:%S")
+                                rule_text = "Standardized naive timestamp (timezone unknown, preserved as-is)"
+                                issues.append(
+                                    ValidationIssue(
+                                        check="timestamp_timezone",
+                                        column=time_col,
+                                        severity=IssueSeverity.INFO,
+                                        row_index=row_idx,
+                                        value=str(raw_time),
+                                        expected="Explicit timezone offset or UTC marker",
+                                        message=f"Row {row_idx}: Timestamp '{raw_time}' has no timezone information; preserved as naive local representation",
+                                        details={"timezone_status": "unknown"}
+                                    )
                                 )
-                            )
 
-                        new_row["time"] = iso_str
+                        new_row[time_col] = iso_str
                         if iso_str != str(raw_time):
                             transformations.append(
                                 TransformationRecord(
-                                    column="time",
+                                    column=time_col,
                                     row_index=row_idx,
                                     original_value=raw_time,
                                     transformed_value=iso_str,
@@ -548,7 +598,7 @@ class TimestampValidator:
                     issues.append(
                         ValidationIssue(
                             check="timestamp_format",
-                            column="time",
+                            column=time_col,
                             severity=IssueSeverity.ERROR,
                             row_index=row_idx,
                             value=str(raw_time),

@@ -222,9 +222,17 @@ Phase 4 preserves full lineage without destructive mutations. The `provenance` m
       {
         "column": "time",
         "row_index": 0,
-        "original_value": "15/03/2026 08:30",
+        "original_value": "15/03/2026 14:00:00+05:30",
         "transformed_value": "2026-03-15T08:30:00Z",
-        "rule": "Standardized timestamp to ISO-8601 UTC",
+        "rule": "Normalized timezone-aware timestamp to UTC",
+        "timestamp": "2026-08-20T13:07:00Z"
+      },
+      {
+        "column": "time",
+        "row_index": 1,
+        "original_value": "15/03/2026 08:30",
+        "transformed_value": "2026-03-15T08:30:00",
+        "rule": "Standardized naive timestamp (timezone unknown, preserved as-is)",
         "timestamp": "2026-08-20T13:07:00Z"
       }
     ]

@@ -27,9 +27,12 @@ def integrate_with_phase4(
         Dict containing:
             - df: Standardized pandas DataFrame (after Phase 4 standardisation/unit conversion)
             - quality_score: float [0.0 - 100.0] or None if pending
-            - quality_status: 'passed' | 'flagged' | 'rejected' | 'pending'
+            - quality_status: 'passed' | 'flagged' | 'failed' | 'pending'
             - validation_notes: Detailed validation report
             - provenance: Comprehensive pipeline provenance dictionary
+            - validation_issues: List of ValidationIssue objects
+            - summary: QualityScoreSummary object
+            - phase4_executed: bool
     """
     meta = dataset_metadata or {}
     
@@ -46,19 +49,27 @@ def integrate_with_phase4(
         qc_result = pipeline.process(records, dataset_metadata=meta)
         
         # Convert standardized records back to DataFrame
-        standardized_records = qc_result.standardized_records if qc_result.standardized_records else records
+        std_recs = getattr(qc_result, "standardized_records", None)
+        if std_recs is None:
+            std_recs = getattr(qc_result, "standardised_records", None)
+        standardized_records = std_recs if std_recs is not None else records
         out_df = pd.DataFrame(standardized_records)
+        
+        status_val = qc_result.quality_status.value if hasattr(qc_result.quality_status, "value") else str(qc_result.quality_status)
         
         return {
             "df": out_df,
             "quality_score": qc_result.quality_score,
-            "quality_status": qc_result.quality_status.value if hasattr(qc_result.quality_status, "value") else str(qc_result.quality_status),
+            "quality_status": status_val,
             "validation_notes": qc_result.validation_notes,
             "provenance": qc_result.provenance,
+            "validation_issues": qc_result.validation_issues,
+            "summary": qc_result.summary,
+            "qc_result": qc_result,
             "phase4_executed": True
         }
     except ImportError:
-        # Phase 4 module is not in the active branch yet; return canonical dataset cleanly
+        # Phase 4 module is not available; return canonical dataset cleanly
         provenance = {
             "source_records_count": len(canonical_df),
             "columns_count": len(canonical_df.columns),
@@ -74,5 +85,8 @@ def integrate_with_phase4(
             "quality_status": "pending",
             "validation_notes": "Phase 4 Quality Pipeline pending merge/execution.",
             "provenance": provenance,
+            "validation_issues": [],
+            "summary": None,
+            "qc_result": None,
             "phase4_executed": False
         }

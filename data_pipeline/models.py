@@ -99,6 +99,11 @@ class DatasetQualityResult:
     provenance: Dict[str, Any]
     validation_notes: str
 
+    @property
+    def standardized_records(self) -> List[Dict[str, Any]]:
+        """Alias for standardised_records to support both US and UK spellings."""
+        return self.standardised_records
+
     def to_dict(self) -> Dict[str, Any]:
         """Serializes the result to a clean dictionary suitable for JSON APIs and database storage."""
         return {
@@ -110,6 +115,7 @@ class DatasetQualityResult:
             "provenance": self.provenance,
             "record_count": len(self.standardised_records),
             "standardised_records": self.standardised_records,
+            "standardized_records": self.standardised_records,
             "raw_records": self.raw_records
         }
 
