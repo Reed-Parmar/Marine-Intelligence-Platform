@@ -635,19 +635,12 @@ Repository structure, configuration placeholders, documentation, Git conventions
 ### Phase 1 — Database Foundation — COMPLETED
 Supabase PostgreSQL/PostGIS, schema, relationships, auth linkage, RLS foundation, indexes, provenance, audit and verification.
 
-### Phase 2 — File Storage + Authentication
-- Supabase Storage buckets
-- storage path conventions
-- file metadata linkage
-- login
-- JWT handling
-- roles
-- protected FastAPI endpoints
-
-Target:
-```text
-Login → authenticated user → protected API → file storage
-```
+### Phase 2 — File Storage + Authentication — COMPLETED
+- Supabase Storage `marine-files` bucket and logical paths
+- Storage RLS policies (authenticated read/insert, owner/admin update/delete)
+- `handle_new_user()` trigger for automated profile creation with `admin` and `user` roles
+- File metadata linkage with `public.datasets`
+- Integration guide documented in `docs/storage_auth_integration.md`
 
 ### Phase 3 — Data Ingestion Engine
 - file upload
@@ -863,14 +856,19 @@ Analysis Tables              ✅
 Alerts Tables                ✅
 Database Documentation       ✅
 Database Audit               ✅
+Supabase Storage Bucket      ✅
+Storage Security & Policies  ✅
+Auth ↔ Profile Automation   ✅
+Storage Integration Guide    ✅
 ```
 
-Not yet implemented:
+Not yet implemented (Frontend/backend integration remains pending):
 
 ```text
-Supabase Storage integration ⏳
-Real login UI               ⏳
-FastAPI app                 ⏳
+React authentication UI     ⏳
+FastAPI JWT verification    ⏳
+protected FastAPI endpoints ⏳
+frontend/backend connection ⏳
 Data ingestion              ⏳
 QC / standardisation        ⏳
 Data fusion                 ⏳
@@ -888,18 +886,18 @@ Docker / deployment         ⏳
 
 ## 29. Immediate Next Step
 
-The next implementation target is **Phase 2 — File Storage + Authentication**.
+The next implementation target is **Phase 3 — Data Ingestion Engine**.
 
 Do not jump to ML or RAG.
 
 Establish:
 
 ```text
-Supabase Storage
+File Upload / Ingestion
 +
-Supabase Auth
+Format Detection (TXT to CSV)
 +
-FastAPI foundation
+Dataset Metadata Registration
 ```
 
 Then build the first real ingestion vertical slice:

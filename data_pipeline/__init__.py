@@ -1,7 +1,7 @@
 """
 CMLRE Marine Intelligence Platform — Data Pipeline Package.
-Provides data quality control, schema standardization, unit conversion,
-and provenance tracking for heterogeneous marine datasets.
+Provides data ingestion, parsing, quality control, scientific standardisation,
+unit conversion, and provenance tracking for heterogeneous marine datasets.
 """
 
 from data_pipeline.models import (
@@ -25,6 +25,7 @@ from data_pipeline.validators import (
     ScientificRangeValidator,
     TimestampValidator,
 )
+from data_pipeline.phase4_boundary import integrate_with_phase4
 
 __all__ = [
     "QualityPipeline",
@@ -44,4 +45,5 @@ __all__ = [
     "ScientificRangeValidator",
     "OutlierDetector",
     "QualityScorer",
+    "integrate_with_phase4",
 ]
