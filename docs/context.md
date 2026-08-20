@@ -171,7 +171,7 @@ PostgreSQL stores the file metadata and storage path.
 
 
 ## RAG / Vector Store
-
+OPTIONAL
 **ChromaDB**
 
 Used only for semantic/vector retrieval, not as the primary scientific database.
@@ -896,7 +896,7 @@ Frontend/backend integration remains pending:
 
 ---
 
-## Phase 3 — Data Ingestion Engine
+## Phase 3 — Data Ingestion Engine — COMPLETED
 
 Goal: make the first real data path work.
 
@@ -911,9 +911,9 @@ Tasks:
 - Track processing status
 - Map incoming fields to the internal schema
 
-Initial supported formats can include:
+Initial supported formats:
 
-- TXT (Mainly TXT will be used as CMLRE provides TXT files for data; these will be converted to CSV or Excel)
+- TXT (CMLRE scientific data files parsed to canonical CSV/Excel)
 - CSV
 - Excel
 - JSON
@@ -922,30 +922,29 @@ Initial supported formats can include:
 **Deliverable:**
 
 ```text
-Upload → Store → Detect → Preview → Register Dataset
+Upload → Store → Detect → Preview → Register Dataset (COMPLETED)
 ```
 
 ---
 
-## Phase 4 — Data Quality + Standardisation
+## Phase 4 — Data Quality + Standardisation — COMPLETED
 
 Goal: turn raw inputs into reliable research data.
 
 Tasks:
 
-- Missing-value detection
-- Duplicate detection
-- Coordinate validation
-- Timestamp validation
-- Range checks
-- Outlier detection
-- Unit conversion
-- Schema validation
-- Quality score
-- Validation notes
-- Provenance recording
+- Missing-value detection (-999, NA, null, empty)
+- Duplicate detection (exact rows & logical marine keys)
+- Coordinate validation ([-90, 90], [-180, 180])
+- Timestamp validation (strict timezone awareness: ISO-8601 UTC vs naive local preservation)
+- Range checks (impossible errors vs unusual warnings)
+- Statistical outlier detection (1.5x IQR)
+- Non-destructive unit conversion (explicit hints only, unlabelled DO preserved)
+- Schema normalization & non-destructive column preservation
+- Deterministic Quality Scoring (0 - 100 based on predefined platform QC criteria)
+- Validation notes & structured provenance audit trail
 
-Create the standard internal representation for:
+Standard internal representation:
 
 ```text
 time
@@ -962,7 +961,7 @@ source
 **Deliverable:**
 
 ```text
-Raw dataset → Validated + standardised dataset
+Raw dataset → Phase 3 Parser → Schema Normalization → Phase 4 Quality Pipeline → Validated + Standardised Dataset (COMPLETED)
 ```
 
 ---
