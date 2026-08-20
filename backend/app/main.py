@@ -18,13 +18,13 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS Configuration
+# CORS Configuration with explicit origins and methods (no wildcard with credentials)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS or ["*"],
+    allow_origins=settings.CORS_ORIGINS if isinstance(settings.CORS_ORIGINS, list) and settings.CORS_ORIGINS else ["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"],
 )
 
 

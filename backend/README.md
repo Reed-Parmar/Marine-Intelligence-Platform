@@ -128,22 +128,25 @@ pytest backend/tests/ -v
 
 ---
 
-## 5. Phase 3 & Phase 4 Integration Architecture
+## 5. Upload Processing & Dataset Registration Flow
 
 The upload and dataset flow connects as follows:
 ```text
 Frontend (POST /api/v1/uploads)
           ↓
-UploadService (Staging & Format Detection in marine-files bucket)
+UploadService.create_upload()  [Staging via _STAGING_UPLOADS & format detection (CSV/TSV/TXT)]
+          ↓
+Frontend (GET /api/v1/uploads/{id}/preview) [Parses top 10 rows with delimiter awareness]
           ↓
 POST /api/v1/uploads/{upload_id}/process
           ↓
-Phase 3 Ingestion Engine (Parses raw CTD / NetCDF / Darwin Core / Excel)
+Delimited Text Parser          [Parses raw records using csv.DictReader]
           ↓
-Phase 4 Quality Pipeline (data_pipeline.QualityPipeline)
+Phase 4 Quality Pipeline       [data_pipeline.QualityPipeline: computes QC score, validation notes, provenance]
           ↓
-Dataset Registration (public.datasets in PostgreSQL + PostGIS)
+Dataset Registration           [Persists record in public.datasets (PostgreSQL + PostGIS)]
           ↓
-Available for Queries (/api/v1/datasets, /api/v1/marine/observations, /api/v1/ocean, etc.)
+Available for Queries          [/api/v1/datasets, /api/v1/marine/observations, /api/v1/ocean, etc.]
 ```
+
 

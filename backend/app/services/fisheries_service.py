@@ -64,7 +64,7 @@ class FisheriesService:
         offset = (page - 1) * page_size
         params["limit"] = page_size
         params["offset"] = offset
-        data_query = GET_FISHERIES_OBSERVATIONS + where_clause + " ORDER BY f.recorded_at DESC LIMIT :limit OFFSET :offset;"
+        data_query = GET_FISHERIES_OBSERVATIONS + where_clause + " ORDER BY f.recorded_at DESC NULLS LAST, f.id ASC LIMIT :limit OFFSET :offset;"
         rows = execute_query(data_query, params)
 
         observations = [

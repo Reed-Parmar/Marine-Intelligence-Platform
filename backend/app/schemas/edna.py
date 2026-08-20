@@ -2,14 +2,14 @@
 eDNA Schemas.
 """
 
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any, Dict, Optional
+from pydantic import BaseModel
 
 
 class EDNASampleResponse(BaseModel):
     id: str
     dataset_id: Optional[str] = None
-    sample_code: str
+    sample_code: Optional[str] = None
     latitude: float
     longitude: float
     depth: Optional[float] = None

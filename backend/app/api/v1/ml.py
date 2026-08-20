@@ -20,12 +20,12 @@ async def list_models(
     """
     Lists deployed machine learning models registered in public.ml_models.
     """
-    count_res = execute_single("SELECT COUNT(*) as total FROM public.ml_models;")
+    count_res = execute_single("SELECT COUNT(*) as total FROM public.ml_models WHERE is_active = TRUE;")
     total = count_res["total"] if count_res else 0
 
     offset = (page - 1) * page_size
     rows = execute_query(
-        "SELECT * FROM public.ml_models WHERE is_active = TRUE ORDER BY created_at DESC LIMIT :limit OFFSET :offset;",
+        "SELECT * FROM public.ml_models WHERE is_active = TRUE ORDER BY created_at DESC, id ASC LIMIT :limit OFFSET :offset;",
         {"limit": page_size, "offset": offset}
     )
     models = [

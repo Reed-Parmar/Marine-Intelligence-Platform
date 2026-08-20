@@ -283,7 +283,8 @@ GET_UNIFIED_MARINE_OBSERVATIONS = """
     WHERE (:date_from IS NULL OR o.observed_at >= :date_from::timestamptz)
       AND (:date_to IS NULL OR o.observed_at <= :date_to::timestamptz)
       AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
-    LIMIT 200
+      AND (:depth_min IS NULL OR o.depth >= :depth_min)
+      AND (:depth_max IS NULL OR o.depth <= :depth_max)
 )
 UNION ALL
 (
@@ -308,7 +309,7 @@ UNION ALL
     WHERE (:date_from IS NULL OR f.recorded_at >= :date_from::timestamptz)
       AND (:date_to IS NULL OR f.recorded_at <= :date_to::timestamptz)
       AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
-    LIMIT 200
+      AND (:species_id IS NULL OR f.species_id = :species_id)
 )
 UNION ALL
 (
@@ -331,10 +332,44 @@ UNION ALL
     WHERE (:date_from IS NULL OR occ.observed_at >= :date_from::timestamptz)
       AND (:date_to IS NULL OR occ.observed_at <= :date_to::timestamptz)
       AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
-    LIMIT 200
+      AND (:species_id IS NULL OR occ.species_id = :species_id)
+      AND (:depth_min IS NULL OR occ.depth >= :depth_min)
+      AND (:depth_max IS NULL OR occ.depth <= :depth_max)
 )
-ORDER BY time DESC
+ORDER BY time DESC NULLS LAST, id ASC
 LIMIT :limit OFFSET :offset;
+"""
+
+COUNT_UNIFIED_MARINE_OBSERVATIONS = """
+SELECT (
+    (
+        SELECT COUNT(*)
+        FROM public.oceanographic_observations o
+        WHERE (:date_from IS NULL OR o.observed_at >= :date_from::timestamptz)
+          AND (:date_to IS NULL OR o.observed_at <= :date_to::timestamptz)
+          AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
+          AND (:depth_min IS NULL OR o.depth >= :depth_min)
+          AND (:depth_max IS NULL OR o.depth <= :depth_max)
+    ) +
+    (
+        SELECT COUNT(*)
+        FROM public.fisheries_records f
+        WHERE (:date_from IS NULL OR f.recorded_at >= :date_from::timestamptz)
+          AND (:date_to IS NULL OR f.recorded_at <= :date_to::timestamptz)
+          AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
+          AND (:species_id IS NULL OR f.species_id = :species_id)
+    ) +
+    (
+        SELECT COUNT(*)
+        FROM public.species_occurrences occ
+        WHERE (:date_from IS NULL OR occ.observed_at >= :date_from::timestamptz)
+          AND (:date_to IS NULL OR occ.observed_at <= :date_to::timestamptz)
+          AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
+          AND (:species_id IS NULL OR occ.species_id = :species_id)
+          AND (:depth_min IS NULL OR occ.depth >= :depth_min)
+          AND (:depth_max IS NULL OR occ.depth <= :depth_max)
+    )
+) as total;
 """
 
 GET_MARINE_SUMMARY = """

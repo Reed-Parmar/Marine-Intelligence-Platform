@@ -4,6 +4,7 @@ Uses SQLAlchemy parameterized queries.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
+from fastapi import HTTPException, status
 from backend.app.db.database import execute_query, execute_single
 from backend.app.db.queries import (
     GET_OCEAN_OBSERVATIONS,
@@ -32,7 +33,7 @@ class OceanService:
         page: int = 1,
         page_size: int = 50
     ) -> Tuple[List[OceanObservationResponse], int]:
-        """Lists oceanographic observations with filters and pagination."""
+        """Lists oceanographic observations with deterministic secondary sort and pagination."""
         conditions = []
         params: Dict[str, Any] = {}
 
@@ -64,7 +65,7 @@ class OceanService:
         offset = (page - 1) * page_size
         params["limit"] = page_size
         params["offset"] = offset
-        data_query = GET_OCEAN_OBSERVATIONS + where_clause + " ORDER BY o.observed_at DESC LIMIT :limit OFFSET :offset;"
+        data_query = GET_OCEAN_OBSERVATIONS + where_clause + " ORDER BY o.observed_at DESC NULLS LAST, o.id ASC LIMIT :limit OFFSET :offset;"
         rows = execute_query(data_query, params)
 
         observations = [
@@ -149,6 +150,13 @@ class OceanService:
         date_to: Optional[str] = None
     ) -> OceanTrendResponse:
         """Retrieves aggregated time-series trends for oceanographic variables."""
+        valid_variables = {"temperature", "salinity", "dissolved_oxygen", "chlorophyll"}
+        if variable not in valid_variables:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"code": "INVALID_VARIABLE", "message": f"Variable must be one of: {', '.join(sorted(valid_variables))}"}
+            )
+
         valid_intervals = {"day", "week", "month", "year"}
         bucket_interval = interval if interval in valid_intervals else "month"
         params = {

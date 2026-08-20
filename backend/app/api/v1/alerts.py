@@ -65,9 +65,9 @@ async def list_alerts(
 @router.get("/summary", response_model=ApiResponse[AlertSummaryResponse])
 async def get_alerts_summary():
     """
-    Returns aggregate alert counts by severity from public.alerts.
+    Returns aggregate alert counts by severity and alert type from public.alerts.
     """
-    query = """
+    summary_query = """
     SELECT 
         COUNT(*) as total_alerts,
         COUNT(*) FILTER (WHERE status = 'active') as active_count,
@@ -76,7 +76,15 @@ async def get_alerts_summary():
         COUNT(*) FILTER (WHERE severity = 'info') as info_count
     FROM public.alerts;
     """
-    r = execute_single(query)
+    type_query = """
+    SELECT alert_type, COUNT(*) as count
+    FROM public.alerts
+    GROUP BY alert_type;
+    """
+    r = execute_single(summary_query)
+    type_rows = execute_query(type_query)
+    alerts_by_type = {str(row["alert_type"]): int(row["count"]) for row in type_rows if row.get("alert_type")}
+
     if not r:
         return ApiResponse(
             data=AlertSummaryResponse(
@@ -88,6 +96,7 @@ async def get_alerts_summary():
                 alerts_by_type={}
             )
         )
+
     return ApiResponse(
         data=AlertSummaryResponse(
             total_alerts=r.get("total_alerts", 0),
@@ -95,7 +104,7 @@ async def get_alerts_summary():
             critical_count=r.get("critical_count", 0),
             warning_count=r.get("warning_count", 0),
             info_count=r.get("info_count", 0),
-            alerts_by_type={}
+            alerts_by_type=alerts_by_type
         )
     )
 
@@ -104,7 +113,15 @@ async def get_alerts_summary():
 async def update_alert(alert_id: str, status_val: str = Query("acknowledged", alias="status")):
     """
     Acknowledges or resolves an alert in public.alerts.
+    Only 'acknowledged' and 'resolved' are permitted status transitions.
     """
+    valid_statuses = {"acknowledged", "resolved"}
+    if status_val not in valid_statuses:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_ALERT_STATUS", "message": f"Status must be one of: {', '.join(sorted(valid_statuses))}"}
+        )
+
     query = """
     UPDATE public.alerts
     SET status = :status

@@ -35,14 +35,14 @@ async def list_edna_samples(
     params["limit"] = page_size
     params["offset"] = offset
     rows = execute_query(
-        f"SELECT * FROM public.edna_samples {where_clause} ORDER BY collected_at DESC LIMIT :limit OFFSET :offset;",
+        f"SELECT * FROM public.edna_samples {where_clause} ORDER BY collected_at DESC, id ASC LIMIT :limit OFFSET :offset;",
         params
     )
     samples = [
         EDNASampleResponse(
             id=str(r["id"]),
             dataset_id=str(r["dataset_id"]) if r.get("dataset_id") else None,
-            sample_code=r.get("sample_code", "EDNA-SAMPLE"),
+            sample_code=r.get("sample_code"),
             latitude=float(r["latitude"]),
             longitude=float(r["longitude"]),
             depth=float(r["depth"]) if r.get("depth") is not None else None,
@@ -66,7 +66,7 @@ async def list_edna_detections(
     page_size: int = Query(50, ge=1, le=100)
 ):
     """
-    Returns eDNA detections and taxonomic matches from database.
+    Returns eDNA detections and taxonomic matches from database with deterministic ordering.
     """
     conditions = []
     params: Dict[str, Any] = {}
@@ -89,6 +89,7 @@ async def list_edna_detections(
     FROM public.edna_results d
     LEFT JOIN public.species s ON d.species_id = s.id
     {where_clause}
+    ORDER BY d.id ASC
     LIMIT :limit OFFSET :offset;
     """
     rows = execute_query(query, params)

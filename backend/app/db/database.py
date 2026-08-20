@@ -16,7 +16,6 @@ _engine = None
 _SessionFactory = None
 
 if settings.DATABASE_URL:
-    # Ensure postgresql:// scheme is used (handle postgres:// if provided)
     db_url = settings.DATABASE_URL
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -40,8 +39,7 @@ def get_engine():
 def get_db() -> Generator[Optional[Session], None, None]:
     """Context manager yielding a SQLAlchemy Session."""
     if _SessionFactory is None:
-        yield None
-        return
+        raise RuntimeError("Database session factory not initialized. Verify DATABASE_URL is configured.")
 
     session = _SessionFactory()
     try:
@@ -59,9 +57,10 @@ def get_db_session() -> Generator[Optional[Session], None, None]:
 def execute_query(query_str: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     """
     Executes a SELECT query using SQLAlchemy text() and returns a list of dictionaries.
+    Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        return []
+        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         return [dict(row) for row in result.mappings()]
@@ -70,9 +69,10 @@ def execute_query(query_str: str, params: Optional[Dict[str, Any]] = None) -> Li
 def execute_single(query_str: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
     """
     Executes a SELECT query using SQLAlchemy text() and returns a single row dictionary or None.
+    Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        return None
+        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         first_row = result.mappings().first()
@@ -82,10 +82,10 @@ def execute_single(query_str: str, params: Optional[Dict[str, Any]] = None) -> O
 def execute_write(query_str: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
     """
     Executes an INSERT / UPDATE / DELETE query using SQLAlchemy and commits the transaction.
-    Returns returning row dictionary if present.
+    Returns returning row dictionary if present. Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        return None
+        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
     with _engine.begin() as conn:
         result = conn.execute(text(query_str), params or {})
         if result.returns_rows:

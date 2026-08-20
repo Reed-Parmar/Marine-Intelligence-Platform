@@ -5,7 +5,11 @@ Uses SQLAlchemy parameterized queries.
 
 from typing import Any, Dict, List, Optional, Tuple
 from backend.app.db.database import execute_query, execute_single
-from backend.app.db.queries import GET_UNIFIED_MARINE_OBSERVATIONS, GET_MARINE_SUMMARY
+from backend.app.db.queries import (
+    COUNT_UNIFIED_MARINE_OBSERVATIONS,
+    GET_MARINE_SUMMARY,
+    GET_UNIFIED_MARINE_OBSERVATIONS
+)
 from backend.app.schemas.marine import (
     MarineObservationItem,
     MarineQueryRequest,
@@ -20,20 +24,31 @@ class MarineService:
         date_from: Optional[str] = None,
         date_to: Optional[str] = None,
         dataset_id: Optional[str] = None,
+        species_id: Optional[str] = None,
+        depth_min: Optional[float] = None,
+        depth_max: Optional[float] = None,
         page: int = 1,
         page_size: int = 50
     ) -> Tuple[List[MarineObservationItem], int]:
         """
         Retrieves unified observations across oceanography, fisheries, and biodiversity domains.
+        Executes a matching COUNT query to return the true total.
         """
         offset = (page - 1) * page_size
         params = {
             "date_from": date_from,
             "date_to": date_to,
             "dataset_id": dataset_id,
+            "species_id": species_id,
+            "depth_min": depth_min,
+            "depth_max": depth_max,
             "limit": page_size,
             "offset": offset
         }
+        
+        count_res = execute_single(COUNT_UNIFIED_MARINE_OBSERVATIONS, params)
+        total = count_res["total"] if count_res else 0
+
         rows = execute_query(GET_UNIFIED_MARINE_OBSERVATIONS, params)
         
         items = [
@@ -51,7 +66,7 @@ class MarineService:
             )
             for r in rows
         ]
-        return items, len(items)
+        return items, total
 
     @staticmethod
     def get_marine_summary() -> MarineSummaryResponse:
@@ -77,11 +92,15 @@ class MarineService:
     def query_marine(req: MarineQueryRequest) -> Tuple[List[MarineObservationItem], int]:
         """
         Executes structured multi-dimensional query across oceanography, fisheries, and occurrences.
+        Applies date, dataset, species, and depth constraints.
         """
         return MarineService.get_unified_observations(
             date_from=req.date_from,
             date_to=req.date_to,
             dataset_id=req.dataset_id,
+            species_id=req.species_id,
+            depth_min=req.depth_min,
+            depth_max=req.depth_max,
             page=req.page,
             page_size=req.page_size
         )
