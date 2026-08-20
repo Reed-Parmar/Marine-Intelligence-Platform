@@ -32,6 +32,34 @@ def get_supabase_client():
             return None
 
 
+ALLOWED_OPERATORS = {
+    "eq", "neq", "gt", "gte", "lt", "lte",
+    "like", "ilike", "is", "in", "cs", "cd", "contained_by", "contains"
+}
+
+
+def apply_query_filters(query: Any, filters: Optional[Dict[str, Any]]) -> Any:
+    """
+    Applies scalar equality and allowed operator-style filters to a PostgREST query builder.
+    Rejects unauthorized or unknown operator method invocations.
+    """
+    if not filters:
+        return query
+
+    for key, value in filters.items():
+        if isinstance(value, dict):
+            for op, val in value.items():
+                op_clean = str(op).lower().strip()
+                if op_clean in ALLOWED_OPERATORS and hasattr(query, op_clean):
+                    query = getattr(query, op_clean)(key, val)
+                else:
+                    logger.warning(f"Rejected unsupported or unallowlisted query operator '{op}' for field '{key}'")
+        else:
+            query = query.eq(key, value)
+
+    return query
+
+
 def query_table(
     table_name: str,
     select: str = "*",
@@ -50,16 +78,7 @@ def query_table(
 
     try:
         query = sb.table(table_name).select(select)
-
-        if filters:
-            for key, value in filters.items():
-                if isinstance(value, dict):
-                    # Support operator-style filters: {"depth": {"gte": 10, "lte": 100}}
-                    for op, val in value.items():
-                        query = getattr(query, op)(key, val)
-                else:
-                    query = query.eq(key, value)
-
+        query = apply_query_filters(query, filters)
         query = query.range(offset, offset + limit - 1)
         result = query.execute()
         return result.data if result.data else []
@@ -79,14 +98,7 @@ def count_table(table_name: str, filters: Optional[Dict[str, Any]] = None) -> in
 
     try:
         query = sb.table(table_name).select("id", count="exact")
-        if filters:
-            for key, value in filters.items():
-                if isinstance(value, dict):
-                    for op, val in value.items():
-                        query = getattr(query, op)(key, val)
-                else:
-                    query = query.eq(key, value)
-
+        query = apply_query_filters(query, filters)
         result = query.limit(0).execute()
         return result.count if result.count is not None else 0
 

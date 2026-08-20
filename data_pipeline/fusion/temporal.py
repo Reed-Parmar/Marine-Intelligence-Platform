@@ -4,6 +4,7 @@ Temporal alignment and timestamp comparison for Phase 5 Data Fusion.
 Preserves Phase 4 timezone semantics:
 - Normalizes timezone-aware timestamps to standard UTC for precise delta calculations.
 - Preserves naive/local timestamps without assuming UTC/IST or silently inventing offsets.
+- Rejects mixed aware/naive comparisons without fabricating or stripping timezone information.
 - Handles missing timestamps without hallucinating dates.
 """
 
@@ -48,7 +49,7 @@ def temporal_distance_hours(
     Computes the absolute difference between two timestamps in hours.
 
     Returns:
-        float hours difference, or None if either timestamp is missing or incompatible.
+        float hours difference, or None if either timestamp is missing or mixed aware/naive.
     """
     dt1 = parse_marine_timestamp(time1)
     dt2 = parse_marine_timestamp(time2)
@@ -68,13 +69,8 @@ def temporal_distance_hours(
         delta = abs((dt1 - dt2).total_seconds())
         return delta / 3600.0
     else:
-        # One aware, one naive:
-        # To avoid silent errors or timezone fabrications, compare assuming local clock match
-        # while stripping tzinfo for distance computation
-        dt1_naive = dt1.replace(tzinfo=None)
-        dt2_naive = dt2.replace(tzinfo=None)
-        delta = abs((dt1_naive - dt2_naive).total_seconds())
-        return delta / 3600.0
+        # Mixed aware and naive: cannot determine exact physical delta without inventing timezone
+        return None
 
 
 def is_within_temporal_window(
@@ -84,7 +80,7 @@ def is_within_temporal_window(
 ) -> bool:
     """
     Checks if two timestamps are within a given window (in hours).
-    Returns False if either timestamp is None or missing.
+    Returns False if either timestamp is None, missing, or incompatible.
     """
     diff_h = temporal_distance_hours(time1, time2)
     if diff_h is None:
@@ -102,6 +98,7 @@ def is_within_date_range(
     If date_from is None, no lower bound is enforced.
     If date_to is None, no upper bound is enforced.
     If ts is None, returns False.
+    Rejects comparisons between mixed aware/naive timestamps.
     """
     if ts is None:
         return False
@@ -112,24 +109,32 @@ def is_within_date_range(
 
     if date_from is not None:
         dt_from = parse_marine_timestamp(date_from)
-        if dt_from is not None:
-            # Reconcile tz awareness
-            if dt.tzinfo is not None and dt_from.tzinfo is None:
-                dt_from = dt_from.replace(tzinfo=dt.tzinfo)
-            elif dt.tzinfo is None and dt_from.tzinfo is not None:
-                dt = dt.replace(tzinfo=dt_from.tzinfo)
+        if dt_from is None:
+            return False
+        # Reconcile tz awareness
+        if dt.tzinfo is not None and dt_from.tzinfo is not None:
+            if dt.astimezone(timezone.utc) < dt_from.astimezone(timezone.utc):
+                return False
+        elif dt.tzinfo is None and dt_from.tzinfo is None:
             if dt < dt_from:
                 return False
+        else:
+            # Mixed awareness: cannot compare safely
+            return False
 
     if date_to is not None:
         dt_to = parse_marine_timestamp(date_to)
-        if dt_to is not None:
-            # Reconcile tz awareness
-            if dt.tzinfo is not None and dt_to.tzinfo is None:
-                dt_to = dt_to.replace(tzinfo=dt.tzinfo)
-            elif dt.tzinfo is None and dt_to.tzinfo is not None:
-                dt = dt.replace(tzinfo=dt_to.tzinfo)
+        if dt_to is None:
+            return False
+        # Reconcile tz awareness
+        if dt.tzinfo is not None and dt_to.tzinfo is not None:
+            if dt.astimezone(timezone.utc) > dt_to.astimezone(timezone.utc):
+                return False
+        elif dt.tzinfo is None and dt_to.tzinfo is None:
             if dt > dt_to:
                 return False
+        else:
+            # Mixed awareness: cannot compare safely
+            return False
 
     return True

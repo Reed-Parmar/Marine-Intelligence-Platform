@@ -134,7 +134,7 @@ UNION ALL
 -- Fisheries Catch
 SELECT 
     id::text AS id, dataset_id, 'fisheries' AS domain, id AS observation_id,
-    NULL::uuid AS station_id, sample_id, species_id, vessel_name AS species_name,
+    NULL::uuid AS station_id, sample_id, species_id, NULL::text AS species_name,
     latitude, longitude, timestamp AS observation_time, depth_meters AS depth,
     'catch_weight' AS variable, catch_weight_kg AS value, 'kg' AS unit,
     'fisheries_records' AS source_table, quality_status

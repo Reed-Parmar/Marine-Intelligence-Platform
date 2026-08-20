@@ -6,6 +6,7 @@ and unified marine data services for the CMLRE Marine Intelligence Platform.
 
 from data_pipeline.fusion.models import (
     CrossDomainAssociation,
+    DomainType,
     MarineObservation,
     UnifiedQueryParams,
     UnifiedSummary,
@@ -18,6 +19,7 @@ from data_pipeline.fusion.query_service import (
 )
 
 __all__ = [
+    "DomainType",
     "MarineObservation",
     "UnifiedQueryParams",
     "CrossDomainAssociation",

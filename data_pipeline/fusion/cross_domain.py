@@ -37,6 +37,7 @@ def find_associated_observations(
     depth_tolerance_m: Optional[float] = 50.0,
     target_domains: Optional[List[str]] = None,
     allow_missing_depth: bool = True,
+    allow_missing_time: bool = True,
 ) -> CrossDomainAssociation:
     """
     Finds and associates observations from other domains that occurred in the same
@@ -51,6 +52,8 @@ def find_associated_observations(
         target_domains: Optional list of specific domain names to match against (e.g. ['oceanography']).
                         If None, searches across all domains different from the anchor's domain.
         allow_missing_depth: If True, matches when depth is None on either observation.
+        allow_missing_time: If True, matches when observation_time is None on either observation;
+                            if False, rejects candidates missing timestamp context.
 
     Returns:
         CrossDomainAssociation object containing the anchor and all matched observations.
@@ -95,9 +98,10 @@ def find_associated_observations(
                 temporal_window_hours
             ):
                 continue
-        elif not anchor.observation_time or not candidate.observation_time:
-            # When one or both timestamps are missing, we check if spatial-only is permitted
-            pass
+        else:
+            # When one or both timestamps are missing, enforce allow_missing_time policy
+            if not allow_missing_time:
+                continue
 
         # 3. Depth Check (vertical water column)
         if depth_tolerance_m is not None:
@@ -128,6 +132,7 @@ def batch_fuse_observations(
     temporal_window_hours: float = 72.0,
     depth_tolerance_m: Optional[float] = 50.0,
     allow_missing_depth: bool = True,
+    allow_missing_time: bool = True,
 ) -> List[CrossDomainAssociation]:
     """
     Performs cross-domain fusion across a batch of anchor observations.
@@ -141,6 +146,7 @@ def batch_fuse_observations(
             temporal_window_hours=temporal_window_hours,
             depth_tolerance_m=depth_tolerance_m,
             allow_missing_depth=allow_missing_depth,
+            allow_missing_time=allow_missing_time,
         )
         results.append(assoc)
     return results

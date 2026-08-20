@@ -12,6 +12,26 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 EARTH_RADIUS_KM = 6371.0088
 
 
+def is_valid_coordinate(lat: Any, lon: Any) -> bool:
+    """
+    Validates that latitude and longitude are finite numbers within physical bounds:
+    - Latitude: [-90.0, 90.0]
+    - Longitude: [-180.0, 180.0]
+    """
+    if lat is None or lon is None:
+        return False
+    try:
+        f_lat = float(lat)
+        f_lon = float(lon)
+    except (ValueError, TypeError):
+        return False
+
+    if not (math.isfinite(f_lat) and math.isfinite(f_lon)):
+        return False
+
+    return (-90.0 <= f_lat <= 90.0) and (-180.0 <= f_lon <= 180.0)
+
+
 def haversine_distance_km(
     lat1: float,
     lon1: float,
@@ -31,17 +51,22 @@ def haversine_distance_km(
     Returns:
         Geodesic distance in kilometers.
     """
-    if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
-        raise ValueError("Coordinates cannot be None for distance calculation")
+    if not is_valid_coordinate(lat1, lon1) or not is_valid_coordinate(lat2, lon2):
+        raise ValueError(
+            "Invalid coordinates: latitudes must be in [-90, 90] and longitudes in [-180, 180], and values must be finite"
+        )
+
+    f_lat1, f_lon1 = float(lat1), float(lon1)
+    f_lat2, f_lon2 = float(lat2), float(lon2)
 
     # Fast path for identical points
-    if lat1 == lat2 and lon1 == lon2:
+    if f_lat1 == f_lat2 and f_lon1 == f_lon2:
         return 0.0
 
-    phi1 = math.radians(lat1)
-    phi2 = math.radians(lat2)
-    delta_phi = math.radians(lat2 - lat1)
-    delta_lambda = math.radians(lon2 - lon1)
+    phi1 = math.radians(f_lat1)
+    phi2 = math.radians(f_lat2)
+    delta_phi = math.radians(f_lat2 - f_lat1)
+    delta_lambda = math.radians(f_lon2 - f_lon1)
 
     a = (
         math.sin(delta_phi / 2.0) ** 2
@@ -63,14 +88,19 @@ def is_within_spatial_proximity(
 ) -> bool:
     """
     Determines whether two coordinates are within a specified distance threshold.
-    Returns False if any coordinate is missing/None.
+    Returns False if any coordinate is missing/invalid or radius is negative/non-finite.
     """
-    if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
-        return False
-    if max_radius_km < 0:
+    if not is_valid_coordinate(lat1, lon1) or not is_valid_coordinate(lat2, lon2):
         return False
 
-    return haversine_distance_km(lat1, lon1, lat2, lon2) <= max_radius_km
+    try:
+        radius = float(max_radius_km)
+        if not math.isfinite(radius) or radius < 0.0:
+            return False
+    except (ValueError, TypeError):
+        return False
+
+    return haversine_distance_km(float(lat1), float(lon1), float(lat2), float(lon2)) <= radius
 
 
 def is_within_bbox(
@@ -84,22 +114,28 @@ def is_within_bbox(
     Standard Bounding Box Format:
         bbox = [west_lon, south_lat, east_lon, north_lat] or [min_lon, min_lat, max_lon, max_lat]
     """
-    if lat is None or lon is None:
+    if not is_valid_coordinate(lat, lon):
         return False
-    if len(bbox) != 4:
+    if not bbox or len(bbox) != 4:
         raise ValueError("bbox must contain exactly 4 coordinates: [west, south, east, north]")
 
     west, south, east, north = bbox[0], bbox[1], bbox[2], bbox[3]
 
+    if not (is_valid_coordinate(south, west) and is_valid_coordinate(north, east)):
+        return False
+
+    f_lat, f_lon = float(lat), float(lon)
+    f_west, f_south, f_east, f_north = float(west), float(south), float(east), float(north)
+
     # Standard bounds check
-    lat_ok = south <= lat <= north
+    lat_ok = f_south <= f_lat <= f_north
     
     # Longitude check (handles standard as well as antimeridian crossing if east < west)
-    if west <= east:
-        lon_ok = west <= lon <= east
+    if f_west <= f_east:
+        lon_ok = f_west <= f_lon <= f_east
     else:
         # Crosses the antimeridian (-180 / +180)
-        lon_ok = lon >= west or lon <= east
+        lon_ok = f_lon >= f_west or f_lon <= f_east
 
     return lat_ok and lon_ok
 
@@ -111,7 +147,11 @@ def compute_bounding_box(
     Calculates the spatial extent (envelope) for a collection of (lat, lon) coordinates.
     Returns None if no valid coordinates are provided.
     """
-    valid_coords = [c for c in coordinates if c[0] is not None and c[1] is not None]
+    valid_coords = [
+        (float(c[0]), float(c[1]))
+        for c in coordinates
+        if len(c) >= 2 and is_valid_coordinate(c[0], c[1])
+    ]
     if not valid_coords:
         return None
 

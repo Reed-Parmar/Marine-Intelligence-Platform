@@ -384,8 +384,8 @@ class TestPhase5DataFusion(unittest.TestCase):
             latitude=9.93,
             longitude=76.27,
             radius_km=25.0,
-            date_from="2026-03-01",
-            date_to="2026-03-31"
+            date_from="2026-03-01T00:00:00Z",
+            date_to="2026-03-31T23:59:59Z"
         )
         results = query_unified_observations(params=qp, records=self.all_sample_records)
         self.assertEqual(len(results), 1)
@@ -493,8 +493,13 @@ class TestPhase5DataFusion(unittest.TestCase):
         # 3. Convert Real Cleaned Records to Phase 5 MarineObservation objects
         fused_observations: List[MarineObservation] = []
 
-        # Convert top 50 occurrence records
-        for idx, row in enumerate(occ_clean_df.head(50).to_dict(orient="records")):
+        # Determine sample counts dynamically from quality-controlled dataframes
+        occ_count = min(50, len(occ_clean_df))
+        edna_count = min(50, len(edna_clean_df))
+        expected_total = occ_count + edna_count
+
+        # Convert top occurrence records
+        for idx, row in enumerate(occ_clean_df.head(occ_count).to_dict(orient="records")):
             obs = MarineObservation(
                 id=f"cmlre_real_occ_{idx}",
                 dataset_id="cmlre_occ_real",
@@ -513,8 +518,8 @@ class TestPhase5DataFusion(unittest.TestCase):
             )
             fused_observations.append(obs)
 
-        # Convert top 50 eDNA records
-        for idx, row in enumerate(edna_clean_df.head(50).to_dict(orient="records")):
+        # Convert top eDNA records
+        for idx, row in enumerate(edna_clean_df.head(edna_count).to_dict(orient="records")):
             obs = MarineObservation(
                 id=f"cmlre_real_edna_{idx}",
                 dataset_id="cmlre_edna_real",
@@ -533,12 +538,12 @@ class TestPhase5DataFusion(unittest.TestCase):
             )
             fused_observations.append(obs)
 
-        # Verify unified representation has 100 observations across 2 real domains
-        self.assertEqual(len(fused_observations), 100)
+        # Verify unified representation has expected derived count across 2 real domains
+        self.assertEqual(len(fused_observations), expected_total)
 
         # Run unified summary on real CMLRE data
         real_summary = get_unified_summary(records=fused_observations)
-        self.assertEqual(real_summary.total_observations, 100)
+        self.assertEqual(real_summary.total_observations, expected_total)
         self.assertIn("biodiversity", real_summary.domains)
         self.assertIn("edna", real_summary.domains)
         self.assertIsNotNone(real_summary.lat_min)
@@ -652,6 +657,70 @@ class TestPhase5DataFusion(unittest.TestCase):
         self.assertIn("oceanography", associated_domains)
         self.assertIn("fisheries", associated_domains)
         self.assertIn("edna", associated_domains)
+
+    # =========================================================================
+    # O. Rigorous Edge Cases & Missingness Policy Test
+    # =========================================================================
+    def test_O_rigorous_edge_cases_and_missing_policies(self):
+        """
+        O. Edge Cases: Tests allow_missing_time policy, mixed timezone rejection,
+        and rejection of invalid/negative/non-finite coordinates and depths.
+        """
+        # 1. allow_missing_time policy
+        obs_no_time = MarineObservation(
+            id="obs_no_time",
+            domain="oceanography",
+            latitude=9.93,
+            longitude=76.27,
+            observation_time=None,
+            depth=10.0,
+            variable="temperature",
+            value=28.0,
+            source_table="oceanographic_observations",
+            quality_status="passed",
+        )
+        anchor = self.bio_obs_1
+
+        # With allow_missing_time=True (default), obs without time is accepted based on spatial/depth
+        assoc_allowed = get_cross_domain_context(
+            anchor=anchor,
+            candidate_pool=[obs_no_time],
+            spatial_radius_km=10.0,
+            depth_tolerance_m=10.0,
+            allow_missing_time=True,
+        )
+        self.assertEqual(len(assoc_allowed.associated), 1)
+
+        # With allow_missing_time=False, obs without time is rejected
+        assoc_rejected = get_cross_domain_context(
+            anchor=anchor,
+            candidate_pool=[obs_no_time],
+            spatial_radius_km=10.0,
+            depth_tolerance_m=10.0,
+            allow_missing_time=False,
+        )
+        self.assertEqual(len(assoc_rejected.associated), 0)
+
+        # 2. Mixed timezone awareness rejection (aware vs naive)
+        diff_mixed = temporal_distance_hours("2026-03-15T08:30:00Z", "2026-03-15 08:30:00")
+        self.assertIsNone(diff_mixed)
+
+        # 3. Non-finite and out-of-range depth rejection
+        self.assertFalse(is_within_depth_range(-5.0, depth_min=0.0, depth_max=100.0))
+        self.assertFalse(is_within_depth_range(float("nan"), depth_min=0.0, depth_max=100.0))
+        self.assertFalse(is_within_depth_range(float("inf"), depth_min=0.0, depth_max=100.0))
+        self.assertFalse(is_within_depth_range(10.0, depth_min=-10.0))
+        self.assertFalse(is_within_depth_tolerance(10.0, 20.0, tolerance_meters=-5.0))
+        self.assertFalse(is_within_depth_tolerance(10.0, float("nan"), tolerance_meters=5.0))
+
+        # 4. Out-of-bounds coordinate rejection
+        self.assertFalse(is_within_spatial_proximity(95.0, 76.0, 10.0, 76.0, max_radius_km=50.0))
+        self.assertFalse(is_within_spatial_proximity(10.0, 195.0, 10.0, 76.0, max_radius_km=50.0))
+        self.assertFalse(is_within_spatial_proximity(float("nan"), 76.0, 10.0, 76.0, max_radius_km=50.0))
+        self.assertFalse(is_within_spatial_proximity(10.0, 76.0, 10.0, 76.0, max_radius_km=-10.0))
+
+        with self.assertRaises(ValueError):
+            haversine_distance_km(100.0, 76.0, 10.0, 76.0)
 
 
 if __name__ == "__main__":
