@@ -149,11 +149,7 @@ Application-level user information and roles are stored in PostgreSQL and linked
 Example roles:
 
 - Admin
-- Researcher
-- Marine Scientist
-- Fisheries Manager
-- Decision Maker
-- Viewer
+- User
 
 ## File Storage
 
@@ -173,13 +169,6 @@ Raw and large files are stored outside PostgreSQL:
 
 PostgreSQL stores the file metadata and storage path.
 
-## MongoDB
-
-**MongoDB is removed from the architecture.**
-
-Do not introduce MongoDB unless a real future requirement justifies it.
-
-PostgreSQL JSONB is sufficient for flexible metadata at the current project scale.
 
 ## RAG / Vector Store
 
@@ -593,6 +582,7 @@ The frontend should never directly access internal scientific-processing modules
 
 # 15. RAG / LLM Strategy
 
+RAG is strictly optional. If it is implemented successfully, only then will it be shown; otherwise, it will be removed from the final MVP.
 RAG is part of the target solution, but it is deliberately implemented **after the core platform is working**.
 
 Order:
@@ -804,22 +794,7 @@ Alerts are decision-support outputs, not automatic scientific truth.
 
 # 19. Reports
 
-Users should be able to generate research-oriented reports containing:
-
-- Dataset/source
-- Region
-- Time range
-- Analysis
-- Charts
-- Map
-- ML prediction
-- Alerts
-- Relevant provenance/source information
-
-Possible formats:
-
-- PDF
-- CSV
+*Note: Reports functionality has been removed from the scope of the MVP. This feature will not be implemented.*
 
 ---
 
@@ -932,11 +907,11 @@ Tasks:
 
 Initial supported formats can include:
 
+- TXT (Mainly TXT will be used as CMLRE provides TXT files for data; these will be converted to CSV or Excel)
 - CSV
 - Excel
 - JSON
-- NetCDF
-- CTD/TXT as appropriate
+- CTD
 
 **Deliverable:**
 
@@ -1201,7 +1176,7 @@ Interactive Unified Marine Map
 
 ---
 
-## Phase 12 — RAG + LLM
+## Phase 12 — RAG + LLM (Optional)
 
 Goal: add scientific natural-language interaction after the core platform is stable.
 
@@ -1242,7 +1217,7 @@ Scientific Q&A / AI research assistant
 
 ---
 
-## Phase 13 — Alerts + Decision Support
+## Phase 13 — Alerts + Decision Support (Optional)
 
 Goal: convert analysis/prediction into useful notifications.
 
@@ -1266,22 +1241,7 @@ AI / Analytics → Alert → Decision Support
 
 ## Phase 14 — Reports + Export
 
-Goal: make results usable outside the platform.
-
-Tasks:
-
-- Research report
-- Analysis summary
-- Map export
-- CSV export
-- PDF generation
-- Source/provenance inclusion
-
-**Deliverable:**
-
-```text
-Decision-ready / research-ready report
-```
+*Note: Reports have been removed from the MVP and will not be implemented.*
 
 ---
 
@@ -1651,18 +1611,18 @@ The MVP is considered convincing when a user can:
 1. Authenticate.
 2. Upload a realistic marine dataset.
 3. Store the raw file in Supabase Storage.
-4. Register the dataset in PostgreSQL.
-5. Validate and standardise the data.
-6. Calculate a data-quality result.
-7. Store spatial/temporal observations in PostGIS.
-8. Combine at least oceanographic + fisheries + biodiversity data.
-9. Run meaningful scientific analysis.
-10. Visualise the result on a marine map/dashboard.
-11. Run at least one meaningful ML model.
-12. View a prediction/risk/insight.
-13. Demonstrate at least one specialized eDNA or otolith workflow.
-14. Generate a report/export.
-15. Demonstrate RAG/LLM after the core workflow is stable.
-16. Trace a result back to its source/provenance.
+4. Convert CMLRE TXT files into CSV or Excel files.
+5. Register the dataset in PostgreSQL.
+6. Validate and standardise the data.
+7. Calculate a data-quality result.
+8. Store spatial/temporal observations in PostGIS.
+9. Combine at least oceanographic + fisheries + biodiversity data.
+10. Run meaningful scientific analysis.
+11. Visualise the result on a marine map/dashboard.
+12. Run at least one meaningful ML model.
+13. View a prediction/risk/insight.
+14. Demonstrate at least one specialized eDNA or otolith workflow.
+15. Trace a result back to its source/provenance.
+16. (Optional) Demonstrate RAG/LLM after the core workflow is stable.
 
 The demo must show a **complete end-to-end scientific story**, not isolated features.
