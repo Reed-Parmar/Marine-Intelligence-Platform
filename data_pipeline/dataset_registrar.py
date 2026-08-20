@@ -1,6 +1,15 @@
+"""
+Dataset Registrar for CMLRE Data Pipeline.
+Registers dataset records and provenance into Supabase PostgreSQL public.datasets table.
+"""
+
+import logging
 import uuid
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 from .file_handler import get_supabase_client
+
+logger = logging.getLogger(__name__)
+
 
 def register_dataset(
     name: str,
@@ -22,16 +31,14 @@ def register_dataset(
     provenance_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
-    Registers a new dataset record in the Supabase PostgreSQL public.datasets table.
+    Registers a new dataset record in Supabase PostgreSQL public.datasets table.
     """
-    supabase = get_supabase_client()
-    
     record_id = dataset_id or str(uuid.uuid4())
     
     payload = {
         "id": record_id,
         "name": name,
-        "description": description or f"Raw {format_type.upper()} dataset for {domain_type} domain",
+        "description": description or f"Canonical {format_type.upper()} dataset for {domain_type} domain",
         "domain_type": domain_type,
         "storage_file_path": storage_path,
         "file_type": format_type,
@@ -54,7 +61,13 @@ def register_dataset(
     if validation_notes:
         payload["validation_notes"] = validation_notes
 
-    # Insert into public.datasets
-    res = supabase.table("datasets").insert(payload).execute()
-    
-    return res.data[0] if res.data else payload
+    supabase = get_supabase_client()
+    if supabase:
+        try:
+            res = supabase.table("datasets").insert(payload).execute()
+            if res.data:
+                return res.data[0]
+        except Exception as e:
+            logger.warning(f"Database registration bypassed or failed: {e}. Returning payload.")
+
+    return payload
