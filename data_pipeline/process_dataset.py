@@ -1,6 +1,11 @@
+"""
+Batch Ingestion Runner for CMLRE Datasets.
+Scans and processes all files in dataset/ generating canonical CSV, XLSX, and registering datasets.
+"""
+
+import glob
 import os
 import sys
-import glob
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -22,6 +27,7 @@ if str(root_dir) not in sys.path:
 
 from data_pipeline.ingestion_manager import process_upload
 
+
 def process_all_datasets(dataset_dir: str = None):
     """
     Scans the dataset directory and processes every file through the ingestion pipeline.
@@ -29,9 +35,9 @@ def process_all_datasets(dataset_dir: str = None):
     if dataset_dir is None:
         dataset_dir = str(root_dir / "dataset")
         
-    print("=" * 78)
+    print("=" * 82)
     print("  CMLRE MARINE INTELLIGENCE PLATFORM - DATA INGESTION ENGINE")
-    print("=" * 78)
+    print("=" * 82)
     print(f"Dataset Directory: {dataset_dir}")
     
     files = sorted(glob.glob(os.path.join(dataset_dir, "*.*")))
@@ -49,7 +55,12 @@ def process_all_datasets(dataset_dir: str = None):
         filename = os.path.basename(file_path)
         dataset_name = f"CMLRE: {filename}"
         
-        result = process_upload(file_path, dataset_name=dataset_name)
+        result = process_upload(
+            file_path, 
+            dataset_name=dataset_name,
+            export_canonical=True,
+            export_xlsx=True
+        )
         results.append(result)
         
         if result["status"] == "success":
@@ -59,14 +70,16 @@ def process_all_datasets(dataset_dir: str = None):
             print(f"     * Total Rows:   {result['row_count']:,}")
             print(f"     * Total Cols:   {result['columns_count']}")
             print(f"     * Storage Path: {result['storage_path']}")
+            print(f"     * Canonical CSV:{result.get('canonical_csv_path')}")
+            print(f"     * Canonical XLSX:{result.get('canonical_xlsx_path')}")
         else:
             print(f"  [FAILED] {filename}: {result['message']}")
             
-    print("\n" + "=" * 78)
+    print("\n" + "=" * 82)
     print("  INGESTION SUMMARY")
-    print("=" * 78)
+    print("=" * 82)
     print(f"{'Filename':<22} | {'Domain':<13} | {'Rows':<8} | {'Cols':<5} | {'Status':<10} | {'Dataset ID'}")
-    print("-" * 78)
+    print("-" * 82)
     for r in results:
         fname = os.path.basename(r.get("storage_path", "unknown")).split("/")[-1] if r.get("storage_path") else r.get("name", "unknown")
         status_str = "SUCCESS" if r["status"] == "success" else "FAILED"
@@ -76,8 +89,9 @@ def process_all_datasets(dataset_dir: str = None):
         ds_id = r.get("dataset_id", "N/A")
         print(f"{fname:<22} | {domain:<13} | {rows:<8} | {cols:<5} | {status_str:<10} | {ds_id}")
         
-    print("=" * 78)
+    print("=" * 82)
     return results
+
 
 if __name__ == "__main__":
     process_all_datasets()
