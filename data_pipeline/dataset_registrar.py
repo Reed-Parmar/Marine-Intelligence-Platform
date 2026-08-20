@@ -7,31 +7,54 @@ def register_dataset(
     storage_path: str,
     schema: Dict[str, str],
     format_type: str,
+    domain_type: str = "cross_domain",
+    file_size_bytes: Optional[int] = None,
+    row_count: Optional[int] = None,
+    description: Optional[str] = None,
+    dataset_id: Optional[str] = None,
     project_id: Optional[str] = None,
-    created_by: Optional[str] = None,
-    status: str = "pending"
+    data_source_id: Optional[str] = None,
+    uploaded_by: Optional[str] = None,
+    status: str = "uploaded",
+    quality_status: str = "pending",
+    quality_score: Optional[float] = None,
+    validation_notes: Optional[str] = None,
+    provenance_metadata: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
-    Registers a new dataset in the public.datasets table.
+    Registers a new dataset record in the Supabase PostgreSQL public.datasets table.
     """
     supabase = get_supabase_client()
     
+    record_id = dataset_id or str(uuid.uuid4())
+    
     payload = {
-        "title": name,  # Assuming 'title' or 'name' based on common conventions. Adjust if schema differs.
-        "description": f"Uploaded {format_type} file",
-        "storage_path": storage_path,
-        "format": format_type,
-        "processing_status": status,
-        # "schema_metadata": schema, # Depending on if the table has a jsonb column for this
+        "id": record_id,
+        "name": name,
+        "description": description or f"Raw {format_type.upper()} dataset for {domain_type} domain",
+        "domain_type": domain_type,
+        "storage_file_path": storage_path,
+        "file_type": format_type,
+        "file_size_bytes": file_size_bytes or 0,
+        "row_count": row_count or 0,
+        "schema_metadata": schema or {},
+        "status": status,
+        "quality_status": quality_status,
+        "provenance_metadata": provenance_metadata or {}
     }
     
     if project_id:
         payload["project_id"] = project_id
-    if created_by:
-        payload["created_by"] = created_by
+    if data_source_id:
+        payload["data_source_id"] = data_source_id
+    if uploaded_by:
+        payload["uploaded_by"] = uploaded_by
+    if quality_score is not None:
+        payload["quality_score"] = quality_score
+    if validation_notes:
+        payload["validation_notes"] = validation_notes
 
-    # Insert into database
-    # Note: RLS might block this if not using service_role or authenticated user
+    # Insert into public.datasets
     res = supabase.table("datasets").insert(payload).execute()
     
-    return res.data[0] if res.data else None
+    return res.data[0] if res.data else payload
