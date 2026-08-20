@@ -49,3 +49,9 @@ artifacts/
 # Data directories
 data/raw/
 data/processed/
+
+#dataset
+dataset/
+canonical_output/
+_tmp_test/
+pytest-cache-files-*/

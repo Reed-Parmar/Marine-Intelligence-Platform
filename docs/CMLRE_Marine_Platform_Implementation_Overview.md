@@ -862,11 +862,13 @@ Auth ↔ Profile Automation   ✅
 Storage Integration Guide    ✅
 ```
 
-Not yet implemented:
+Not yet implemented (Frontend/backend integration remains pending):
 
 ```text
-Real login UI               ⏳
-FastAPI app                 ⏳
+React authentication UI     ⏳
+FastAPI JWT verification    ⏳
+protected FastAPI endpoints ⏳
+frontend/backend connection ⏳
 Data ingestion              ⏳
 QC / standardisation        ⏳
 Data fusion                 ⏳

@@ -10,12 +10,12 @@ Both Frontend and Backend require connection parameters. Ensure your local `.env
 
 ```env
 # Frontend & Backend Shared
-SUPABASE_URL=https://wmejplohqpdupugeluxx.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtZWpwbG9ocXBkdXB1Z2VsdXh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNTg0NzgsImV4cCI6MjEwMjczNDQ3OH0.Pqf79ne64__1CdsX1DxFxDr6YD50g_cpXOwejZNOe_4
+SUPABASE_URL=<supabase-project-url>
+SUPABASE_ANON_KEY=<supabase-publishable-key>
 
 # Backend Only (FastAPI / Direct SQL)
-DATABASE_URL=postgresql://postgres:Mke&3$iPU66k9uC@db.wmejplohqpdupugeluxx.supabase.co:5432/postgres
-# SUPABASE_SERVICE_ROLE_KEY= (Optional, for backend admin operations)
+DATABASE_URL=<backend-only-secret>
+# SUPABASE_SERVICE_ROLE_KEY=<backend-only-secret> (Optional, for backend admin operations)
 ```
 
 ---
@@ -33,8 +33,8 @@ DATABASE_URL=postgresql://postgres:Mke&3$iPU66k9uC@db.wmejplohqpdupugeluxx.supab
 ### Test Credentials (Created for Development)
 | Role | Email | Password | User ID |
 | :--- | :--- | :--- | :--- |
-| **User** | `researcher@cmlre.gov.in` | `CMLRE_Research_2026!` | `a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d` |
-| **Admin** | `admin@cmlre.gov.in` | `CMLRE_Admin_2026!` | `b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e` |
+| **User** | `researcher@cmlre.gov.in` | `<test-password>` | `a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d` |
+| **Admin** | `admin@cmlre.gov.in` | `<test-password>` | `b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e` |
 
 ---
 
@@ -52,7 +52,6 @@ All files in `marine-files` must follow this path pattern:
 datasets/{dataset_id}/{filename}       # Primary for datasets (CSV, TXT, Excel, JSON)
 edna/{sample_id}/{filename}             # FASTA / FASTQ / Sequence files
 otolith/{sample_id}/{filename}          # Otolith images (JPG, PNG, TIFF)
-reports/{project_id}/{filename}         # Generated summary exports (PDF, CSV)
 ```
 
 Example storage path:
@@ -140,20 +139,33 @@ export async function getFileUrl(filePath: string) {
 ## 7. Backend Integration (FastAPI / Python)
 
 ### Verifying JWT & Reading Dataset Metadata
+
+> **Important Security Note**: The backend must **verify** the JWT signature using your Supabase project's JWT Secret. Simply decoding the payload without verification allows forged tokens.
+
 ```python
 from fastapi import FastAPI, Depends, HTTPException, Header
 import jwt
 from sqlalchemy.orm import Session
 # ...
 
+# Ensure this secret is loaded securely from environment variables, NOT hardcoded.
+SUPABASE_JWT_SECRET = "<backend-only-secret>" 
+
 async def get_current_user(authorization: str = Header(...)):
     token = authorization.replace("Bearer ", "")
     try:
-        # Decode and verify Supabase JWT
-        payload = jwt.decode(token, options={"verify_signature": False})
+        # Securely verify the JWT signature and audience
+        payload = jwt.decode(
+            token, 
+            SUPABASE_JWT_SECRET, 
+            algorithms=["HS256"], 
+            audience="authenticated"
+        )
         return payload
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token signature")
 
 @app.get("/api/datasets/{dataset_id}")
 async def get_dataset(dataset_id: str, current_user = Depends(get_current_user)):
