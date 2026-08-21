@@ -82,18 +82,23 @@ class BaselineMorphologicalFeatureExtractor:
             grad_v_energy = 0.0
             grad_mag_mean = 0.0
 
-        # 4. Approximate Image Entropy
-        hist, _ = np.histogram(arr, bins=16, range=(0.0, 1.0), density=True)
-        hist = hist[hist > 0]
-        entropy = -float(np.sum(hist * np.log2(hist + 1e-9))) if len(hist) > 0 else 0.0
+        # 4. Discrete Shannon Image Entropy (normalized count probabilities)
+        hist, _ = np.histogram(arr, bins=16, range=(0.0, 1.0))
+        total_px = float(np.sum(hist))
+        if total_px > 0:
+            probs = hist.astype(np.float64) / total_px
+            pos_probs = probs[probs > 0]
+            entropy = -float(np.sum(pos_probs * np.log2(pos_probs)))
+        else:
+            entropy = 0.0
 
-        # 5. Estimated Circularity (ratio of central mass vs perimeter)
+        # 5. Center-to-Overall Intensity Ratio (core luminance profile)
         center_y, center_x = h // 2, w // 2
         radius = min(h, w) // 4
         y_coords, x_coords = np.ogrid[:h, :w]
         mask_center = (x_coords - center_x) ** 2 + (y_coords - center_y) ** 2 <= radius ** 2
         center_mass = float(np.mean(arr[mask_center])) if np.any(mask_center) else mean_val
-        circ_estimate = center_mass / (mean_val + 1e-6)
+        center_ratio = center_mass / (mean_val + 1e-6)
 
         features: Dict[str, float] = {
             "aspect_ratio": aspect_ratio,
@@ -109,7 +114,8 @@ class BaselineMorphologicalFeatureExtractor:
             "gradient_v_energy": grad_v_energy,
             "gradient_magnitude_mean": grad_mag_mean,
             "entropy": entropy,
-            "circularity_estimate": circ_estimate,
+            "center_intensity_ratio": center_ratio,
+            "circularity_estimate": center_ratio,
         }
 
         feature_names = sorted(features.keys())

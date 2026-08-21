@@ -484,6 +484,84 @@ class TestPhase7SpecializedScience(unittest.TestCase):
         self.assertEqual(res.common_name, "Yellowfin Tuna (Live WoRMS)")
         self.assertIn("Resolved via Phase 8 Live OBIS Connector", res.warnings)
 
+    # =========================================================================
+    # G. Review Hardening & Robustness Tests
+    # =========================================================================
+
+    def test_G1_confidence_rounding_and_bounds_validation(self):
+        """G1. Robustness: Confidence score rounding (0.89996 -> 0.90 -> HIGH) and NaN/Inf/bound checks."""
+        from data_pipeline.specialized_science import build_specialized_result, compute_confidence_level
+
+        # 1. 0.89996 rounds to 0.90 and gets classified as HIGH
+        res1 = build_specialized_result(domain="edna", confidence_score=0.89996)
+        self.assertEqual(res1.confidence_score, 0.90)
+        self.assertEqual(res1.confidence_level, ConfidenceLevel.HIGH)
+
+        # 2. Out of bounds (< 0.0 or > 1.0)
+        res_neg = build_specialized_result(domain="edna", confidence_score=-0.5)
+        self.assertIsNone(res_neg.confidence_score)
+        self.assertEqual(res_neg.confidence_level, ConfidenceLevel.UNKNOWN)
+
+        res_over = build_specialized_result(domain="edna", confidence_score=1.5)
+        self.assertIsNone(res_over.confidence_score)
+        self.assertEqual(res_over.confidence_level, ConfidenceLevel.UNKNOWN)
+
+        # 3. NaN or Inf
+        res_nan = build_specialized_result(domain="edna", confidence_score=float("nan"))
+        self.assertIsNone(res_nan.confidence_score)
+        self.assertEqual(res_nan.confidence_level, ConfidenceLevel.UNKNOWN)
+
+    def test_G2_fasta_file_with_mixed_records(self):
+        """G2. Robustness: analyze_fasta_file processes valid records while surfacing errors from corrupted records."""
+        mixed_fasta = (
+            ">valid_seq1\n"
+            "CCAATCTATCATATGACTTCTGTGCGTCAGACCGGCATGGAAGGGCACCGCCCTGAGCCTCCTGATTCGTGCTGAACTCAGCCAGCCAGGGGCCCTTCTCGGGGACGACCAGATCTACAATGTGATCGTTACCGCACATGCCTTCGTGATAATTTTCTTTATAGTAATGCCAATTATAATTGGCGGCTTCGGAAACTGACTTATTCCCCTTATGATTGGGGCCCCCGACATGGCATTTCCCCGTATGAATAACATAAGTTTCTGACTTCTTCCCCCCTCCTTTCTTCTTCTCCTAGCCTCCTCTGGCGTTGAAGCCGGAGCTGGAACCGGATGAACGGTGTATCCCCCTCTAGCAGGCAATCTCGCTCACGCCGGGGCATCCGTGGACTTAACCATCTTTTCCCTCCACCTAGCGGGAATTTCCTCCATTCTTGGAGCCATTAATTTTATTACTACAATTATTAATATGAAGCCACCTGCTATTTCACAATACCAAACCCCCCTCTTTGTTTGGGCGGTCCTAATTACTGCCGTTCTCCTTCTGCTCTCTCTTCCCGTCCTTGCAGCCGGAATCACAATACTTCTTACAGATCGAAATCTAAACACAACCTTTTTTGACCCTGCGGGAGGAGGAGACCCAATCCTCTATCAACACCTATTCTGATTCTTTGGCCACCCAGAAAGTCTAAAGA\n"
+            ">corrupt_seq\n"
+            "ATGCZ123@#BAD\n"
+            ">valid_seq2\n"
+            "CCGGTTAATTAGTATTTGGTGCTGAGCCGGATAGTCGGCACCGCCCTGAGCCTACTCATCCGAGCTGAACTAAGCCAACCCGGGGCTCTTCTGGGGGACGATCAAATTTATAACGTAATCGTTACGGCACACGCATTTGTAATAATTTTCTTTATAGTAATACCAATTATGATTGGCGGTTTCGGAAACTGACTAGTACCTCTGATAATCGGCGCCCCCGACATAGCATTCCCCCGAATAAATAACATAAGCTTCTGACTACTCCCTCCATCTTTCCTCCTTTTATTAGCCTCTTCTGGGGTAGAGGCGGGGGCCGGGACGGGGTGAACAGTGTACCCGCCCCTGGCGGGAAACCTGGCTCACGCAGGAGCCTCCGTTGATTTAACTATTTTCTCACTCCACTTAGCAGGTATCTCTTCAATCCTGGGGGCCATTAATTTTATTACAACAATCATTAATATAAAACCCCCAGCTATTTCTCAATACCAAACACCCCTGTTTGTTTGAGCCGTCCTAATCACGGCTGTTCTGCTTCTCCTCTCCCTCCCCGTCCTTGCCGCCGGCATCACTATACTCTTGACAGACCGAAATCTAAACACCACCTTCTTTGACCCATCTGGGGGGCGGAGACCCCATTCTCTACCAACACCTCTTCTGATTCTTTGGCCACCCAGAAAGTCTAAA\n"
+        )
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".fasta", delete=False) as tf:
+            tf.write(mixed_fasta)
+            tmp_path = tf.name
+
+        try:
+            results = self.edna_service.analyze_fasta_file(tmp_path)
+            self.assertEqual(len(results), 2)
+            self.assertEqual(results[0].target_entity, "Rastrelliger kanagurta")
+            self.assertEqual(results[1].target_entity, "Sardinella longiceps")
+            self.assertTrue(any("FASTA validation notice" in w for w in results[0].warnings))
+        finally:
+            import os
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+    def test_G3_taxonomy_empty_records_and_ambiguity_flagging(self):
+        """G3. Robustness: Isolated taxonomy with records=[], and ambiguity resolution returning FLAGGED."""
+        # 1. Isolated taxonomy with explicitly empty records list
+        empty_tax = TaxonomyService(records=[])
+        res_empty = empty_tax.search("Rastrelliger kanagurta", mode="exact")
+        self.assertEqual(len(res_empty), 0)
+
+        # 2. Ambiguity resolution when multiple partial matches exist
+        # Both "Acropora formosa" and "Echinopora horrida" have "ora" or family Cnidaria/Merulinidae
+        # Query "pora" matches Acropora formosa and Echinopora horrida
+        res_ambig = self.taxonomy_service.resolve_taxon("pora")
+        self.assertFalse(res_ambig.is_resolved)
+        self.assertEqual(res_ambig.status, IdentificationStatus.FLAGGED)
+        self.assertEqual(res_ambig.confidence_score, 0.0)
+        self.assertTrue(any("Ambiguous partial matches" in w for w in res_ambig.warnings))
+
+    def test_G4_oversized_image_rejection(self):
+        """G4. Safety: Rejects oversized images before decoding."""
+        # Synthetic byte stream exceeding 50 MB limit
+        from data_pipeline.specialized_science.otolith.preprocessing import MAX_IMAGE_FILE_SIZE_BYTES
+        fake_huge_bytes = b"fake" * (MAX_IMAGE_FILE_SIZE_BYTES // 4 + 10)
+        v_res = validate_image_input(fake_huge_bytes)
+        self.assertFalse(v_res.is_valid)
+        self.assertTrue(any("exceeds limit" in err for err in v_res.errors))
+
 
 if __name__ == "__main__":
     unittest.main()

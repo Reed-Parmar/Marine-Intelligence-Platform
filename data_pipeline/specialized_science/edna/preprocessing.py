@@ -132,9 +132,10 @@ def preprocess_fastq_records(
         # Convert ASCII to Phred+33 scores
         phred_scores = [ord(c) - 33 for c in qual]
         avg_q = sum(phred_scores) / len(phred_scores) if phred_scores else 0.0
+        length_mismatch = len(qual) != len(seq)
 
         # Simple 3' end quality trimming: trim until base has >= min_phred
-        trim_idx = len(seq)
+        trim_idx = min(len(seq), len(phred_scores))
         while trim_idx > 0 and phred_scores[trim_idx - 1] < min_phred:
             trim_idx -= 1
 
@@ -144,6 +145,11 @@ def preprocess_fastq_records(
 
         prep = preprocess_sequence(trimmed_seq, seq_id=rec.id, min_length=min_length)
         prep.avg_quality_score = trimmed_avg_q
+
+        if length_mismatch:
+            prep.filter_notes.append(
+                f"FASTQ quality length ({len(qual)}) does not match sequence length ({len(seq)})."
+            )
 
         if len(trimmed_seq) < len(seq):
             prep.metadata["bases_trimmed"] = len(seq) - len(trimmed_seq)

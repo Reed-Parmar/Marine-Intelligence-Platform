@@ -47,9 +47,11 @@ class TaxonomySearchEngine:
 
     def search_partial(self, query: str, limit: int = 10) -> List[TaxonRecord]:
         """Searches across scientific and common names using substring containment."""
-        if not query:
+        if not query or limit <= 0:
             return []
         q = query.strip().lower()
+        if not q:
+            return []
         results: List[TaxonRecord] = []
         seen_ids = set()
 

@@ -66,7 +66,7 @@ def calculate_baseline_edna_confidence(
     top_match_score: float,
     query_length: int,
     second_match_score: Optional[float] = None,
-    min_length_for_full_confidence: int = 150,
+    min_length_for_full_confidence: int = 120,
 ) -> float:
     """
     Computes transparent baseline confidence score [0.0, 1.0].
@@ -79,8 +79,8 @@ def calculate_baseline_edna_confidence(
     if top_match_score is None or top_match_score <= 0 or not math.isfinite(top_match_score):
         return 0.0
 
-    # Length scaling factor (scales smoothly with read length, min factor 0.85)
-    length_factor = min(1.0, max(0.85, query_length / float(min_length_for_full_confidence)))
+    # Length scaling factor: short reads below barcode threshold receive proportionally reduced confidence
+    length_factor = min(1.0, max(0.0, query_length / float(min_length_for_full_confidence)))
 
     # Base score
     base_conf = top_match_score * length_factor
@@ -203,6 +203,7 @@ def detect_species_from_matches(
             reference_source=top_match.reference_source,
             evidence=evidence,
             alternative_candidates=alt_candidates,
+            taxonomic_hierarchy=hierarchy_dict,
             warnings=warnings,
             provenance={"query_id": query_id, "evidence_type": EvidenceType.EDNA_SEQUENCE.value},
         )

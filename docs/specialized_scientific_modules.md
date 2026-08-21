@@ -42,7 +42,7 @@ data_pipeline/specialized_science/
 │   ├── __init__.py
 │   ├── validation.py         # Multi-line FASTA and 4-line FASTQ validators
 │   ├── preprocessing.py      # Base cleanup, GC content, ambiguous base filtering, Phred trimming
-│   ├── matching.py           # ReferenceMatcher protocol, ExactMatcher, KmerSimilarityMatcher
+│   ├── matching.py           # ReferenceMatcher protocol, ExactReferenceMatcher, KmerSimilarityMatcher
 │   ├── detection.py          # Species detection and transparent baseline confidence scoring
 │   └── service.py            # EDNAService orchestrator with storage boundary
 ├── otolith/

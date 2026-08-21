@@ -307,7 +307,7 @@ class TaxonomyService:
     """
 
     def __init__(self, records: Optional[List[TaxonRecord]] = None) -> None:
-        initial_records = records or DEFAULT_TAXONOMY_RECORDS
+        initial_records = DEFAULT_TAXONOMY_RECORDS if records is None else records
         self._search_engine = TaxonomySearchEngine(initial_records)
         self._synonym_resolver = SynonymResolver()
 
@@ -331,15 +331,18 @@ class TaxonomyService:
             mode: 'exact', 'common', 'partial', or 'auto'.
             limit: Maximum result items.
         """
-        if not query:
+        if not query or limit <= 0:
             return []
 
         q = query.strip()
+        if not q:
+            return []
+
         if mode == "exact":
             rec = self._search_engine.search_exact(q)
             return [rec] if rec else []
         elif mode == "common":
-            return self._search_engine.search_common_name(q)
+            return self._search_engine.search_common_name(q)[:limit]
         elif mode == "partial":
             return self._search_engine.search_partial(q, limit=limit)
         else: # auto
@@ -348,7 +351,7 @@ class TaxonomyService:
                 return [exact]
             common_matches = self._search_engine.search_common_name(q)
             if common_matches:
-                return common_matches
+                return common_matches[:limit]
             # Check synonym
             resolved_name, is_syn, _ = self._synonym_resolver.resolve(q)
             if is_syn:
@@ -413,10 +416,10 @@ class TaxonomyService:
             )
 
         # Step 3: Partial search fallback
-        partial_matches = self._search_engine.search_partial(cleaned, limit=3)
-        if partial_matches:
+        partial_matches = self._search_engine.search_partial(cleaned, limit=5)
+        if len(partial_matches) == 1:
             top = partial_matches[0]
-            warnings.append(f"Exact match not found; resolved via partial match to '{top.scientific_name}'.")
+            warnings.append(f"Exact match not found; resolved via unique partial match to '{top.scientific_name}'.")
             return TaxonResolutionResult(
                 candidate_name=cleaned,
                 is_resolved=True,
@@ -430,7 +433,20 @@ class TaxonomyService:
                 synonyms=top.synonyms,
                 record=top,
                 warnings=warnings,
-                provenance={"source_authority": "CMLRE Partial Match", "candidate_count": len(partial_matches)},
+                provenance={"source_authority": "CMLRE Partial Match", "candidate_count": 1},
+            )
+        elif len(partial_matches) > 1:
+            candidate_names = [m.scientific_name for m in partial_matches]
+            warnings.append(
+                f"Ambiguous partial matches found for '{cleaned}': {', '.join(candidate_names)}"
+            )
+            return TaxonResolutionResult(
+                candidate_name=cleaned,
+                is_resolved=False,
+                status=IdentificationStatus.FLAGGED,
+                confidence_score=0.0,
+                warnings=warnings,
+                provenance={"source_authority": "CMLRE Ambiguous Match", "candidates": candidate_names},
             )
 
         # Unresolved

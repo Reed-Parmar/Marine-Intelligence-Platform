@@ -87,10 +87,15 @@ def validate_sequence_string(seq: str) -> Tuple[bool, List[str]]:
 
 def _read_content(content_or_path: Union[str, Path]) -> List[str]:
     """Reads lines from either a file path or raw string content."""
-    if isinstance(content_or_path, Path) or (isinstance(content_or_path, str) and os.path.exists(content_or_path)):
+    if isinstance(content_or_path, Path):
         with open(content_or_path, "r", encoding="utf-8", errors="replace") as f:
             return f.readlines()
-    return content_or_path.splitlines(keepends=True)
+    if isinstance(content_or_path, str):
+        if not ("\n" in content_or_path or content_or_path.startswith(("> ", ">", "@"))) and os.path.isfile(content_or_path):
+            with open(content_or_path, "r", encoding="utf-8", errors="replace") as f:
+                return f.readlines()
+        return content_or_path.splitlines(keepends=True)
+    return str(content_or_path).splitlines(keepends=True)
 
 
 def validate_fasta(content_or_path: Union[str, Path]) -> EDNAValidationResult:
@@ -101,6 +106,7 @@ def validate_fasta(content_or_path: Union[str, Path]) -> EDNAValidationResult:
     errors: List[str] = []
     warnings: List[str] = []
     records: List[FASTARecord] = []
+    invalid_records_count = 0
 
     if not lines or not any(l.strip() for l in lines):
         return EDNAValidationResult(
@@ -114,7 +120,6 @@ def validate_fasta(content_or_path: Union[str, Path]) -> EDNAValidationResult:
 
     current_header = None
     current_seq_lines: List[str] = []
-    current_line_no = 0
     record_start_line = 0
 
     for idx, raw_line in enumerate(lines, start=1):
@@ -129,6 +134,7 @@ def validate_fasta(content_or_path: Union[str, Path]) -> EDNAValidationResult:
                 if is_valid_seq:
                     records.append(FASTARecord(header=current_header, sequence=full_seq, line_number=record_start_line))
                 else:
+                    invalid_records_count += 1
                     errors.append(f"Record at line {record_start_line} (>{current_header}): {'; '.join(seq_errs)}")
 
             current_header = line[1:].strip()
@@ -147,17 +153,18 @@ def validate_fasta(content_or_path: Union[str, Path]) -> EDNAValidationResult:
         if is_valid_seq:
             records.append(FASTARecord(header=current_header, sequence=full_seq, line_number=record_start_line))
         else:
+            invalid_records_count += 1
             errors.append(f"Record at line {record_start_line} (>{current_header}): {'; '.join(seq_errs)}")
 
-    total = len(records) + (1 if errors else 0)
+    total_records = len(records) + invalid_records_count
     is_valid = len(errors) == 0 and len(records) > 0
 
     return EDNAValidationResult(
         is_valid=is_valid,
         format="fasta",
-        total_records=len(records) + (len(errors) if not is_valid else 0),
+        total_records=total_records,
         valid_records_count=len(records),
-        invalid_records_count=len(errors) if not is_valid else 0,
+        invalid_records_count=invalid_records_count,
         fasta_records=records,
         errors=errors,
         warnings=warnings,

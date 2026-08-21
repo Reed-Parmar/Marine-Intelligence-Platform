@@ -14,6 +14,8 @@ from PIL import Image
 
 
 SUPPORTED_IMAGE_FORMATS = {"PNG", "JPEG", "JPG", "TIFF", "TIF", "BMP", "WEBP"}
+MAX_IMAGE_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
+MAX_IMAGE_PIXELS = 4096 * 4096                # 16 Megapixels
 
 
 @dataclass
@@ -45,8 +47,8 @@ class ImageValidationResult:
 class PreprocessedImage:
     """Container for preprocessed image data and normalized array representations."""
     image: Image.Image
-    array: np.ndarray                # 2D or 3D NumPy array [0.0, 1.0] or [0, 255]
-    normalized_array: np.ndarray     # Standardized float array in [0.0, 1.0]
+    array: np.ndarray                # 2D or 3D NumPy array [0, 255]
+    normalized_array: np.ndarray     # Standardized float array strictly in [0.0, 1.0]
     width: int
     height: int
     original_dimensions: Tuple[int, int]
@@ -55,12 +57,15 @@ class PreprocessedImage:
 
 
 def _load_pil_image(image_input: Union[str, Path, bytes, BinaryIO, Image.Image]) -> Tuple[Optional[Image.Image], Optional[int], List[str]]:
-    """Helper to safely open PIL Image from various input types."""
+    """Helper to safely open PIL Image from various input types with security dimension bounds."""
     errors: List[str] = []
     file_size: Optional[int] = None
 
     if isinstance(image_input, Image.Image):
-        return image_input.copy(), None, []
+        img_copy = image_input.copy()
+        if hasattr(image_input, "format") and image_input.format:
+            img_copy.format = image_input.format
+        return img_copy, None, []
 
     try:
         if isinstance(image_input, (str, Path)):
@@ -70,7 +75,12 @@ def _load_pil_image(image_input: Union[str, Path, bytes, BinaryIO, Image.Image])
             file_size = path_obj.stat().st_size
             if file_size == 0:
                 return None, 0, ["Image file is empty (0 bytes)."]
+            if file_size > MAX_IMAGE_FILE_SIZE_BYTES:
+                return None, file_size, [f"Image file size ({file_size} bytes) exceeds limit ({MAX_IMAGE_FILE_SIZE_BYTES} bytes)."]
             img = Image.open(path_obj)
+            w, h = img.size
+            if w * h > MAX_IMAGE_PIXELS:
+                return None, file_size, [f"Image dimensions ({w}x{h}) exceed maximum pixel budget ({MAX_IMAGE_PIXELS})."]
             img.load()
             return img, file_size, []
 
@@ -78,13 +88,21 @@ def _load_pil_image(image_input: Union[str, Path, bytes, BinaryIO, Image.Image])
             file_size = len(image_input)
             if file_size == 0:
                 return None, 0, ["Image byte stream is empty (0 bytes)."]
+            if file_size > MAX_IMAGE_FILE_SIZE_BYTES:
+                return None, file_size, [f"Image byte stream ({file_size} bytes) exceeds limit ({MAX_IMAGE_FILE_SIZE_BYTES} bytes)."]
             bio = io.BytesIO(image_input)
             img = Image.open(bio)
+            w, h = img.size
+            if w * h > MAX_IMAGE_PIXELS:
+                return None, file_size, [f"Image dimensions ({w}x{h}) exceed maximum pixel budget ({MAX_IMAGE_PIXELS})."]
             img.load()
             return img, file_size, []
 
         elif hasattr(image_input, "read"):
             img = Image.open(image_input)
+            w, h = img.size
+            if w * h > MAX_IMAGE_PIXELS:
+                return None, None, [f"Image dimensions ({w}x{h}) exceed maximum pixel budget ({MAX_IMAGE_PIXELS})."]
             img.load()
             return img, None, []
 
@@ -156,7 +174,7 @@ def preprocess_image(
         image_input: Path, bytes, or PIL Image.
         target_size: (width, height) output resolution.
         to_grayscale: Convert to 1-channel luminance ('L').
-        normalize: Scale pixel float values to [0.0, 1.0].
+        normalize: Ignored for normalized_array (which is always in [0.0, 1.0]).
     """
     img, _, errors = _load_pil_image(image_input)
     if errors or img is None:
@@ -174,12 +192,9 @@ def preprocess_image(
     resample_filter = getattr(Image, "Resampling", Image).BILINEAR
     proc_img = proc_img.resize(target_size, resample=resample_filter)
 
-    # Convert to NumPy array
+    # Convert to NumPy arrays
     raw_array = np.array(proc_img)
-    if normalize:
-        norm_array = raw_array.astype(np.float32) / 255.0
-    else:
-        norm_array = raw_array.astype(np.float32)
+    norm_array = raw_array.astype(np.float32) / 255.0
 
     return PreprocessedImage(
         image=proc_img,

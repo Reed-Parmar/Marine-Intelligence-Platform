@@ -118,6 +118,10 @@ class EDNAService:
         result = detection.to_specialized_result()
         result.metadata["gc_content"] = prep.gc_content
         result.metadata["sequence_length"] = prep.length
+        if target_gene:
+            result.metadata["target_gene"] = target_gene
+            if result.evidence:
+                result.evidence.features["target_gene"] = target_gene
 
         if persist and self.storage_repo:
             if result.evidence:
@@ -134,7 +138,7 @@ class EDNAService:
     ) -> List[SpecializedResult]:
         """Validates and processes all sequence records within a FASTA file."""
         val = self.validate_fasta(file_path)
-        if not val.is_valid:
+        if not val.fasta_records:
             return []
 
         results: List[SpecializedResult] = []
@@ -145,6 +149,8 @@ class EDNAService:
                 confidence_threshold=confidence_threshold,
                 persist=persist,
             )
+            if val.errors:
+                res.warnings.extend([f"FASTA validation notice: {err}" for err in val.errors])
             results.append(res)
 
         return results
