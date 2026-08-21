@@ -9,7 +9,7 @@ function normalizeUploadResponse(d: any, fallback: DatasetUploadResponse): Datas
     fileSize: Number(d.fileSize ?? d.file_size_bytes ?? fallback.fileSize),
     detectedFormat: (d.detectedFormat || d.detected_format || d.file_type || fallback.detectedFormat).toUpperCase() as FileFormat,
     status: d.status || fallback.status,
-    progressPercent: d.progressPercent ?? 100,
+    progressPercent: d.progressPercent ?? d.progress_percent ?? 100,
     message: d.message || `File ${d.filename || fallback.fileName} processed successfully.`,
     datasetId: d.datasetId || d.dataset_id || fallback.datasetId
   };

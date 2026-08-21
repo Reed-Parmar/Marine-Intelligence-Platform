@@ -36,7 +36,13 @@ function normalizeMarineObservation(o: any): MarineObservation {
 }
 
 function normalizeMarineSummary(s: any): MarineSummary {
-  const total = (s.totalObservations ?? s.total_observations ?? ((s.oceanography_count || 0) + (s.fisheries_count || 0) + (s.biodiversity_count || 0))) || 5420;
+  let total = s.totalObservations ?? s.total_observations;
+  if (total === undefined && (s.oceanography_count !== undefined || s.fisheries_count !== undefined || s.biodiversity_count !== undefined)) {
+    total = (s.oceanography_count || 0) + (s.fisheries_count || 0) + (s.biodiversity_count || 0);
+  }
+  if (total === undefined) {
+    total = 5420;
+  }
   return {
     totalObservations: total,
     totalDatasets: s.totalDatasets ?? s.total_datasets ?? 18,
@@ -83,6 +89,8 @@ export const marineService = {
     if (query?.dateFrom) queryParams.date_from = query.dateFrom;
     if (query?.dateTo) queryParams.date_to = query.dateTo;
     if (query?.datasetId) queryParams.dataset_id = query.datasetId;
+    if (query?.depthMin !== undefined) queryParams.depth_min = query.depthMin;
+    if (query?.depthMax !== undefined) queryParams.depth_max = query.depthMax;
 
     const res = await ApiClient.get<any[]>('/marine/observations', fallback, queryParams);
     const list = Array.isArray(res.data) ? res.data : fallback;

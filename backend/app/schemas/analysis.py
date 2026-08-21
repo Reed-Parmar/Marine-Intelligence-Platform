@@ -20,12 +20,12 @@ class CorrelationAnalysisRequest(BaseModel):
     variable_y: Optional[str] = None
     independentVariable: Optional[str] = None
     dependentVariable: Optional[str] = None
-    domain_x: Optional[str] = "oceanography"
-    domain_y: Optional[str] = "fisheries"
+    domain_x: Optional[str] = None
+    domain_y: Optional[str] = None
     method: str = "pearson"
-    spatial_radius_km: float = 50.0
-    temporal_window_hours: float = 72.0
-    depth_tolerance_m: Optional[float] = 50.0
+    spatial_radius_km: float = Field(50.0, ge=0.0)
+    temporal_window_hours: float = Field(72.0, ge=0.0)
+    depth_tolerance_m: Optional[float] = Field(50.0, ge=0.0)
     date_from: Optional[str] = None
     date_to: Optional[str] = None
 

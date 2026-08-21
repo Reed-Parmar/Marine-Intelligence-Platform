@@ -50,21 +50,26 @@ def test_ml_predict_returns_501():
 def test_dataset_preview_endpoint(monkeypatch):
     """GET /api/v1/datasets/{id}/preview returns tabular preview."""
     from backend.app.services.dataset_service import DatasetService
-    from backend.app.schemas.dataset import DatasetPreviewResponse, DatasetResponse
+    from backend.app.auth.supabase_auth import get_current_user
+    from backend.app.schemas.auth import UserProfile
+    from backend.app.schemas.dataset import DatasetResponse
 
     monkeypatch.setattr(
         DatasetService,
         "get_dataset_by_id",
         lambda did: DatasetResponse(id=did, name="CMLRE CTD Cast", domain_type="oceanography")
     )
-    monkeypatch.setattr("backend.app.api.v1.datasets.get_current_user", lambda: None)
+    app.dependency_overrides[get_current_user] = lambda: UserProfile(id="usr-1", email="test@cmlre.gov.in", role="user")
 
-    response = client.get("/api/v1/datasets/ds-test-01/preview")
-    assert response.status_code == 200
-    data = response.json()["data"]
-    assert data["dataset_id"] == "ds-test-01"
-    assert "columns" in data
-    assert "rows" in data
+    try:
+        response = client.get("/api/v1/datasets/ds-test-01/preview")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["dataset_id"] == "ds-test-01"
+        assert "columns" in data
+        assert "rows" in data
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
 
 
 def test_marine_location_detail_endpoint():
@@ -79,8 +84,15 @@ def test_marine_location_detail_endpoint():
     assert "molecularEdna" in data
 
 
-def test_ocean_ctd_profile_endpoint():
+def test_ocean_ctd_profile_endpoint(monkeypatch):
     """GET /api/v1/ocean/ctd-profile returns vertical hydrographic casts."""
+    monkeypatch.setattr(
+        "backend.app.services.ocean_service.execute_query",
+        lambda q, p: [
+            {"depth": 0, "temperature": 29.0, "salinity": 35.0, "dissolved_oxygen": 4.8, "chlorophyll": 0.5, "station_id": "STN-01"},
+            {"depth": 50, "temperature": 24.0, "salinity": 35.5, "dissolved_oxygen": 3.2, "chlorophyll": 0.8, "station_id": "STN-01"}
+        ]
+    )
     response = client.get("/api/v1/ocean/ctd-profile?station_id=STN-01")
     assert response.status_code == 200
     data = response.json()["data"]

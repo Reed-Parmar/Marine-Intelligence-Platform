@@ -63,8 +63,8 @@ async def query_marine(req: MarineQueryRequest):
 
 @router.get("/location-detail", response_model=ApiResponse[CrossDomainLocationDetailResponse])
 async def get_location_detail(
-    lat: float = Query(..., description="Latitude coordinate"),
-    lon: float = Query(..., description="Longitude coordinate"),
+    lat: float = Query(..., ge=-90.0, le=90.0, description="Latitude coordinate"),
+    lon: float = Query(..., ge=-180.0, le=180.0, description="Longitude coordinate"),
     radius_km: float = Query(50.0, ge=1.0, le=500.0),
     temporal_window_hours: float = Query(72.0, ge=1.0),
     depth_tolerance_m: float = Query(50.0, ge=1.0)

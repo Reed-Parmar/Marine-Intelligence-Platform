@@ -5,7 +5,8 @@ import { Calculator, CheckCircle2, TrendingUp, HelpCircle } from 'lucide-react';
 export const StatisticalSummary: React.FC<{ statistics: AnalysisResultData['statistics'] }> = ({
   statistics
 }) => {
-  const getPValueInterpretation = (p: number) => {
+  const getPValueInterpretation = (p: number | null | undefined) => {
+    if (p === null || p === undefined) return { label: 'p-value: N/A', color: 'text-slate-400' };
     if (p < 0.001) return { label: 'p < 0.001 (Highly Significant)', color: 'text-emerald-400' };
     if (p < 0.05) return { label: 'p < 0.05 (Statistically Significant)', color: 'text-ocean-cyan' };
     return { label: 'p >= 0.05 (Non-Significant)', color: 'text-ocean-amber' };

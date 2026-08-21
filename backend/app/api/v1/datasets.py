@@ -179,11 +179,19 @@ async def get_dataset_provenance(
 @router.get("/{dataset_id}/preview", response_model=ApiResponse[DatasetPreviewResponse])
 async def get_dataset_preview(
     dataset_id: str,
-    user: Optional[UserProfile] = Depends(get_optional_user)
+    current_user: UserProfile = Depends(get_current_user)
 ):
     """
     Retrieves tabular preview data for a registered dataset.
+    Requires authenticated user.
     """
+    ds = DatasetService.get_dataset_by_id(dataset_id)
+    if not ds:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "DATASET_NOT_FOUND", "message": f"Dataset '{dataset_id}' not found."}
+        )
+
     prev = DatasetService.get_dataset_preview(dataset_id)
     if not prev:
         raise HTTPException(

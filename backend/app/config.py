@@ -8,6 +8,11 @@ except ImportError:
     from pydantic import BaseModel as BaseSettings
     def SettingsConfigDict(**kwargs):
         return {"extra": "ignore"}
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
 
 
 class Settings(BaseSettings):
@@ -19,11 +24,13 @@ class Settings(BaseSettings):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Load environment variables into attributes if not already set
+        # Load environment variables into attributes only if not explicitly provided in kwargs
         for k in self.__class__.model_fields.keys():
-            if k in os.environ:
+            if k not in kwargs and k in os.environ:
                 val = os.environ[k]
-                if isinstance(getattr(self, k), bool):
+                if k == "CORS_ORIGINS":
+                    setattr(self, k, self.assemble_cors_origins(val))
+                elif isinstance(getattr(self, k), bool):
                     setattr(self, k, val.lower() in ("true", "1", "t"))
                 elif isinstance(getattr(self, k), int):
                     try:

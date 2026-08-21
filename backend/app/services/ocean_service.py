@@ -206,33 +206,21 @@ class OceanService:
             rows = execute_query(query, params)
         except Exception:
             rows = []
+
         if not rows:
-            # Generate deterministic standard oceanographic vertical cast baseline if DB has no specific station data
-            standard_depths = [0, 10, 25, 50, 75, 100, 150, 200, 300, 500, 750, 1000]
-            return [
-                CTDProfilePointResponse(
-                    depth=float(d),
-                    temperature=round(29.2 * (0.97 ** (d / 20.0)) + 3.5, 2),
-                    salinity=round(34.8 + min(1.4, d * 0.002), 2),
-                    dissolvedOxygen=round(max(0.8, 5.2 - (d * 0.015) if d < 150 else 0.8 + (d - 150) * 0.002), 2),
-                    dissolved_oxygen=round(max(0.8, 5.2 - (d * 0.015) if d < 150 else 0.8 + (d - 150) * 0.002), 2),
-                    chlorophyllA=round(max(0.02, 1.45 * (2.718 ** -(((d - 25) / 20) ** 2))), 2),
-                    chlorophyll=round(max(0.02, 1.45 * (2.718 ** -(((d - 25) / 20) ** 2))), 2),
-                    densitySigmaT=round(22.1 + min(5.6, d * 0.006), 2),
-                    stationId=station_id or "STN-CTD-01",
-                    station_id=station_id or "STN-CTD-01"
-                )
-                for d in standard_depths
-            ]
+            return []
 
         profile_points = []
         for r in rows:
             d = float(r["depth"])
-            t = float(r["temperature"]) if r.get("temperature") is not None else 25.0
-            s = float(r["salinity"]) if r.get("salinity") is not None else 35.0
-            do_val = float(r["dissolved_oxygen"]) if r.get("dissolved_oxygen") is not None else 4.5
-            chl_val = float(r["chlorophyll"]) if r.get("chlorophyll") is not None else 0.5
-            sigma_t = round(22.0 + (s - 34.0) * 0.7 - (t - 25.0) * 0.25, 2)
+            t = float(r["temperature"]) if r.get("temperature") is not None else None
+            s = float(r["salinity"]) if r.get("salinity") is not None else None
+            do_val = float(r["dissolved_oxygen"]) if r.get("dissolved_oxygen") is not None else None
+            chl_val = float(r["chlorophyll"]) if r.get("chlorophyll") is not None else None
+            sigma_t = None
+            if s is not None and t is not None:
+                sigma_t = round(22.0 + (s - 34.0) * 0.7 - (t - 25.0) * 0.25, 2)
+
             profile_points.append(
                 CTDProfilePointResponse(
                     depth=d,

@@ -261,8 +261,9 @@ class DatasetService:
 
         if not rows:
             # Default preview based on dataset metadata
+            q_score = ds.quality_score if ds.quality_score is not None else 95.0
             rows = [
-                {"id": f"{dataset_id}-01", "name": ds.name, "domain": ds.domain_type, "quality_score": ds.quality_score or 95.0, "status": ds.status}
+                {"id": f"{dataset_id}-01", "name": ds.name, "domain": ds.domain_type, "quality_score": q_score, "status": ds.status}
             ]
 
         col_keys = list(rows[0].keys()) if rows else ["id", "name", "domain", "status"]

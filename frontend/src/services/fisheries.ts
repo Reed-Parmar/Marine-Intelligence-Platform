@@ -25,7 +25,7 @@ export const fisheriesService = {
     const items = Array.isArray(raw) ? raw : (raw?.trends && Array.isArray(raw.trends) ? raw.trends : MOCK_FISHERIES_TRENDS);
     return items.map((t: any) => ({
       period: String(t.period || t.date || t.time_bucket || 'Q1 2024'),
-      pelagicCatchTons: Number(t.pelagicCatchTons ?? (t.total_catch_weight_kg !== undefined ? Number(t.total_catch_weight_kg) / 2000.0 : 52000)),
+      pelagicCatchTons: Number(t.pelagicCatchTons ?? (t.total_catch_weight_kg !== undefined ? Number(t.total_catch_weight_kg) / 1000.0 : 52000)),
       demersalCatchTons: Number(t.demersalCatchTons ?? 28000),
       crustaceanCatchTons: Number(t.crustaceanCatchTons ?? 14000),
       averageCPUE: Number(t.averageCPUE ?? (t.cpue_kg_per_hour !== undefined ? Number(t.cpue_kg_per_hour) : 135)),

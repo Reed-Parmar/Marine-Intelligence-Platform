@@ -20,7 +20,10 @@ function normalizeAnalysisResult(d: any, fallback: AnalysisResultData): Analysis
       sampleSize: Number(stats.sampleSize ?? stats.sample_size ?? d.sample_size ?? fallback.statistics.sampleSize),
       pearsonR: Number(stats.pearsonR ?? stats.pearson_r ?? d.correlation_coefficient ?? fallback.statistics.pearsonR),
       rSquared: Number(stats.rSquared ?? stats.r_squared ?? fallback.statistics.rSquared),
-      pValue: Number(stats.pValue ?? stats.p_value ?? d.p_value ?? fallback.statistics.pValue),
+      pValue: (stats.pValue !== undefined ? (stats.pValue === null ? null : Number(stats.pValue)) : 
+              (stats.p_value !== undefined ? (stats.p_value === null ? null : Number(stats.p_value)) : 
+              (d.p_value !== undefined ? (d.p_value === null ? null : Number(d.p_value)) : 
+              fallback.statistics.pValue))),
       standardError: Number(stats.standardError ?? stats.standard_error ?? fallback.statistics.standardError),
       fStatistic: Number(stats.fStatistic ?? stats.f_statistic ?? fallback.statistics.fStatistic),
       slope: Number(stats.slope ?? fallback.statistics.slope),
@@ -43,7 +46,7 @@ function normalizeAnalysisResult(d: any, fallback: AnalysisResultData): Analysis
       inputDatasetIds: Array.isArray(prov.inputDatasetIds) ? prov.inputDatasetIds : (Array.isArray(prov.input_dataset_ids) ? prov.input_dataset_ids : fallback.provenance.inputDatasetIds),
       recordsUsedCount: Number(prov.recordsUsedCount ?? prov.records_used_count ?? fallback.provenance.recordsUsedCount),
       algorithmName: prov.algorithmName || prov.algorithm_name || fallback.provenance.algorithmName,
-      computedTimestamp: prov.computedTimestamp || prov.computed_timestamp || new Date().toISOString()
+      computedTimestamp: prov.computedTimestamp || prov.computed_timestamp || undefined
     }
   };
 }
@@ -76,7 +79,7 @@ export const analysisService = {
       parameters: params,
       provenance: {
         ...template.provenance,
-        computedTimestamp: new Date().toISOString()
+        computedTimestamp: undefined
       }
     };
 
@@ -86,9 +89,9 @@ export const analysisService = {
       independentVariable: params.independentVariable,
       dependentVariable: params.dependentVariable,
       method: (params as any).method || 'pearson',
-      spatial_radius_km: (params as any).spatialToleranceKm || 50.0,
-      temporal_window_hours: (params as any).temporalWindowHours || 72.0,
-      depth_tolerance_m: (params as any).depthToleranceMeters || 50.0
+      spatial_radius_km: (params as any).spatialToleranceKm ?? 50.0,
+      temporal_window_hours: (params as any).temporalWindowHours ?? 72.0,
+      depth_tolerance_m: (params as any).depthToleranceMeters ?? 50.0
     };
 
     const res = await ApiClient.post<any>('/analysis/correlation', payload, fallback);

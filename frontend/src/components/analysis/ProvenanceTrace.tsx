@@ -14,7 +14,7 @@ export const ProvenanceTrace: React.FC<{ provenance: AnalysisResultData['provena
         </span>
         <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
           <Clock className="w-3 h-3 text-slate-400" />
-          {new Date(provenance.computedTimestamp).toLocaleString()}
+          {provenance.computedTimestamp ? new Date(provenance.computedTimestamp).toLocaleString() : 'Timestamp unavailable'}
         </span>
       </div>
 

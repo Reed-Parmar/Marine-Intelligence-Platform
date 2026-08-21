@@ -27,18 +27,19 @@ export class ApiClient {
     
     const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
     
-    const headers: Record<string, string> = {
-      'Accept': 'application/json',
-      ...((options.headers as Record<string, string>) || {}),
-    };
+    const headers = new Headers(options.headers || {});
 
-    if (!isFormData && !headers['Content-Type']) {
-      headers['Content-Type'] = 'application/json';
+    if (!headers.has('Accept')) {
+      headers.set('Accept', 'application/json');
+    }
+
+    if (!isFormData && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json');
     }
 
     const token = this.getToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    if (token && !headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${token}`);
     }
 
     try {

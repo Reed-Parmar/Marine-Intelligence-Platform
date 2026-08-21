@@ -14,6 +14,7 @@ Base = declarative_base()
 # Initialize SQLAlchemy engine with connection pool
 _engine = None
 _SessionFactory = None
+_init_error: Optional[str] = None
 
 if settings.DATABASE_URL:
     db_url = settings.DATABASE_URL
@@ -29,9 +30,14 @@ if settings.DATABASE_URL:
             pool_pre_ping=True
         )
         _SessionFactory = sessionmaker(bind=_engine, autocommit=False, autoflush=False)
-    except Exception:
+        _init_error = None
+    except Exception as e:
         _engine = None
         _SessionFactory = None
+        # Sanitize sensitive credentials from error message
+        import re
+        sanitized = re.sub(r':([^@/:]+)@', ':***@', str(e))
+        _init_error = sanitized
 
 
 def get_engine():
@@ -39,11 +45,17 @@ def get_engine():
     return _engine
 
 
+def get_db_init_error() -> Optional[str]:
+    """Returns the retained database initialization error, if any."""
+    return _init_error
+
+
 @contextmanager
 def get_db() -> Generator[Optional[Session], None, None]:
     """Context manager yielding a SQLAlchemy Session."""
     if _SessionFactory is None:
-        raise RuntimeError("Database session factory not initialized. Verify DATABASE_URL is configured.")
+        msg = f"Database session factory not initialized. Verify DATABASE_URL is configured. Cause: {_init_error}" if _init_error else "Database session factory not initialized. Verify DATABASE_URL is configured."
+        raise RuntimeError(msg)
 
     session = _SessionFactory()
     try:

@@ -54,3 +54,4 @@ class CrossDomainLocationDetailResponse(BaseModel):
     molecularEdna: Dict[str, Any] = Field(default_factory=dict)
     aiPrediction: Optional[Dict[str, Any]] = None
     associations_summary: Optional[Dict[str, Any]] = None
+    warnings: List[str] = Field(default_factory=list)

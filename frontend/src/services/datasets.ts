@@ -46,6 +46,9 @@ export const datasetService = {
     if (params?.domain) {
       fallback = fallback.filter(d => d.domain === params.domain);
     }
+    if (params?.status) {
+      fallback = fallback.filter(d => d.status === params.status);
+    }
     if (params?.search) {
       const q = params.search.toLowerCase();
       fallback = fallback.filter(d => 

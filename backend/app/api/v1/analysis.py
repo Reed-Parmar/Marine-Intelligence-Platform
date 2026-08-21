@@ -3,6 +3,7 @@ Analysis Router: Scientific analysis jobs and cross-domain correlation hooks (Ph
 Queries real public.analysis_jobs and public.analysis_results tables via SQLAlchemy.
 """
 
+import logging
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, status
 from backend.app.db.database import execute_query, execute_single
@@ -13,6 +14,7 @@ from backend.app.schemas.analysis import (
 )
 from backend.app.schemas.common import ApiListResponse, ApiMeta, ApiResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -55,10 +57,10 @@ def _infer_domain(var_name: str, fallback_domain: Optional[str] = None) -> str:
         return "oceanography"
     if any(k in v for k in ["catch", "cpue", "effort", "gear", "vessel", "landing"]):
         return "fisheries"
-    if any(k in v for k in ["richness", "count", "shannon", "simpson", "species", "pielou"]):
-        return "biodiversity"
     if any(k in v for k in ["edna", "dna", "sequence"]):
         return "edna"
+    if any(k in v for k in ["richness", "count", "shannon", "simpson", "species", "pielou"]):
+        return "biodiversity"
     return fallback_domain or "oceanography"
 
 
@@ -70,6 +72,7 @@ async def run_correlation(req: CorrelationAnalysisRequest):
     """
     from data_pipeline.analysis.service import ScientificAnalysisService
     from data_pipeline.fusion.models import UnifiedQueryParams
+    from data_pipeline.fusion.query_service import query_unified_observations
 
     var_x = req.variable_x or req.independentVariable
     var_y = req.variable_y or req.dependentVariable
@@ -83,9 +86,14 @@ async def run_correlation(req: CorrelationAnalysisRequest):
     dom_x = req.domain_x or _infer_domain(var_x, "oceanography")
     dom_y = req.domain_y or _infer_domain(var_y, "fisheries")
 
-    params = None
+    observations = None
     if req.date_from or req.date_to:
         params = UnifiedQueryParams(date_from=req.date_from, date_to=req.date_to)
+        try:
+            observations = query_unified_observations(params)
+        except Exception as e:
+            logger.warning(f"Failed to query date-filtered observations for correlation: {e}")
+            observations = None
 
     try:
         res = ScientificAnalysisService.calculate_correlation(
@@ -93,15 +101,17 @@ async def run_correlation(req: CorrelationAnalysisRequest):
             variable_x=var_x,
             domain_y=dom_y,
             variable_y=var_y,
+            observations=observations,
             method=req.method or "pearson",
             spatial_radius_km=req.spatial_radius_km,
             temporal_window_hours=req.temporal_window_hours,
             depth_tolerance_m=req.depth_tolerance_m
         )
     except Exception as e:
+        logger.error(f"Scientific correlation computation failed: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"code": "ANALYSIS_FAILED", "message": f"Scientific correlation computation failed: {str(e)}"}
+            detail={"code": "ANALYSIS_FAILED", "message": "Scientific correlation computation failed."}
         )
 
     # Format scatter points and regression line for frontend visualization
@@ -127,7 +137,7 @@ async def run_correlation(req: CorrelationAnalysisRequest):
     slope = float(res_dict.get("slope") or 0.0)
     intercept = float(res_dict.get("intercept") or 0.0)
     r_sq = float(res_dict.get("r_squared") or (res.correlation_coefficient ** 2 if res.correlation_coefficient is not None else 0.0))
-    p_val = res.p_value if res.p_value is not None else 0.05
+    p_val = res.p_value  # Preserve None if unavailable
 
     statistics = {
         "sampleSize": res.sample_size,
