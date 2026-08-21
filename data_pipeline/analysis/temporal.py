@@ -18,6 +18,8 @@ from data_pipeline.fusion.query_service import query_unified_observations
 from data_pipeline.fusion.temporal import parse_marine_timestamp
 
 
+SUPPORTED_TEMPORAL_PERIODS = {"daily", "monthly", "yearly", "seasonal"}
+
 SEASONS: Dict[str, List[int]] = {
     "Pre-Monsoon": [3, 4, 5],
     "SW-Monsoon": [6, 7, 8, 9],
@@ -36,6 +38,10 @@ def _get_season_name(month: int) -> str:
 
 def _format_period(dt: Optional[datetime], period_type: str) -> str:
     """Formats datetime according to aggregation scale."""
+    if period_type not in SUPPORTED_TEMPORAL_PERIODS:
+        raise ValueError(
+            f"Unsupported period_type '{period_type}'. Supported: {sorted(SUPPORTED_TEMPORAL_PERIODS)}"
+        )
     if not dt:
         return "unspecified_time"
     if period_type == "daily":
@@ -46,7 +52,8 @@ def _format_period(dt: Optional[datetime], period_type: str) -> str:
         return dt.strftime("%Y")
     elif period_type == "seasonal":
         s_name = _get_season_name(dt.month)
-        return f"{dt.year}-{s_name}"
+        year = dt.year + 1 if dt.month == 12 else dt.year
+        return f"{year}-{s_name}"
     return dt.strftime("%Y-%m")
 
 
@@ -63,6 +70,11 @@ def analyze_temporal_dynamics(
         period_type: 'daily', 'monthly', 'yearly', or 'seasonal'.
         params: UnifiedQueryParams filter.
     """
+    if period_type not in SUPPORTED_TEMPORAL_PERIODS:
+        raise ValueError(
+            f"Unsupported period_type '{period_type}'. Supported: {sorted(SUPPORTED_TEMPORAL_PERIODS)}"
+        )
+
     warnings: List[str] = []
 
     # Step 1: Fetch observations if not supplied
@@ -106,8 +118,13 @@ def analyze_temporal_dynamics(
             s_dict = seasonal_buckets[s_name]
             s_dict["count"] += 1
             s_dict["domain_counts"][obs.domain or "unknown"] += 1
-            if obs.variable and obs.value is not None and not math.isnan(obs.value):
-                s_dict["vars"][obs.variable.lower()].append(float(obs.value))
+            if obs.variable and obs.value is not None:
+                try:
+                    val_f = float(obs.value)
+                    if math.isfinite(val_f):
+                        s_dict["vars"][obs.variable.lower()].append(val_f)
+                except (ValueError, TypeError):
+                    pass
 
     if not buckets:
         return TemporalAnalysisResult(
@@ -128,8 +145,13 @@ def analyze_temporal_dynamics(
             b_doms[o.domain or "unknown"] += 1
             if o.species_name or o.species_id:
                 b_species[o.species_name or o.species_id] += 1
-            if o.variable and o.value is not None and not math.isnan(o.value):
-                b_vars[o.variable.lower()].append(float(o.value))
+            if o.variable and o.value is not None:
+                try:
+                    val_f = float(o.value)
+                    if math.isfinite(val_f):
+                        b_vars[o.variable.lower()].append(val_f)
+                except (ValueError, TypeError):
+                    pass
 
         var_means = {v: round(sum(vals) / len(vals), 4) for v, vals in b_vars.items() if vals}
 
@@ -164,6 +186,6 @@ def analyze_temporal_dynamics(
         seasonal_summary=seasonal_summary,
         time_min=time_min,
         time_max=time_max,
-        provenance={"datasets": list(dataset_ids)},
+        provenance={"datasets": sorted(dataset_ids)},
         warnings=warnings,
     )

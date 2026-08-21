@@ -47,6 +47,7 @@ def calculate_biodiversity_indicators(
     # Step 2: Aggregate counts per species
     species_counts: Dict[str, float] = defaultdict(float)
     total_individuals = 0.0
+    dataset_ids = set()
 
     for obs in obs_pool:
         # Check domain
@@ -57,13 +58,24 @@ def calculate_biodiversity_indicators(
                 continue
 
         sp_name = obs.species_name or obs.species_id or "unidentified_taxon"
-        count = float(obs.value) if obs.value is not None and obs.value > 0 else 1.0
+        
+        # Explicit finite abundance check, fallback to 1.0 (presence-only)
+        count = 1.0
+        if obs.value is not None:
+            try:
+                v_f = float(obs.value)
+                if math.isfinite(v_f) and v_f > 0:
+                    count = v_f
+            except (ValueError, TypeError):
+                count = 1.0
 
         species_counts[sp_name] += count
         total_individuals += count
+        if obs.dataset_id:
+            dataset_ids.add(obs.dataset_id)
 
     s_richness = len(species_counts)
-    n_total = int(total_individuals)
+    n_total = int(total_individuals) if isinstance(total_individuals, float) and total_individuals.is_integer() else total_individuals
 
     if s_richness == 0 or n_total == 0:
         return BiodiversityResult(
@@ -74,6 +86,7 @@ def calculate_biodiversity_indicators(
             pielou_evenness=None,
             species_abundances={},
             sample_definition=sample_definition,
+            provenance={"datasets": sorted(dataset_ids), "source_domain": DomainType.BIODIVERSITY.value},
             warnings=["No species occurrences found to calculate biodiversity metrics."],
         )
 
@@ -108,6 +121,7 @@ def calculate_biodiversity_indicators(
         pielou_evenness=round(pielou_j, 4),
         species_abundances=abundances,
         sample_definition=sample_definition,
+        provenance={"datasets": sorted(dataset_ids), "source_domain": DomainType.BIODIVERSITY.value},
         warnings=warnings,
     )
 
@@ -142,7 +156,17 @@ def analyze_species_distribution(
 
     for obs in obs_pool:
         sp_name = obs.species_name or obs.species_id or "unidentified_taxon"
-        count = int(obs.value) if obs.value is not None and obs.value > 0 else 1
+        
+        # Finite positive integer-valued count check, fallback to 1
+        count = 1
+        if obs.value is not None:
+            try:
+                v_f = float(obs.value)
+                if math.isfinite(v_f) and v_f > 0 and v_f.is_integer():
+                    count = int(v_f)
+            except (ValueError, TypeError):
+                count = 1
+
         species_occurrence_counts[sp_name] += count
 
         if obs.dataset_id:
@@ -212,6 +236,6 @@ def analyze_species_distribution(
         species_summary=species_summary,
         spatial_points=spatial_points,
         bounding_box=bbox,
-        provenance={"datasets": list(dataset_ids), "source_domain": DomainType.BIODIVERSITY.value},
+        provenance={"datasets": sorted(dataset_ids), "source_domain": DomainType.BIODIVERSITY.value},
         warnings=warnings,
     )

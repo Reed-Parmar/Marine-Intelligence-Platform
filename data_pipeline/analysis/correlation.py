@@ -10,11 +10,52 @@ import math
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from data_pipeline.analysis.models import CorrelationResult
-from data_pipeline.fusion.cross_domain import find_associated_observations
 from data_pipeline.fusion.models import DomainType, MarineObservation, UnifiedQueryParams
 from data_pipeline.fusion.query_service import query_unified_observations
 from data_pipeline.fusion.spatial import haversine_distance_km
 from data_pipeline.fusion.temporal import parse_marine_timestamp, temporal_distance_hours
+
+
+VARIABLE_ALIASES: Dict[str, str] = {
+    "temp": "temperature",
+    "temperature": "temperature",
+    "temperature_celsius": "temperature",
+    "sal": "salinity",
+    "salinity": "salinity",
+    "salinity_psu": "salinity",
+    "do": "dissolved_oxygen",
+    "dissolved_oxygen": "dissolved_oxygen",
+    "dissolved_oxygen_mgl": "dissolved_oxygen",
+    "oxygen": "dissolved_oxygen",
+    "chl": "chlorophyll",
+    "chl_a": "chlorophyll",
+    "chlorophyll": "chlorophyll",
+    "chlorophyll_mg_m3": "chlorophyll",
+    "ph": "ph",
+    "turbidity": "turbidity",
+    "turbidity_ntu": "turbidity",
+    "pressure": "pressure",
+    "pressure_dbar": "pressure",
+    "depth": "depth",
+    "depth_meters": "depth",
+    "catch": "catch_weight_kg",
+    "catch_weight": "catch_weight_kg",
+    "catch_weight_kg": "catch_weight_kg",
+    "catch_kg": "catch_weight_kg",
+    "count": "individual_count",
+    "individual_count": "individual_count",
+    "abundance": "individual_count",
+    "richness": "species_richness",
+    "species_richness": "species_richness",
+}
+
+
+def _canonical_variable(var_name: Optional[str]) -> str:
+    """Normalizes variable name to canonical standard form."""
+    if not var_name:
+        return ""
+    cleaned = str(var_name).lower().strip().replace(" ", "_").replace("-", "")
+    return VARIABLE_ALIASES.get(cleaned, cleaned)
 
 
 def _rank_data(values: List[float]) -> List[float]:
@@ -28,7 +69,6 @@ def _rank_data(values: List[float]) -> List[float]:
         j = i
         while j < n - 1 and indexed[j][1] == indexed[j + 1][1]:
             j += 1
-        # Average rank for ties (1-based)
         avg_rank = sum(range(i + 1, j + 2)) / (j - i + 1)
         for k in range(i, j + 1):
             ranks[indexed[k][0]] = avg_rank
@@ -38,48 +78,34 @@ def _rank_data(values: List[float]) -> List[float]:
 
 def _compute_pearson(x_vals: List[float], y_vals: List[float]) -> Tuple[Optional[float], Optional[float]]:
     """
-    Computes Pearson r and approximate two-tailed p-value.
-    Uses scipy if available, with robust pure-Python mathematical fallback.
+    Computes Pearson r and two-tailed p-value.
+    Uses scipy when available, with pure-Python r computation fallback.
     """
     n = len(x_vals)
     if n < 3:
         return None, None
 
+    # Check for zero variance
     mean_x = sum(x_vals) / n
     mean_y = sum(y_vals) / n
-
-    diff_x = [x - mean_x for x in x_vals]
-    diff_y = [y - mean_y for y in y_vals]
-
-    var_x = sum(dx ** 2 for dx in diff_x)
-    var_y = sum(dy ** 2 for dy in diff_y)
+    var_x = sum((x - mean_x) ** 2 for x in x_vals)
+    var_y = sum((y - mean_y) ** 2 for y in y_vals)
 
     if var_x == 0.0 or var_y == 0.0:
-        return 0.0, 1.0  # Constant variable has 0 correlation
+        return 0.0, 1.0
 
-    cov_xy = sum(dx * dy for dx, dy in zip(diff_x, diff_y))
-    r = cov_xy / math.sqrt(var_x * var_y)
-
-    # Clamp to [-1.0, 1.0] against precision drift
-    r = max(-1.0, min(1.0, r))
-
-    # Calculate p-value via t-distribution
     try:
         from scipy import stats
         res = stats.pearsonr(x_vals, y_vals)
         return round(float(res.statistic), 4), round(float(res.pvalue), 4)
     except Exception:
-        # Fallback t-test approximation
-        if abs(r) >= 1.0:
-            p_val = 0.0
-        else:
-            df = n - 2
-            t_stat = r * math.sqrt(df / (1.0 - r ** 2))
-            # Heuristic p-value approximation
-            # If |t| > 3.0 (df>=3), p < 0.05
-            p_val = 2.0 * (1.0 / (1.0 + (abs(t_stat) / math.sqrt(df)) ** 2))
-            p_val = min(1.0, max(0.0, p_val))
-        return round(r, 4), round(p_val, 4)
+        # Fallback pure-Python computation (p-value returned as None when scipy unavailable)
+        cov_xy = sum((x - mean_x) * (y - mean_y) for x, y in zip(x_vals, y_vals))
+        denom = math.sqrt(var_x * var_y)
+        if denom == 0.0 or math.isnan(denom):
+            return 0.0, None
+        r = max(-1.0, min(1.0, cov_xy / denom))
+        return round(r, 4), None
 
 
 def _compute_spearman(x_vals: List[float], y_vals: List[float]) -> Tuple[Optional[float], Optional[float]]:
@@ -129,15 +155,21 @@ def pair_cross_domain_observations(
 ) -> List[Tuple[MarineObservation, MarineObservation]]:
     """
     Pairs observations from domain X and domain Y that co-occur in 3D space-time.
-    Reuses Phase 5 spatial/temporal/depth matching criteria.
+    Reuses Phase 5 spatial/temporal/depth matching criteria with pre-parsed timestamp caching.
     """
     pairs: List[Tuple[MarineObservation, MarineObservation]] = []
     used_y_indices = set()
 
+    # Pre-parse candidate Y timestamps once for efficiency
+    parsed_y_timestamps = [parse_marine_timestamp(oy.observation_time) for oy in obs_y_list]
+
     for ox in obs_x_list:
         if ox.latitude is None or ox.longitude is None:
             continue
+
         dt_x = parse_marine_timestamp(ox.observation_time)
+        if temporal_window_hours is not None and dt_x is None:
+            continue  # Reject unparseable / missing timestamps when temporal window is required
 
         best_y_idx = None
         best_dist = float("inf")
@@ -154,8 +186,10 @@ def pair_cross_domain_observations(
                 continue
 
             # 2. Temporal window check
-            dt_y = parse_marine_timestamp(oy.observation_time)
-            if dt_x and dt_y:
+            if temporal_window_hours is not None:
+                dt_y = parsed_y_timestamps[idx]
+                if dt_y is None:
+                    continue
                 t_diff = temporal_distance_hours(dt_x, dt_y)
                 if t_diff > temporal_window_hours:
                     continue
@@ -206,24 +240,36 @@ def calculate_cross_domain_correlation(
     """
     warnings: List[str] = []
 
-    # Case 1: Direct paired numbers supplied
+    # Case 1: Direct paired numbers supplied (joint filtering for finite pairs)
     if paired_data_override is not None:
-        x_vals = [p[0] for p in paired_data_override if not math.isnan(p[0]) and not math.isinf(p[0])]
-        y_vals = [p[1] for p in paired_data_override if not math.isnan(p[1]) and not math.isinf(p[1])]
-        paired_records = [{"x": x, "y": y} for x, y in zip(x_vals, y_vals)]
+        valid_pairs = [
+            (float(p[0]), float(p[1])) for p in paired_data_override
+            if p is not None and len(p) >= 2 and p[0] is not None and p[1] is not None
+            and math.isfinite(float(p[0])) and math.isfinite(float(p[1]))
+        ]
+        x_vals = [p[0] for p in valid_pairs]
+        y_vals = [p[1] for p in valid_pairs]
+        paired_records = [{"x": p[0], "y": p[1]} for p in valid_pairs]
     else:
-        # Case 2: Extract and pair observations
+        # Case 2: Extract and pair observations with exact canonical variable matching
+        target_var_x = _canonical_variable(variable_x)
+        target_var_y = _canonical_variable(variable_y)
+
         if observations is None:
             obs_x_pool = query_unified_observations(UnifiedQueryParams(domain=domain_x, variable=variable_x))
             obs_y_pool = query_unified_observations(UnifiedQueryParams(domain=domain_y, variable=variable_y))
         else:
             obs_x_pool = [
-                o for o in observations 
-                if (o.domain or "").lower() == domain_x.lower() and (variable_x.lower() in (o.variable or "").lower() or (o.variable or "").lower() in variable_x.lower())
+                o for o in observations
+                if (o.domain or "").lower() == domain_x.lower()
+                and o.variable
+                and _canonical_variable(o.variable) == target_var_x
             ]
             obs_y_pool = [
-                o for o in observations 
-                if (o.domain or "").lower() == domain_y.lower() and (variable_y.lower() in (o.variable or "").lower() or (o.variable or "").lower() in variable_y.lower())
+                o for o in observations
+                if (o.domain or "").lower() == domain_y.lower()
+                and o.variable
+                and _canonical_variable(o.variable) == target_var_y
             ]
 
         pairs = pair_cross_domain_observations(
@@ -240,17 +286,22 @@ def calculate_cross_domain_correlation(
 
         for ox, oy in pairs:
             if ox.value is not None and oy.value is not None:
-                if not math.isnan(ox.value) and not math.isnan(oy.value):
-                    x_vals.append(float(ox.value))
-                    y_vals.append(float(oy.value))
-                    paired_records.append({
-                        "x": float(ox.value),
-                        "y": float(oy.value),
-                        "latitude": ox.latitude,
-                        "longitude": ox.longitude,
-                        "time_x": ox.observation_time,
-                        "time_y": oy.observation_time,
-                    })
+                try:
+                    vx = float(ox.value)
+                    vy = float(oy.value)
+                    if math.isfinite(vx) and math.isfinite(vy):
+                        x_vals.append(vx)
+                        y_vals.append(vy)
+                        paired_records.append({
+                            "x": vx,
+                            "y": vy,
+                            "latitude": ox.latitude,
+                            "longitude": ox.longitude,
+                            "time_x": ox.observation_time,
+                            "time_y": oy.observation_time,
+                        })
+                except (ValueError, TypeError):
+                    continue
 
     n = len(x_vals)
     if n < 3:

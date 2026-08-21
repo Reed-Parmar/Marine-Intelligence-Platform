@@ -15,6 +15,8 @@ from data_pipeline.fusion.query_service import query_unified_observations
 from data_pipeline.fusion.temporal import parse_marine_timestamp
 
 
+SUPPORTED_OCEAN_AGGREGATIONS = {"daily", "monthly", "yearly", "seasonal"}
+
 # Standard scientific variable units
 OCEAN_VARIABLE_UNITS: Dict[str, str] = {
     "temperature": "°C",
@@ -34,9 +36,44 @@ OCEAN_VARIABLE_UNITS: Dict[str, str] = {
     "depth_meters": "m",
 }
 
+VARIABLE_ALIASES: Dict[str, str] = {
+    "temp": "temperature",
+    "temperature": "temperature",
+    "temperature_celsius": "temperature",
+    "sal": "salinity",
+    "salinity": "salinity",
+    "salinity_psu": "salinity",
+    "do": "dissolved_oxygen",
+    "dissolved_oxygen": "dissolved_oxygen",
+    "dissolved_oxygen_mgl": "dissolved_oxygen",
+    "oxygen": "dissolved_oxygen",
+    "chl": "chlorophyll",
+    "chl_a": "chlorophyll",
+    "chlorophyll": "chlorophyll",
+    "chlorophyll_mg_m3": "chlorophyll",
+    "ph": "ph",
+    "pressure": "pressure",
+    "pressure_dbar": "pressure",
+    "turbidity": "turbidity",
+    "turbidity_ntu": "turbidity",
+    "depth": "depth",
+    "depth_meters": "depth",
+}
+
+
+def _canonical_variable(var_name: Optional[str]) -> str:
+    """Resolves variable name to canonical form."""
+    if not var_name:
+        return ""
+    cleaned = str(var_name).lower().strip().replace(" ", "_").replace("-", "")
+    return VARIABLE_ALIASES.get(cleaned, cleaned)
+
 
 def _get_season_label(dt: datetime) -> str:
-    """Returns the northern Indian Ocean / tropical marine season."""
+    """
+    Returns the northern Indian Ocean / tropical marine season.
+    December is grouped with January and February of the upcoming winter season.
+    """
     m = dt.month
     if m in (3, 4, 5):
         return f"{dt.year}-Pre-Monsoon"
@@ -45,11 +82,16 @@ def _get_season_label(dt: datetime) -> str:
     elif m in (10, 11):
         return f"{dt.year}-Post-Monsoon"
     else: # Dec, Jan, Feb
-        return f"{dt.year}-Winter"
+        year = dt.year + 1 if m == 12 else dt.year
+        return f"{year}-Winter"
 
 
 def _format_period(dt: Optional[datetime], aggregation: str) -> str:
     """Formats a datetime into the specified aggregation bucket key."""
+    if aggregation not in SUPPORTED_OCEAN_AGGREGATIONS:
+        raise ValueError(
+            f"Unsupported time_aggregation '{aggregation}'. Supported: {sorted(SUPPORTED_OCEAN_AGGREGATIONS)}"
+        )
     if not dt:
         return "unspecified_time"
     if aggregation == "daily":
@@ -85,7 +127,6 @@ def _calculate_linear_slope(x_vals: List[float], y_vals: List[float]) -> Tuple[O
     if math.isnan(slope) or math.isinf(slope):
         return None, "insufficient_data"
 
-    # Threshold for trend direction classification (e.g. |slope| > 0.001)
     if slope > 1e-4:
         direction = "increasing"
     elif slope < -1e-4:
@@ -112,9 +153,14 @@ def analyze_ocean_trends(
         time_aggregation: 'daily', 'monthly', 'yearly', or 'seasonal'.
         params: Filter constraints (date range, depth range, bbox, radius, etc.).
     """
+    if time_aggregation not in SUPPORTED_OCEAN_AGGREGATIONS:
+        raise ValueError(
+            f"Unsupported time_aggregation '{time_aggregation}'. Supported: {sorted(SUPPORTED_OCEAN_AGGREGATIONS)}"
+        )
+
     warnings: List[str] = []
-    norm_var = variable.lower().strip()
-    unit = OCEAN_VARIABLE_UNITS.get(norm_var, "units")
+    canonical_req_var = _canonical_variable(variable)
+    unit = OCEAN_VARIABLE_UNITS.get(canonical_req_var, "units")
 
     # Step 1: Fetch observations if not supplied
     if observations is None:
@@ -125,14 +171,14 @@ def analyze_ocean_trends(
     else:
         obs_pool = observations
 
-    # Step 2: Filter and extract valid measurements
-    filtered: List[Tuple[Optional[datetime], float, Optional[float]]] = [] # (dt, val, depth)
+    # Step 2: Filter and extract valid measurements with exact canonical variable matching
+    filtered: List[Tuple[Optional[datetime], float, Optional[float]]] = []
     dataset_ids = set()
 
     for obs in obs_pool:
-        # Match variable name or alias
-        obs_var = (obs.variable or "").lower().strip()
-        if norm_var not in obs_var and obs_var not in norm_var:
+        if not obs.variable:
+            continue
+        if _canonical_variable(obs.variable) != canonical_req_var:
             continue
 
         if obs.value is None or math.isnan(obs.value) or math.isinf(obs.value):
@@ -206,11 +252,25 @@ def analyze_ocean_trends(
         ov_var = sum((x - overall_mean) ** 2 for x in all_values) / (n_total - 1)
         overall_std = round(math.sqrt(ov_var), 4)
 
-    # Step 6: Trend slope across chronological periods
-    if len(time_series) >= 2:
-        x_indices = [float(i) for i in range(len(time_series))]
-        y_means = [p.mean for p in time_series]
-        slope, direction = _calculate_linear_slope(x_indices, y_means)
+    # Step 6: Trend slope across chronological periods using elapsed time from valid timestamps
+    chronological_points = []
+    for period in sorted_periods:
+        if period == "unspecified_time":
+            continue
+        dts = bucket_datetimes.get(period)
+        if not dts:
+            continue
+        rep_dt = dts[0] if len(dts) == 1 else min(dts) + (max(dts) - min(dts)) / 2
+        p_mean = next(p.mean for p in time_series if p.period == period)
+        chronological_points.append((rep_dt, p_mean))
+
+    chronological_points.sort(key=lambda x: x[0])
+
+    if len(chronological_points) >= 2:
+        t0 = chronological_points[0][0]
+        x_days = [(pt[0] - t0).total_seconds() / 86400.0 for pt in chronological_points]
+        y_means = [pt[1] for pt in chronological_points]
+        slope, direction = _calculate_linear_slope(x_days, y_means)
     else:
         slope, direction = None, "insufficient_data"
 
@@ -243,6 +303,6 @@ def analyze_ocean_trends(
         data_points_count=n_total,
         date_range=date_range,
         depth_range=depth_range,
-        provenance={"datasets": list(dataset_ids), "source_domain": DomainType.OCEANOGRAPHY.value},
+        provenance={"datasets": sorted(dataset_ids), "source_domain": DomainType.OCEANOGRAPHY.value},
         warnings=warnings,
     )

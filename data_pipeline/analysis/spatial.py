@@ -6,7 +6,7 @@ to perform spatial grid binning, regional summaries, and cross-domain comparison
 
 from collections import defaultdict
 import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from data_pipeline.analysis.models import (
     SpatialAnalysisResult,
@@ -114,8 +114,13 @@ def analyze_spatial_distribution(
             sp = obs.species_name or obs.species_id
             species_counts[sp] += 1
 
-        if obs.variable and obs.value is not None and not math.isnan(obs.value):
-            variable_vals[obs.variable.lower()].append(float(obs.value))
+        if obs.variable and obs.value is not None:
+            try:
+                val_f = float(obs.value)
+                if math.isfinite(val_f):
+                    variable_vals[obs.variable.lower()].append(val_f)
+            except (ValueError, TypeError):
+                pass
 
         lat_idx = int(math.floor(lat / step))
         lon_idx = int(math.floor(lon / step))
@@ -134,11 +139,17 @@ def analyze_spatial_distribution(
         c_vars: Dict[str, List[float]] = defaultdict(list)
 
         for o in cell_obs:
-            c_dom_counts[o.domain or "unknown"] += 1
+            c_dom = o.domain or DomainType.OCEANOGRAPHY.value
+            c_dom_counts[c_dom] += 1
             if o.species_name or o.species_id:
                 c_species.add(o.species_name or o.species_id)
             if o.variable and o.value is not None:
-                c_vars[o.variable.lower()].append(float(o.value))
+                try:
+                    val_f = float(o.value)
+                    if math.isfinite(val_f):
+                        c_vars[o.variable.lower()].append(val_f)
+                except (ValueError, TypeError):
+                    pass
 
         mean_vals = {v: round(sum(vals) / len(vals), 4) for v, vals in c_vars.items() if vals}
 
@@ -158,8 +169,8 @@ def analyze_spatial_distribution(
             )
         )
 
-    # Sort grid cells by observation count descending
-    grid_cells.sort(key=lambda c: c.observation_count, reverse=True)
+    # Deterministic sorting: descending by count, then by lat_min, lon_min
+    grid_cells.sort(key=lambda c: (-c.observation_count, c.lat_min, c.lon_min))
 
     # Variable summary stats across the region
     var_stats: Dict[str, Dict[str, float]] = {}
@@ -188,6 +199,6 @@ def analyze_spatial_distribution(
         species_distribution=dict(species_counts),
         grid_cells=grid_cells,
         variable_spatial_stats=var_stats,
-        provenance={"datasets": list(dataset_ids)},
+        provenance={"datasets": sorted(dataset_ids)},
         warnings=warnings,
     )

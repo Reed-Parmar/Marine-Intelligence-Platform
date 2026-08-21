@@ -121,16 +121,18 @@ Pairs observations across domains within a configurable 3D space-time neighborho
    $$r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}}$$
 2. **Spearman Rank Correlation ($\rho$)**:
    $$\rho = 1 - \frac{6 \sum d_i^2}{n(n^2 - 1)}$$
-3. **Two-Tailed Significance ($p$-value)**: Evaluated at $\alpha = 0.05$.
+   *(Note: The simplified formula above assumes no tied ranks. When tied ranks occur, the calculation applies fractional rank averaging followed by the tie-corrected Pearson correlation of the ranked data: $\rho = r(\text{rank}(x), \text{rank}(y))$.)*
+3. **Two-Tailed Significance ($p$-value)**:
+   Computed using the two-tailed Student's $t$-distribution survival function across $n - 2$ degrees of freedom. Statistical significance is evaluated against the hypothesis decision threshold $\alpha = 0.05$.
 
 ---
 
 ### Analysis 8 — Ecosystem Relationships Synthesis (`data_pipeline/analysis/ecosystem.py`)
 Integrates physical, chemical, biological, and fisheries dimensions into comprehensive synthesis reports:
-- `temperature_species`: Temperature ↔ Species Richness
-- `oxygen_biodiversity`: Dissolved Oxygen ↔ Biodiversity Diversity
+- `temperature_species`: Temperature ↔ Species Abundance
+- `oxygen_biodiversity`: Dissolved Oxygen ↔ Biological Occurrence Abundance
 - `chlorophyll_habitat`: Chlorophyll-a ↔ Occurrence Abundance
-- `fishing_diversity`: Fishing Pressure ↔ Species Diversity
+- `fishing_diversity`: Fishing Pressure ↔ Species Abundance
 - `ocean_catch`: Ocean Conditions ↔ Fisheries Catch
 
 ---

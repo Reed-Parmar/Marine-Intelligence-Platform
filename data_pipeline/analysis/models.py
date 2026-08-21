@@ -89,12 +89,13 @@ class SpeciesDistributionResult:
 class BiodiversityResult:
     """Calculated ecological biodiversity indices and sample community structure."""
     species_richness: int = 0           # S: total number of distinct species
-    observation_count: int = 0          # N: total number of individual observations / counts
+    observation_count: Union[int, float] = 0 # N: total number of individual observations / counts
     shannon_index: Optional[float] = None  # H': Shannon-Wiener diversity index
     simpson_index: Optional[float] = None  # 1 - D: Gini-Simpson diversity index
     pielou_evenness: Optional[float] = None # J': Pielou's equitability index (H' / ln(S))
     species_abundances: Dict[str, float] = field(default_factory=dict)
     sample_definition: str = "aggregated_dataset"
+    provenance: Dict[str, Any] = field(default_factory=dict)
     warnings: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:

@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 
 from data_pipeline.analysis.biodiversity import calculate_biodiversity_indicators
 from data_pipeline.analysis.correlation import calculate_cross_domain_correlation
+from data_pipeline.analysis.fisheries import analyze_fisheries_trends
 from data_pipeline.analysis.models import (
     CorrelationResult,
     EcosystemRelationshipResult,
@@ -20,7 +21,7 @@ from data_pipeline.fusion.query_service import query_unified_observations
 # Pre-defined supported scientific ecosystem synthesis themes
 ECOSYSTEM_THEMES = {
     "temperature_species": {
-        "theme": "Temperature ↔ Species Richness",
+        "theme": "Temperature ↔ Species Abundance",
         "env_domain": DomainType.OCEANOGRAPHY.value,
         "env_var": "temperature",
         "bio_domain": DomainType.BIODIVERSITY.value,
@@ -28,7 +29,7 @@ ECOSYSTEM_THEMES = {
         "description": "Evaluates the relationship between seawater temperature gradients and marine species occurrences.",
     },
     "oxygen_biodiversity": {
-        "theme": "Dissolved Oxygen ↔ Biodiversity Diversity",
+        "theme": "Dissolved Oxygen ↔ Biological Occurrence Abundance",
         "env_domain": DomainType.OCEANOGRAPHY.value,
         "env_var": "dissolved_oxygen",
         "bio_domain": DomainType.BIODIVERSITY.value,
@@ -44,7 +45,7 @@ ECOSYSTEM_THEMES = {
         "description": "Examines whether surface primary productivity (chlorophyll-a) corresponds with higher marine organism densities.",
     },
     "fishing_diversity": {
-        "theme": "Fishing Pressure ↔ Species Diversity",
+        "theme": "Fishing Pressure ↔ Species Abundance",
         "env_domain": DomainType.FISHERIES.value,
         "env_var": "catch_weight_kg",
         "bio_domain": DomainType.BIODIVERSITY.value,
@@ -82,7 +83,12 @@ def analyze_ecosystem_relationship(
         depth_tolerance_m: Co-occurrence depth tolerance.
         params: Filter constraints.
     """
-    theme_meta = ECOSYSTEM_THEMES.get(theme_key, ECOSYSTEM_THEMES["temperature_species"])
+    if theme_key not in ECOSYSTEM_THEMES:
+        raise ValueError(
+            f"Unknown theme_key '{theme_key}'. Supported themes: {sorted(ECOSYSTEM_THEMES.keys())}"
+        )
+
+    theme_meta = ECOSYSTEM_THEMES[theme_key]
     theme_title = theme_meta["theme"]
     env_dom = theme_meta["env_domain"]
     env_var = theme_meta["env_var"]
@@ -107,31 +113,83 @@ def analyze_ecosystem_relationship(
         depth_tolerance_m=depth_tolerance_m,
     )
 
-    # Step 3: Compute domain-specific context summaries
-    env_obs = [o for o in obs_pool if (o.domain or "").lower() == env_dom]
-    bio_obs = [o for o in obs_pool if (o.domain or "").lower() == bio_dom]
+    # Step 3: Compute domain-specific context summaries based on resolved domains
+    env_obs = [o for o in obs_pool if (o.domain or "").lower() == env_dom.lower()]
+    bio_obs = [o for o in obs_pool if (o.domain or "").lower() == bio_dom.lower()]
 
-    env_trend = analyze_ocean_trends(observations=env_obs, variable=env_var)
-    bio_summary = calculate_biodiversity_indicators(observations=bio_obs)
+    co_findings: List[str] = []
 
-    env_context = {
-        "variable": env_var,
-        "mean_value": env_trend.overall_mean,
-        "min_value": env_trend.overall_min,
-        "max_value": env_trend.overall_max,
-        "data_points": env_trend.data_points_count,
-        "unit": env_trend.unit,
-    }
+    # Environmental Domain Context
+    if env_dom == DomainType.OCEANOGRAPHY.value:
+        env_trend = analyze_ocean_trends(observations=env_obs, variable=env_var)
+        env_context = {
+            "domain": env_dom,
+            "variable": env_var,
+            "mean_value": env_trend.overall_mean,
+            "min_value": env_trend.overall_min,
+            "max_value": env_trend.overall_max,
+            "data_points": env_trend.data_points_count,
+            "unit": env_trend.unit,
+        }
+        if env_trend.overall_mean is not None:
+            co_findings.append(f"Mean {env_var}: {env_trend.overall_mean} {env_trend.unit}")
+    elif env_dom == DomainType.FISHERIES.value:
+        f_res = analyze_fisheries_trends(observations=env_obs)
+        env_context = {
+            "domain": env_dom,
+            "variable": env_var,
+            "total_catch_kg": f_res.total_catch_kg,
+            "avg_catch_kg": f_res.avg_catch_kg,
+            "records_count": f_res.records_count,
+        }
+        if f_res.records_count > 0:
+            co_findings.append(f"Total catch: {f_res.total_catch_kg} kg across {f_res.records_count} landings")
+    else:
+        b_res = calculate_biodiversity_indicators(observations=env_obs)
+        env_context = {
+            "domain": env_dom,
+            "variable": env_var,
+            "species_richness": b_res.species_richness,
+            "total_observations": b_res.observation_count,
+        }
+        if b_res.species_richness > 0:
+            co_findings.append(f"Observed taxa: {b_res.species_richness}")
 
-    bio_context = {
-        "species_richness": bio_summary.species_richness,
-        "total_observations": bio_summary.observation_count,
-        "shannon_index": bio_summary.shannon_index,
-        "simpson_index": bio_summary.simpson_index,
-    }
+    # Biological / Response Domain Context
+    if bio_dom == DomainType.FISHERIES.value:
+        f_res = analyze_fisheries_trends(observations=bio_obs)
+        bio_context = {
+            "domain": bio_dom,
+            "variable": bio_var,
+            "total_catch_kg": f_res.total_catch_kg,
+            "avg_catch_kg": f_res.avg_catch_kg,
+            "records_count": f_res.records_count,
+        }
+        if f_res.records_count > 0:
+            co_findings.append(f"Response fisheries catch: {f_res.total_catch_kg} kg")
+    elif bio_dom == DomainType.OCEANOGRAPHY.value:
+        o_res = analyze_ocean_trends(observations=bio_obs, variable=bio_var)
+        bio_context = {
+            "domain": bio_dom,
+            "variable": bio_var,
+            "mean_value": o_res.overall_mean,
+            "data_points": o_res.data_points_count,
+            "unit": o_res.unit,
+        }
+    else:
+        bio_summary = calculate_biodiversity_indicators(observations=bio_obs)
+        bio_context = {
+            "domain": bio_dom,
+            "variable": bio_var,
+            "species_richness": bio_summary.species_richness,
+            "total_observations": bio_summary.observation_count,
+            "shannon_index": bio_summary.shannon_index,
+            "simpson_index": bio_summary.simpson_index,
+        }
+        if bio_summary.species_richness > 0:
+            co_findings.append(f"Observed regional species richness: {bio_summary.species_richness} taxa")
 
     # Step 4: Build scientific narrative based strictly on empirical calculations
-    co_findings = []
     if corr_result.sample_size >= 3 and corr_result.correlation_coefficient is not None:
         r_val = corr_result.correlation_coefficient
         interp = corr_result.interpretation
@@ -148,11 +206,6 @@ def analyze_ecosystem_relationship(
             f"{bio_dom} ({bio_var}) in the current spatio-temporal selection."
         )
         co_findings.append("No statistically sufficient paired observations found.")
-
-    if env_trend.overall_mean is not None:
-        co_findings.append(f"Mean {env_var}: {env_trend.overall_mean} {env_trend.unit}")
-    if bio_summary.species_richness > 0:
-        co_findings.append(f"Observed regional species richness: {bio_summary.species_richness} taxa")
 
     return EcosystemRelationshipResult(
         theme=theme_title,

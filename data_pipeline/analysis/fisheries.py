@@ -15,8 +15,15 @@ from data_pipeline.fusion.query_service import query_unified_observations
 from data_pipeline.fusion.temporal import parse_marine_timestamp
 
 
+VALID_FISHERIES_AGGREGATIONS = {"daily", "monthly", "yearly"}
+
+
 def _format_period(dt: Optional[datetime], aggregation: str) -> str:
     """Formats a datetime into an aggregation key."""
+    if aggregation not in VALID_FISHERIES_AGGREGATIONS:
+        raise ValueError(
+            f"Unsupported time_aggregation '{aggregation}'. Supported: {sorted(VALID_FISHERIES_AGGREGATIONS)}"
+        )
     if not dt:
         return "unspecified_time"
     if aggregation == "daily":
@@ -41,6 +48,11 @@ def analyze_fisheries_trends(
         time_aggregation: 'daily', 'monthly', or 'yearly'.
         params: Filter constraints.
     """
+    if time_aggregation not in VALID_FISHERIES_AGGREGATIONS:
+        raise ValueError(
+            f"Unsupported time_aggregation '{time_aggregation}'. Supported: {sorted(VALID_FISHERIES_AGGREGATIONS)}"
+        )
+
     warnings: List[str] = []
 
     # Step 1: Fetch observations if not provided
@@ -78,6 +90,16 @@ def analyze_fisheries_trends(
         # Species aggregation
         sp_name = obs.species_name or obs.species_id or "unspecified_species"
         species_map[sp_name] += float(val)
+
+        # Zone aggregation
+        zone = getattr(obs, "fishing_zone", None) or getattr(obs, "zone", None) or obs.station_id
+        if zone:
+            zone_map[str(zone)] += float(val)
+
+        # Gear aggregation
+        gear = getattr(obs, "gear_type", None) or getattr(obs, "gear", None)
+        if gear:
+            gear_map[str(gear)] += float(val)
 
         # Time grouping
         dt = parse_marine_timestamp(obs.observation_time)
@@ -127,8 +149,8 @@ def analyze_fisheries_trends(
 
     # Round breakdown dictionaries
     species_breakdown = {k: round(v, 2) for k, v in sorted(species_map.items(), key=lambda item: item[1], reverse=True)}
-    zone_breakdown = {k: round(v, 2) for k, v in zone_map.items()}
-    gear_breakdown = {k: round(v, 2) for k, v in gear_map.items()}
+    zone_breakdown = {k: round(v, 2) for k, v in sorted(zone_map.items(), key=lambda item: item[1], reverse=True)}
+    gear_breakdown = {k: round(v, 2) for k, v in sorted(gear_map.items(), key=lambda item: item[1], reverse=True)}
 
     return FisheriesTrendResult(
         total_catch_kg=total_catch,
@@ -142,6 +164,6 @@ def analyze_fisheries_trends(
         time_series=time_series,
         has_fishing_effort_data=False,
         effort_notes="Commercial/research landing weights analyzed. Catch weight is distinct from fishing effort (trawling hours/vessel days).",
-        provenance={"datasets": list(dataset_ids), "source_domain": DomainType.FISHERIES.value},
+        provenance={"datasets": sorted(dataset_ids), "source_domain": DomainType.FISHERIES.value},
         warnings=warnings,
     )

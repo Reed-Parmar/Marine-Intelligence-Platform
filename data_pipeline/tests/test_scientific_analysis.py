@@ -12,6 +12,7 @@ from pathlib import Path
 import sys
 import unittest
 from typing import Any, Dict, List
+import pandas as pd
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
@@ -347,7 +348,7 @@ class TestPhase6ScientificAnalysis(unittest.TestCase):
             temporal_window_hours=72.0,
         )
 
-        self.assertEqual(result.theme, "Temperature ↔ Species Richness")
+        self.assertEqual(result.theme, "Temperature ↔ Species Abundance")
         self.assertIsNotNone(result.correlation)
         self.assertEqual(result.correlation.sample_size, 3)
         self.assertAlmostEqual(result.correlation.correlation_coefficient, 1.0, places=2)
@@ -382,6 +383,20 @@ class TestPhase6ScientificAnalysis(unittest.TestCase):
         )
         self.assertEqual(res_zero_var.correlation_coefficient, 0.0)
 
+        # 4. Invalid theme_key rejection
+        with self.assertRaises(ValueError):
+            analyze_ecosystem_relationship(theme_key="unsupported_theme")
+
+        # 5. Invalid time_aggregation rejection
+        with self.assertRaises(ValueError):
+            analyze_ocean_trends(observations=[], time_aggregation="weekly")
+
+        with self.assertRaises(ValueError):
+            analyze_fisheries_trends(observations=[], time_aggregation="weekly")
+
+        with self.assertRaises(ValueError):
+            analyze_temporal_dynamics(observations=[], period_type="biweekly")
+
     def test_K_scientific_analysis_service_facade(self):
         """K. Service facade: Tests orchestration through ScientificAnalysisService."""
         obs = [MarineObservation(domain=DomainType.OCEANOGRAPHY.value, variable="salinity", value=35.2, observation_time="2026-05-01T00:00:00Z")]
@@ -406,15 +421,35 @@ class TestPhase6ScientificAnalysis(unittest.TestCase):
         # Phase 5: Transform to MarineObservation objects
         observations: List[MarineObservation] = []
         for _, row in std_df.head(200).iterrows():
+            def _clean(k: str) -> Any:
+                val = row.get(k)
+                return val if pd.notna(val) else None
+
+            sp_name = (
+                _clean("species_scientific_name")
+                or _clean("scientific_name")
+                or _clean("species_name")
+                or _clean("scientificName")
+            )
+            raw_cnt = row.get("individual_count")
+            if pd.notna(raw_cnt):
+                try:
+                    c_f = float(raw_cnt)
+                    cnt = c_f if math.isfinite(c_f) and c_f > 0 else 1.0
+                except (ValueError, TypeError):
+                    cnt = 1.0
+            else:
+                cnt = 1.0
+
             observations.append(
                 MarineObservation(
                     domain=DomainType.BIODIVERSITY.value,
-                    species_name=row.get("species_scientific_name") or row.get("scientific_name") or row.get("species_name") or row.get("scientificName"),
-                    latitude=row.get("latitude"),
-                    longitude=row.get("longitude"),
-                    depth=row.get("depth_meters"),
-                    observation_time=row.get("timestamp") or row.get("observation_time"),
-                    value=float(row.get("individual_count", 1)) if row.get("individual_count") is not None else 1.0,
+                    species_name=sp_name,
+                    latitude=_clean("latitude"),
+                    longitude=_clean("longitude"),
+                    depth=_clean("depth_meters"),
+                    observation_time=_clean("timestamp") or _clean("observation_time"),
+                    value=cnt,
                     variable="individual_count",
                 )
             )
