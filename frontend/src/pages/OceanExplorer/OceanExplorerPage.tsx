@@ -68,7 +68,7 @@ export const OceanExplorerPage: React.FC = () => {
             {summary.activeSamplingStations} Active Sampling Transects
           </Badge>
           <Badge variant="teal" size="md">
-            {summary.totalCTDCasts.toLocaleString()} CTD Casts
+            {summary.totalCTDCasts !== null ? summary.totalCTDCasts.toLocaleString() : '—'} CTD Casts
           </Badge>
         </div>
       </div>
@@ -107,7 +107,7 @@ export const OceanExplorerPage: React.FC = () => {
             <span>Hypoxic Footprint (OMZ)</span>
             <Activity className="w-4 h-4 text-ocean-coral" />
           </div>
-          <p className="text-xl font-bold font-mono text-ocean-coral">{summary.hypoxicAreaSqKm.toLocaleString()} <span className="text-xs">km²</span></p>
+          <p className="text-xl font-bold font-mono text-ocean-coral">{summary.hypoxicAreaSqKm !== null ? summary.hypoxicAreaSqKm.toLocaleString() : '—'} <span className="text-xs">km²</span></p>
           <p className="text-[10px] text-slate-400 font-mono">&lt; 2.0 mg/L DO Threshold</p>
         </Card>
       </div>

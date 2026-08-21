@@ -18,19 +18,19 @@ export interface FisheriesObservation {
 
 export interface FisheriesTrendPoint {
   period: string;
-  pelagicCatchTons: number;
-  demersalCatchTons: number;
-  crustaceanCatchTons: number;
-  averageCPUE: number;
-  totalEffortHours: number;
+  pelagicCatchTons: number | null;
+  demersalCatchTons: number | null;
+  crustaceanCatchTons: number | null;
+  averageCPUE: number | null;
+  totalEffortHours: number | null;
 }
 
 export interface FisheriesSummaryMetrics {
-  totalCatchAnnualTons: number;
-  overallAvgCPUE: number;
-  activeVesselsTracked: number;
-  dominantCatchGroup: string;
-  sustainabilityIndex: number; // 0-100
+  totalCatchAnnualTons: number | null;
+  overallAvgCPUE: number | null;
+  activeVesselsTracked: number | null;
+  dominantCatchGroup: string | null;
+  sustainabilityIndex: number | null;
   topLandingHarbors: {
     name: string;
     landingsTons: number;

@@ -65,7 +65,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             Sustainability Index: {summary.sustainabilityIndex}/100
           </Badge>
           <Badge variant="cyan" size="md">
-            {summary.activeVesselsTracked.toLocaleString()} Vessels Monitored
+          {summary.activeVesselsTracked !== null ? summary.activeVesselsTracked.toLocaleString() : '—'} Vessels Monitored
           </Badge>
         </div>
       </div>
@@ -78,7 +78,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <Anchor className="w-4 h-4 text-ocean-cyan" />
           </div>
           <p className="text-xl font-bold font-mono text-white">
-            {summary.totalCatchAnnualTons.toLocaleString()} <span className="text-xs">Tons</span>
+            {summary.totalCatchAnnualTons !== null ? summary.totalCatchAnnualTons.toLocaleString() : '—'} <span className="text-xs">Tons</span>
           </p>
           <p className="text-[10px] text-slate-400">All Indian Coastal States</p>
         </Card>
@@ -109,7 +109,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <Ship className="w-4 h-4 text-ocean-coral" />
           </div>
           <p className="text-xl font-bold font-mono text-white">
-            {summary.activeVesselsTracked.toLocaleString()}
+            {summary.activeVesselsTracked !== null ? summary.activeVesselsTracked.toLocaleString() : '—'}
           </p>
           <p className="text-[10px] text-slate-400">Trawlers, Purse Seiners, Liners</p>
         </Card>

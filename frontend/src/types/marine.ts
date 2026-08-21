@@ -59,7 +59,7 @@ export interface MarineSummary {
   totalSpeciesRecorded: number;
   totalEdnaDetections: number;
   activeAnomalies: number;
-  spatialCoveragePercentage: number;
+  spatialCoveragePercentage: number | null;
   regionsBreakdown: {
     region: string;
     observationCount: number;
@@ -69,7 +69,7 @@ export interface MarineSummary {
   temporalSpan: {
     earliest: string;
     latest: string;
-  };
+  } | null;
 }
 
 export interface CrossDomainLocationDetail {

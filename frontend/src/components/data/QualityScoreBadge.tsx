@@ -1,12 +1,28 @@
 import React from 'react';
-import { QualityStatus } from '../../types/dataset';
-import { ShieldCheck, AlertTriangle, AlertOctagon } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, AlertOctagon, Clock } from 'lucide-react';
 
-export const QualityScoreBadge: React.FC<{ score: number; status: QualityStatus; size?: 'sm' | 'md' }> = ({
+export const QualityScoreBadge: React.FC<{ score: number | null; status?: string; size?: 'sm' | 'md' }> = ({
   score,
   status,
   size = 'md'
 }) => {
+  if (score === null || score === undefined) {
+    const pendingStyle = 'bg-slate-700/30 border-slate-600/30 text-slate-400';
+    if (size === 'sm') {
+      return (
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-mono font-semibold ${pendingStyle}`}>
+          QC Pending
+        </span>
+      );
+    }
+    return (
+      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border ${pendingStyle}`}>
+        <Clock className="w-3.5 h-3.5" />
+        <span className="text-xs font-sans font-medium">QC Pending</span>
+      </div>
+    );
+  }
+
   const getBadgeConfig = () => {
     if (score >= 90) {
       return {

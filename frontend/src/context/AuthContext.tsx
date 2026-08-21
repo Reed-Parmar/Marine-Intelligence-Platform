@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, AuthSession } from '../types/auth';
 import { authService } from '../services/auth';
+import { ApiClient } from '../services/api';
 import { MOCK_USERS } from '../services/mockData';
 
 interface AuthContextType {
@@ -17,25 +18,38 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(MOCK_USERS.scientist);
-  const [session, setSession] = useState<AuthSession | null>({
-    accessToken: 'demo-token-scientist',
-    tokenType: 'Bearer',
-    expiresIn: 86400,
-    user: MOCK_USERS.scientist
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // Start unauthenticated. isLoading=true so ProtectedRoute shows spinner
+  // while we check if a stored token exists and is still valid.
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check existing stored auth or initialize default scientist demo
+    // On mount: try to restore session from stored token.
+    // If stored token is present and valid, /auth/me returns the profile.
+    // If missing/expired/invalid → user stays null → redirect to /login.
     const checkAuth = async () => {
+      const storedToken = ApiClient.getToken();
+      if (!storedToken) {
+        // No token stored at all — skip network call, go straight to login.
+        setIsLoading(false);
+        return;
+      }
       try {
         const currentUser = await authService.getCurrentUser();
         setUser(currentUser);
-      } catch (err: any) {
-        // Fallback default
-        setUser(MOCK_USERS.scientist);
+        setSession({
+          accessToken: storedToken,
+          tokenType: 'Bearer',
+          expiresIn: 86400,
+          user: currentUser
+        });
+      } catch {
+        // Token invalid or expired — clear it and force re-login.
+        ApiClient.setToken(null);
+        setUser(null);
+        setSession(null);
       } finally {
         setIsLoading(false);
       }
@@ -51,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setSession(authSession);
       setUser(authSession.user);
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please check your scientific credentials.');
+      setError(err.message || 'Authentication failed. Please check your credentials.');
       throw err;
     } finally {
       setIsLoading(false);
@@ -62,22 +76,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     try {
       await authService.logout();
+    } finally {
       setUser(null);
       setSession(null);
-    } finally {
       setIsLoading(false);
     }
   };
 
+  // switchDemoRole: hackathon convenience to flip display profile label only.
+  // Does NOT change the underlying API token — all API calls still use the
+  // real stored Bearer token from the actual login.
   const switchDemoRole = (role: 'user' | 'admin') => {
     const selectedUser = role === 'admin' ? MOCK_USERS.admin : MOCK_USERS.scientist;
     setUser(selectedUser);
-    setSession({
-      accessToken: `demo-token-${role}`,
-      tokenType: 'Bearer',
-      expiresIn: 86400,
-      user: selectedUser
-    });
   };
 
   return (
