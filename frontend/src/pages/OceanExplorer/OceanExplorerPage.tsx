@@ -5,42 +5,68 @@ import { TimeSeriesChart } from '../../components/charts/TimeSeriesChart';
 import { DepthProfileChart } from '../../components/charts/DepthProfileChart';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
 import { CardSkeleton } from '../../components/ui/Skeleton';
-import { Waves, Thermometer, Droplets, Wind, Activity, Layers } from 'lucide-react';
+import { Waves, Thermometer, Droplets, Wind, Activity, Layers, AlertTriangle } from 'lucide-react';
 
 export const OceanExplorerPage: React.FC = () => {
   const [summary, setSummary] = useState<OceanSummaryMetrics | null>(null);
   const [trends, setTrends] = useState<OceanTrendPoint[]>([]);
   const [ctdProfile, setCtdProfile] = useState<CTDProfilePoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadOceanData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [sum, tr, ctd] = await Promise.all([
+        oceanService.getSummary(),
+        oceanService.getTrends(),
+        oceanService.getCTDDepthProfile()
+      ]);
+      setSummary(sum);
+      setTrends(tr);
+      setCtdProfile(ctd);
+    } catch (err: any) {
+      console.error('Failed to load ocean data', err);
+      setError(err?.message || 'Failed to load oceanographic data.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadOceanData = async () => {
-      setIsLoading(true);
-      try {
-        const [sum, tr, ctd] = await Promise.all([
-          oceanService.getSummary(),
-          oceanService.getTrends(),
-          oceanService.getCTDDepthProfile()
-        ]);
-        setSummary(sum);
-        setTrends(tr);
-        setCtdProfile(ctd);
-      } catch (err) {
-        console.error('Failed to load ocean data', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     loadOceanData();
   }, []);
 
-  if (isLoading || !summary) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <CardSkeleton rows={6} />
       </div>
     );
+  }
+
+  if (error && !summary) {
+    return (
+      <div className="glass-panel rounded-xl p-8 text-center space-y-4 border border-rose-500/30">
+        <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-white">Oceanographic Data Unavailable</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">{error}</p>
+        </div>
+        <Button onClick={loadOceanData} variant="secondary" size="sm">
+          Retry Loading
+        </Button>
+      </div>
+    );
+  }
+
+  if (!summary) {
+    return null;
   }
 
   const series = [
@@ -65,7 +91,7 @@ export const OceanExplorerPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <Badge variant="cyan" size="md">
-            {summary.activeSamplingStations !== null && summary.activeSamplingStations !== undefined ? summary.activeSamplingStations : 8} Active Sampling Transects
+            {summary.activeSamplingStations !== null && summary.activeSamplingStations !== undefined ? summary.activeSamplingStations : '—'} Active Sampling Transects
           </Badge>
           <Badge variant="teal" size="md">
             {summary.totalCTDCasts !== null ? summary.totalCTDCasts.toLocaleString() : '—'} CTD Casts

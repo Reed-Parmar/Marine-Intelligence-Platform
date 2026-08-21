@@ -227,11 +227,16 @@ class UploadService:
             quality_status = res.quality_status.value
             validation_notes = res.validation_notes
             provenance = res.provenance
-        except (ImportError, Exception):
-            # If QualityPipeline is not in environment, leave status as pending rather than fabricating a score
+        except ImportError:
+            # QualityPipeline module not in environment; keep status as pending
             quality_score = None
             quality_status = "pending"
             validation_notes = "Quality control pipeline is pending execution."
+        except Exception as q_err:
+            logger.error("Quality pipeline execution error for upload %s: %s", upload_id, q_err)
+            quality_score = None
+            quality_status = "pending"
+            validation_notes = "Quality control pipeline encountered an error during evaluation."
 
         # 3. Register dataset in PostgreSQL
         dataset_name = req.dataset_name or rec["filename"].rsplit(".", 1)[0]
@@ -256,13 +261,16 @@ class UploadService:
             )
 
         # 4. Ingest parsed records into domain observation tables
-        ingested_obs_count = UploadService._ingest_records_into_domain_tables(
+        ingested_obs_count, skipped_obs_count = UploadService._ingest_records_into_domain_tables(
             dataset_id=ds.id,
             domain_type=req.domain_type,
             records=raw_records
         )
 
-        # Persist quality evaluation
+        provenance["records_inserted"] = ingested_obs_count
+        provenance["records_skipped"] = skipped_obs_count
+
+        # Persist quality evaluation and dataset status
         if quality_score is not None:
             DatasetService.update_dataset(
                 ds.id,
@@ -270,7 +278,17 @@ class UploadService:
                     quality_score=quality_score,
                     quality_status=quality_status,
                     validation_notes=validation_notes,
-                    status="standardized"
+                    status="standardized",
+                    provenance_metadata=provenance
+                )
+            )
+        else:
+            DatasetService.update_dataset(
+                ds.id,
+                DatasetUpdateRequest(
+                    quality_status="pending",
+                    validation_notes=validation_notes,
+                    provenance_metadata=provenance
                 )
             )
 
@@ -283,8 +301,8 @@ class UploadService:
             status="finalized",
             quality_score=quality_score,
             quality_status=quality_status,
-            records_processed=len(raw_records),
-            message=f"Dataset successfully registered with {ingested_obs_count} standardized observations queryable across the platform."
+            records_processed=ingested_obs_count,
+            message=f"Dataset successfully registered with {ingested_obs_count} standardized observations ingested ({skipped_obs_count} skipped due to invalid/missing coordinates)."
         )
 
     @staticmethod
@@ -292,7 +310,7 @@ class UploadService:
         dataset_id: str,
         domain_type: str,
         records: List[Dict[str, Any]]
-    ) -> int:
+    ) -> Tuple[int, int]:
         """
         Parses raw and canonical records and writes real observation entities
         into PostgreSQL domain tables:
@@ -300,26 +318,48 @@ class UploadService:
         - oceanographic_observations (oceanography)
         - fisheries_records (fisheries)
         - edna_samples & edna_results (molecular_edna)
+
+        Returns: (inserted_count, skipped_count)
         """
         import json
+        import math
         from datetime import datetime, timezone
         from backend.app.db.database import execute_query, execute_single, execute_write
         
+        def _validate_coords(lat_raw: Any, lon_raw: Any) -> Optional[Tuple[float, float]]:
+            if lat_raw is None or lon_raw is None:
+                return None
+            try:
+                lat_f = float(str(lat_raw).strip())
+                lon_f = float(str(lon_raw).strip())
+                if math.isnan(lat_f) or math.isnan(lon_f) or math.isinf(lat_f) or math.isinf(lon_f):
+                    return None
+                if not (-90.0 <= lat_f <= 90.0 and -180.0 <= lon_f <= 180.0):
+                    return None
+                return (lat_f, lon_f)
+            except (ValueError, TypeError):
+                return None
+
         domain = (domain_type or "").lower()
         now_iso = datetime.now(timezone.utc).isoformat()
         inserted_count = 0
+        skipped_count = 0
         
         # 1. BIODIVERSITY / OCCURRENCE
         if any(d in domain for d in ["bio", "species", "occur"]):
             species_cache: Dict[str, str] = {}
+            occurrence_batch: List[Dict[str, Any]] = []
+
             for r in records:
                 try:
-                    lat_str = r.get("decimalLatitude") or r.get("latitude") or r.get("lat")
-                    lon_str = r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
-                    if not lat_str or not lon_str:
+                    coords = _validate_coords(
+                        r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
+                        r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
+                    )
+                    if not coords:
+                        skipped_count += 1
                         continue
-                    lat = float(lat_str)
-                    lon = float(lon_str)
+                    lat, lon = coords
                     
                     sc_name = (r.get("scientificName") or r.get("scientific_name") or "Unknown Marine Species").strip()
                     if not sc_name:
@@ -349,7 +389,9 @@ class UploadService:
                     d_raw = r.get("minimumDepthInMeters") or r.get("depth_meters") or r.get("depth") or r.get("maximumDepthInMeters")
                     if d_raw is not None and str(d_raw).strip():
                         try:
-                            depth_val = float(str(d_raw).strip())
+                            d_f = float(str(d_raw).strip())
+                            if not math.isnan(d_f) and not math.isinf(d_f):
+                                depth_val = d_f
                         except (ValueError, TypeError):
                             depth_val = None
 
@@ -365,54 +407,58 @@ class UploadService:
                     basis = r.get("basisOfRecord") or r.get("basis_of_record") or "HumanObservation"
                     status_occ = r.get("occurrenceStatus") or r.get("occurrence_status") or "present"
 
-                    execute_write(
-                        """
-                        INSERT INTO public.species_occurrences (
-                            id, dataset_id, species_id, scientific_name, common_name, timestamp,
-                            latitude, longitude, depth_meters, individual_count, occurrence_status,
-                            basis_of_record, darwin_core_fields, quality_status, created_at, updated_at
-                        ) VALUES (
-                            gen_random_uuid(), :dataset_id, :species_id, :scientific_name, :common_name, :timestamp::timestamptz,
-                            :latitude, :longitude, :depth_meters, :individual_count, :occurrence_status,
-                            :basis_of_record, :darwin_core_fields::jsonb, 'passed'::quality_flag, NOW(), NOW()
-                        );
-                        """,
-                        {
-                            "dataset_id": dataset_id,
-                            "species_id": species_id,
-                            "scientific_name": sc_name,
-                            "common_name": r.get("vernacularName") or r.get("common_name"),
-                            "timestamp": ts_val,
-                            "latitude": lat,
-                            "longitude": lon,
-                            "depth_meters": depth_val,
-                            "individual_count": count_val,
-                            "occurrence_status": status_occ,
-                            "basis_of_record": basis,
-                            "darwin_core_fields": json.dumps(r)
-                        }
-                    )
-                    inserted_count += 1
-                except Exception:
+                    occurrence_batch.append({
+                        "dataset_id": dataset_id,
+                        "species_id": species_id,
+                        "scientific_name": sc_name,
+                        "common_name": r.get("vernacularName") or r.get("common_name"),
+                        "timestamp": ts_val,
+                        "latitude": lat,
+                        "longitude": lon,
+                        "depth_meters": depth_val,
+                        "individual_count": count_val,
+                        "occurrence_status": status_occ,
+                        "basis_of_record": basis,
+                        "darwin_core_fields": json.dumps(r)
+                    })
+
+                    # Batch write in chunks of 500
+                    if len(occurrence_batch) >= 500:
+                        UploadService._batch_insert_occurrences(occurrence_batch)
+                        inserted_count += len(occurrence_batch)
+                        occurrence_batch.clear()
+
+                except Exception as ex:
+                    logger.warning("Error processing biodiversity record: %s", ex)
+                    skipped_count += 1
                     continue
+
+            if occurrence_batch:
+                UploadService._batch_insert_occurrences(occurrence_batch)
+                inserted_count += len(occurrence_batch)
+                occurrence_batch.clear()
 
         # 2. OCEANOGRAPHY
         elif any(d in domain for d in ["ocean", "ctd", "hydro"]):
             for r in records:
                 try:
-                    lat_str = r.get("decimalLatitude") or r.get("latitude") or r.get("lat")
-                    lon_str = r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
-                    if not lat_str or not lon_str:
+                    coords = _validate_coords(
+                        r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
+                        r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
+                    )
+                    if not coords:
+                        skipped_count += 1
                         continue
-                    lat = float(lat_str)
-                    lon = float(lon_str)
+                    lat, lon = coords
                     
                     def _flt(k_list):
                         for k in k_list:
                             v = r.get(k)
                             if v is not None and str(v).strip():
                                 try:
-                                    return float(str(v).strip())
+                                    val_f = float(str(v).strip())
+                                    if not math.isnan(val_f) and not math.isinf(val_f):
+                                        return val_f
                                 except (ValueError, TypeError):
                                     pass
                         return None
@@ -432,7 +478,7 @@ class UploadService:
                             depth_meters, temperature_celsius, salinity_psu, dissolved_oxygen_mgl,
                             chlorophyll_mg_m3, ph, quality_status, created_at, updated_at
                         ) VALUES (
-                            gen_random_uuid(), :dataset_id, :station_id, :timestamp::timestamptz, :latitude, :longitude,
+                            gen_random_uuid(), :dataset_id, :station_id, CAST(:timestamp AS timestamptz), :latitude, :longitude,
                             :depth_meters, :temperature, :salinity, :dissolved_oxygen,
                             :chlorophyll, :ph, 'passed'::quality_flag, NOW(), NOW()
                         );
@@ -452,26 +498,32 @@ class UploadService:
                         }
                     )
                     inserted_count += 1
-                except Exception:
+                except Exception as ex:
+                    logger.warning("Error processing oceanographic record: %s", ex)
+                    skipped_count += 1
                     continue
 
         # 3. FISHERIES
         elif any(d in domain for d in ["fish", "catch"]):
             for r in records:
                 try:
-                    lat_str = r.get("decimalLatitude") or r.get("latitude") or r.get("lat")
-                    lon_str = r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
-                    if not lat_str or not lon_str:
+                    coords = _validate_coords(
+                        r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
+                        r.get("decimalLongitude") or r.get("longitude") or r.get("lon")
+                    )
+                    if not coords:
+                        skipped_count += 1
                         continue
-                    lat = float(lat_str)
-                    lon = float(lon_str)
+                    lat, lon = coords
 
                     def _flt(k_list):
                         for k in k_list:
                             v = r.get(k)
                             if v is not None and str(v).strip():
                                 try:
-                                    return float(str(v).strip())
+                                    val_f = float(str(v).strip())
+                                    if not math.isnan(val_f) and not math.isinf(val_f):
+                                        return val_f
                                 except (ValueError, TypeError):
                                     pass
                         return None
@@ -488,7 +540,7 @@ class UploadService:
                             species_name_reported, catch_weight_kg, fishing_effort_hours,
                             gear_type, fishing_zone, vessel_name, quality_status, created_at, updated_at
                         ) VALUES (
-                            gen_random_uuid(), :dataset_id, :timestamp::timestamptz, :latitude, :longitude,
+                            gen_random_uuid(), :dataset_id, CAST(:timestamp AS timestamptz), :latitude, :longitude,
                             :species_name, :catch_weight_kg, :fishing_effort_hours,
                             :gear_type, :fishing_zone, :vessel_name, 'passed'::quality_flag, NOW(), NOW()
                         );
@@ -507,7 +559,9 @@ class UploadService:
                         }
                     )
                     inserted_count += 1
-                except Exception:
+                except Exception as ex:
+                    logger.warning("Error processing fisheries record: %s", ex)
+                    skipped_count += 1
                     continue
 
         # 4. MOLECULAR eDNA
@@ -515,19 +569,29 @@ class UploadService:
             sample_cache: Dict[str, str] = {}
             for r in records:
                 try:
-                    lat = float(r.get("latitude") or r.get("decimalLatitude") or 12.5)
-                    lon = float(r.get("longitude") or r.get("decimalLongitude") or 74.0)
+                    coords = _validate_coords(
+                        r.get("latitude") or r.get("decimalLatitude"),
+                        r.get("longitude") or r.get("decimalLongitude")
+                    )
+                    if not coords:
+                        skipped_count += 1
+                        continue
+                    lat, lon = coords
+
                     sample_code = r.get("sample_code") or r.get("sampleCode") or r.get("eventID") or f"EDNA-{dataset_id[:8]}"
                     
                     sample_id = sample_cache.get(sample_code)
                     if not sample_id:
+                        d_raw = r.get("depth_meters") or r.get("depth")
+                        depth_val = float(str(d_raw).strip()) if d_raw is not None and str(d_raw).strip() else None
+
                         s_res = execute_single(
                             """
                             INSERT INTO public.edna_samples (
                                 id, dataset_id, sample_code, collection_timestamp, latitude, longitude,
                                 depth_meters, target_gene, sequencing_platform, quality_status, created_at, updated_at
                             ) VALUES (
-                                gen_random_uuid(), :dataset_id, :sample_code, :timestamp::timestamptz, :latitude, :longitude,
+                                gen_random_uuid(), :dataset_id, :sample_code, CAST(:timestamp AS timestamptz), :latitude, :longitude,
                                 :depth_meters, :target_gene, :sequencing_platform, 'passed'::quality_flag, NOW(), NOW()
                             ) RETURNING id;
                             """,
@@ -537,9 +601,9 @@ class UploadService:
                                 "timestamp": r.get("collection_timestamp") or r.get("eventDate") or now_iso,
                                 "latitude": lat,
                                 "longitude": lon,
-                                "depth_meters": float(r.get("depth_meters") or r.get("depth") or 25.0),
-                                "target_gene": r.get("target_gene") or r.get("marker") or "16S rRNA",
-                                "sequencing_platform": r.get("sequencing_platform") or "Illumina NovaSeq"
+                                "depth_meters": depth_val,
+                                "target_gene": r.get("target_gene") or r.get("marker"),
+                                "sequencing_platform": r.get("sequencing_platform")
                             }
                         )
                         if s_res:
@@ -548,7 +612,15 @@ class UploadService:
 
                     if sample_id:
                         sc_name = r.get("assigned_scientific_name") or r.get("scientificName") or "Marine Microorganism"
-                        reads = int(float(r.get("read_count") or r.get("reads") or 100))
+                        r_raw = r.get("read_count") or r.get("reads")
+                        reads = int(float(str(r_raw).strip())) if r_raw is not None and str(r_raw).strip() else None
+
+                        b_raw = r.get("blast_identity_percentage")
+                        blast_val = float(str(b_raw).strip()) if b_raw is not None and str(b_raw).strip() else None
+
+                        conf_raw = r.get("confidence_score")
+                        conf_val = float(str(conf_raw).strip()) if conf_raw is not None and str(conf_raw).strip() else None
+
                         execute_write(
                             """
                             INSERT INTO public.edna_results (
@@ -563,13 +635,36 @@ class UploadService:
                                 "sample_id": sample_id,
                                 "scientific_name": sc_name,
                                 "read_count": reads,
-                                "blast_identity": float(r.get("blast_identity_percentage") or 99.2),
-                                "confidence_score": float(r.get("confidence_score") or 0.98)
+                                "blast_identity": blast_val,
+                                "confidence_score": conf_val
                             }
                         )
                         inserted_count += 1
-                except Exception:
+                except Exception as ex:
+                    logger.warning("Error processing eDNA record: %s", ex)
+                    skipped_count += 1
                     continue
 
-        return inserted_count
+        return (inserted_count, skipped_count)
+
+    @staticmethod
+    def _batch_insert_occurrences(batch: List[Dict[str, Any]]) -> None:
+        """Helper to batch-insert species occurrences."""
+        from backend.app.db.database import execute_write
+        for item in batch:
+            execute_write(
+                """
+                INSERT INTO public.species_occurrences (
+                    id, dataset_id, species_id, scientific_name, common_name, timestamp,
+                    latitude, longitude, depth_meters, individual_count, occurrence_status,
+                    basis_of_record, darwin_core_fields, quality_status, created_at, updated_at
+                ) VALUES (
+                    gen_random_uuid(), :dataset_id, :species_id, :scientific_name, :common_name, CAST(:timestamp AS timestamptz),
+                    :latitude, :longitude, :depth_meters, :individual_count, :occurrence_status,
+                    :basis_of_record, CAST(:darwin_core_fields AS jsonb), 'passed'::quality_flag, NOW(), NOW()
+                );
+                """,
+                item
+            )
+
 

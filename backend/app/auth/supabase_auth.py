@@ -20,7 +20,7 @@ security = HTTPBearer(auto_error=False)
 def decode_supabase_jwt(token: str) -> Dict[str, Any]:
     """
     Decodes and validates a Supabase JWT.
-    Fails closed when SUPABASE_JWT_SECRET is missing, unless explicitly running in development.
+    Fails closed when SUPABASE_JWT_SECRET is missing.
     """
     if not token:
         raise HTTPException(
@@ -28,24 +28,20 @@ def decode_supabase_jwt(token: str) -> Dict[str, Any]:
             detail={"code": "MISSING_TOKEN", "message": "Authorization token required."}
         )
 
+    if not settings.SUPABASE_JWT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "JWT_SECRET_MISSING", "message": "Server authentication secret is not configured."}
+        )
+
     try:
-        secret = settings.SUPABASE_JWT_SECRET or "cmlre_marine_intelligence_jwt_secret_dev_key"
-        try:
-            payload = jwt.decode(
-                token,
-                secret,
-                algorithms=["HS256"],
-                options={"verify_aud": False}
-            )
-            return payload
-        except (jwt.InvalidSignatureError, jwt.InvalidAudienceError):
-            if settings.ENVIRONMENT == "development" or not settings.SUPABASE_JWT_SECRET:
-                payload = jwt.decode(
-                    token,
-                    options={"verify_signature": False, "verify_exp": False}
-                )
-                return payload
-            raise
+        payload = jwt.decode(
+            token,
+            settings.SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            options={"verify_aud": False}
+        )
+        return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

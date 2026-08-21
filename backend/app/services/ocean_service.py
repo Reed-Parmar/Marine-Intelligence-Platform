@@ -203,11 +203,7 @@ class OceanService:
         ORDER BY o.depth_meters ASC
         LIMIT 50;
         """
-        try:
-            rows = execute_query(query, params)
-        except Exception:
-            rows = []
-
+        rows = execute_query(query, params)
         if not rows:
             return []
 

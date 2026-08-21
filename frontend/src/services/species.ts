@@ -11,9 +11,8 @@ function normalizeSpecies(s: any): SpeciesRecord {
       phylum: s.taxonomy?.phylum || s.phylum || '',
       class: s.taxonomy?.class || s.class_name || s.class || '',
       order: s.taxonomy?.order || s.order_name || s.order || '',
-      family: s.taxonomy?.family || s.family || '',
-      genus: s.taxonomy?.genus || s.genus || (s.scientific_name ? s.scientific_name.split(' ')[0] : ''),
-      species: s.taxonomy?.species || s.species || (s.scientific_name ? s.scientific_name.split(' ')[1] : '')
+      genus: s.taxonomy?.genus || s.genus || (s.scientific_name ? (s.scientific_name.split(' ')[0] || '') : ''),
+      species: s.taxonomy?.species || s.species || (s.scientific_name ? (s.scientific_name.split(' ')[1] || '') : '')
     },
     iucnRedListCategory: (s.iucnRedListCategory || s.iucn_red_list_status || 'Unknown') as any,
     commercialImportance: (s.commercialImportance || s.commercial_importance || 'Unknown') as any,

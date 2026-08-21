@@ -8,6 +8,12 @@ import {
   FileFormat
 } from '../types/dataset';
 
+function parseNullableNumber(val: any): number | null {
+  if (val === null || val === undefined || val === '') return null;
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+}
+
 function normalizeDataset(d: any): DatasetMetadata {
   return {
     id: String(d.id || ''),
@@ -17,7 +23,7 @@ function normalizeDataset(d: any): DatasetMetadata {
     format: (d.format || d.file_type || 'TXT').toUpperCase() as FileFormat,
     status: d.status || 'ready',
     qualityStatus: d.qualityStatus || d.quality_status || 'pending',
-    qualityScore: d.qualityScore ?? (d.quality_score !== undefined ? Number(d.quality_score) : undefined),
+    qualityScore: d.qualityScore ?? parseNullableNumber(d.quality_score) ?? undefined,
     rowCount: d.rowCount ?? (d.row_count !== undefined ? Number(d.row_count) : 0),
     fileSizeBytes: d.fileSizeBytes ?? (d.file_size_bytes !== undefined ? Number(d.file_size_bytes) : 0),
     source: d.source || d.source_name || '',
@@ -60,15 +66,15 @@ export const datasetService = {
     if (!q) throw new Error(`Quality report for dataset '${datasetId}' not found.`);
     return {
       datasetId: q.dataset_id || datasetId,
-      score: q.quality_score !== undefined ? Number(q.quality_score) : (q.score ?? null),
+      score: parseNullableNumber(q.quality_score ?? q.score),
       status: q.quality_status || q.status || 'pending',
-      totalRows: q.total_rows !== undefined ? Number(q.total_rows) : (q.totalRows ?? 0),
-      validRows: q.valid_rows !== undefined ? Number(q.valid_rows) : (q.validRows ?? 0),
-      flaggedRows: q.flagged_rows !== undefined ? Number(q.flagged_rows) : (q.flaggedRows ?? 0),
-      duplicateCount: q.duplicate_count !== undefined ? Number(q.duplicate_count) : (q.duplicateCount ?? 0),
-      missingValueRatio: q.missing_value_ratio !== undefined ? Number(q.missing_value_ratio) : (q.missingValueRatio ?? 0),
-      spatialCompleteness: q.spatialCompleteness ?? q.spatial_completeness ?? null,
-      temporalCompleteness: q.temporalCompleteness ?? q.temporal_completeness ?? null,
+      totalRows: parseNullableNumber(q.total_rows ?? q.totalRows) ?? 0,
+      validRows: parseNullableNumber(q.valid_rows ?? q.validRows) ?? 0,
+      flaggedRows: parseNullableNumber(q.flagged_rows ?? q.flaggedRows) ?? 0,
+      duplicateCount: parseNullableNumber(q.duplicate_count ?? q.duplicateCount) ?? 0,
+      missingValueRatio: parseNullableNumber(q.missing_value_ratio ?? q.missingValueRatio) ?? 0,
+      spatialCompleteness: parseNullableNumber(q.spatialCompleteness ?? q.spatial_completeness),
+      temporalCompleteness: parseNullableNumber(q.temporalCompleteness ?? q.temporal_completeness),
       issues: Array.isArray(q.issues) ? q.issues : (q.validation_notes ? [
         {
           id: 'iss-note',
@@ -89,13 +95,13 @@ export const datasetService = {
     const meta = p.provenance_metadata || p.provenance || {};
     return {
       datasetId: p.dataset_id || datasetId,
-      originalFileName: p.original_file_name || meta.original_filename || (p.storage_file_path ? p.storage_file_path.split('/').pop() : 'dataset_source.txt'),
+      originalFileName: p.original_file_name || meta.original_filename || (p.storage_file_path ? p.storage_file_path.split('/').pop() : undefined),
       fileHashSha256: p.file_hash_sha256 || meta.file_hash || '',
-      sourceInstitution: p.source_institution || 'CMLRE',
-      vesselCruiseId: p.vessel_cruise_id || meta.vessel_cruise_id || '',
+      sourceInstitution: p.source_institution || meta.source || undefined,
+      vesselCruiseId: p.vessel_cruise_id || meta.vessel_cruise_id || undefined,
       uploadedBy: p.uploaded_by || meta.uploaded_by || '',
       uploadedAt: p.uploaded_at || p.created_at || meta.ingested_at || '',
-      ingestionPipelineVersion: p.ingestion_pipeline_version || meta.pipeline_version || 'CMLRE-Ingest-v2',
+      ingestionPipelineVersion: p.ingestion_pipeline_version || meta.pipeline_version || undefined,
       standardizationRulesApplied: p.standardization_rules_applied || meta.standardization_rules || [],
       storagePath: p.storage_file_path || p.storage_path || meta.storage_path || ''
     };

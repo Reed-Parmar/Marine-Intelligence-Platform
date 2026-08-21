@@ -36,13 +36,12 @@ class LoginResponse(BaseModel):
 
 
 class RegisterRequest(BaseModel):
-    email: str
-    password: str = Field(..., min_length=1, description="Password for account")
+    email: EmailStr
+    password: str = Field(..., min_length=8, description="Password for account (min 8 characters)")
     full_name: str = Field(..., min_length=1, description="Full name of researcher")
-    institution: Optional[str] = Field(default="CMLRE, Kochi", description="Research institution name")
+    institution: Optional[str] = Field(default=None, description="Research institution name")
     department: Optional[str] = Field(default=None, description="Department / Research Division")
     designation: Optional[str] = Field(default=None, description="Designation / Scientific Role")
-    role: Optional[UserRole] = Field(default=UserRole.USER, description="User role")
 
 
 class RoleUpdateRequest(BaseModel):

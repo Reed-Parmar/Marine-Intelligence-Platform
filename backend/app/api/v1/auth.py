@@ -2,8 +2,8 @@
 Authentication Router: Wraps Supabase Auth GoTrue endpoints with profile persistence and registration.
 """
 
-import hashlib
 import json
+import logging
 import time
 import uuid
 from typing import Optional
@@ -24,12 +24,17 @@ from backend.app.schemas.auth import (
 )
 from backend.app.schemas.common import ApiResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
 def create_access_token(user_id: str, email: str, role: str = "authenticated") -> str:
     """Creates a standard signed Supabase-compatible JWT token."""
-    secret = settings.SUPABASE_JWT_SECRET or "cmlre_marine_intelligence_jwt_secret_dev_key"
+    if not settings.SUPABASE_JWT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "JWT_SECRET_MISSING", "message": "Server authentication secret is not configured."}
+        )
     payload = {
         "sub": str(user_id),
         "email": email,
@@ -39,19 +44,7 @@ def create_access_token(user_id: str, email: str, role: str = "authenticated") -
         "exp": int(time.time()) + 86400 * 7,
         "iat": int(time.time())
     }
-    return jwt.encode(payload, secret, algorithm="HS256")
-
-
-def get_auth_password(raw_password: str) -> str:
-    """
-    Transforms any raw password into a deterministic 64-character hash
-    so that passwords of ANY length (including < 6 characters)
-    are supported seamlessly by Supabase Auth (which requires >= 6 chars).
-    """
-    if not raw_password:
-        return ""
-    return hashlib.sha256(f"cmlre_auth_salt_{raw_password}".encode("utf-8")).hexdigest()
-
+    return jwt.encode(payload, settings.SUPABASE_JWT_SECRET, algorithm="HS256")
 
 
 @router.get("/me", response_model=ApiResponse[UserProfile])
@@ -70,8 +63,6 @@ async def register(req: RegisterRequest):
     Directly provisions auth credentials to bypass Supabase built-in SMTP email rate limits
     while ensuring seamless JWT session issuance.
     """
-    role_str = req.role.value if req.role else "user"
-    auth_password = get_auth_password(req.password)
     user_id = str(uuid.uuid4())
     identity_id = str(uuid.uuid4())
 
@@ -88,19 +79,24 @@ async def register(req: RegisterRequest):
             )
     except HTTPException:
         raise
-    except Exception:
-        pass
+    except Exception as err:
+        logger.error("Database error while checking existing user: %s", err)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "DATABASE_ERROR", "message": "Failed to verify registration eligibility."}
+        )
 
     # 1. Provision user directly in auth.users and auth.identities
-    # This bypasses Supabase GoTrue SMTP rate limits (2 emails/hr) and confirms email immediately
+    # Server-controlled role default: 'user'
     provisioned_direct = False
+    last_error = None
     try:
         user_metadata = {
             "full_name": req.full_name,
             "institution": req.institution or "CMLRE, Kochi",
             "department": req.department,
             "designation": req.designation,
-            "role": role_str
+            "role": "user"
         }
         app_metadata = {
             "provider": "email",
@@ -115,7 +111,7 @@ async def register(req: RegisterRequest):
             VALUES (
                 :id::uuid,
                 :email,
-                extensions.crypt(:auth_password, extensions.gen_salt('bf')),
+                extensions.crypt(:password, extensions.gen_salt('bf')),
                 NOW(),
                 CAST(:app_meta AS jsonb),
                 CAST(:user_meta AS jsonb),
@@ -127,7 +123,7 @@ async def register(req: RegisterRequest):
         """, {
             "id": user_id,
             "email": req.email,
-            "auth_password": auth_password,
+            "password": req.password,
             "app_meta": json.dumps(app_metadata),
             "user_meta": json.dumps(user_metadata)
         })
@@ -155,11 +151,10 @@ async def register(req: RegisterRequest):
 
         execute_write("""
             INSERT INTO public.profiles (id, email, full_name, role, institution, department, designation)
-            VALUES (:user_id, :email, :full_name, :role::public.user_role, :institution, :department, :designation)
+            VALUES (:user_id, :email, :full_name, 'user'::public.user_role, :institution, :department, :designation)
             ON CONFLICT (id) DO UPDATE
             SET full_name = EXCLUDED.full_name,
                 email = EXCLUDED.email,
-                role = EXCLUDED.role,
                 institution = COALESCE(EXCLUDED.institution, public.profiles.institution),
                 department = COALESCE(EXCLUDED.department, public.profiles.department),
                 designation = COALESCE(EXCLUDED.designation, public.profiles.designation),
@@ -168,13 +163,14 @@ async def register(req: RegisterRequest):
             "user_id": user_id,
             "email": req.email,
             "full_name": req.full_name,
-            "role": role_str,
             "institution": req.institution,
             "department": req.department,
             "designation": req.designation
         })
         provisioned_direct = True
     except Exception as db_err:
+        last_error = db_err
+        logger.error("Direct database provisioning failed: %s", db_err)
         # Fallback to Supabase GoTrue signup if direct DB write is unavailable
         if settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
             signup_url = f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/signup"
@@ -184,13 +180,13 @@ async def register(req: RegisterRequest):
             }
             signup_payload = {
                 "email": req.email,
-                "password": auth_password,
+                "password": req.password,
                 "data": {
                     "full_name": req.full_name,
                     "institution": req.institution,
                     "department": req.department,
                     "designation": req.designation,
-                    "role": role_str
+                    "role": "user"
                 }
             }
             try:
@@ -200,17 +196,18 @@ async def register(req: RegisterRequest):
                     user_data = resp.json()
                     user_id = str(user_data.get("id") or user_data.get("user", {}).get("id") or user_id)
                     provisioned_direct = True
-            except Exception:
-                pass
+            except Exception as http_err:
+                logger.error("Supabase GoTrue signup fallback failed: %s", http_err)
 
-        if not provisioned_direct and settings.ENVIRONMENT != "development":
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail={"code": "PROVISIONING_FAILED", "message": f"Failed to provision user: {str(db_err)}"}
-            )
+    if not provisioned_direct:
+        logger.error("User account provisioning failed completely: %s", last_error)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "PROVISIONING_FAILED", "message": "Failed to provision researcher account."}
+        )
 
     # 2. Acquire authenticated JWT session via Supabase Token endpoint or generate valid signed JWT
-    access_token = create_access_token(user_id=user_id, email=req.email, role=role_str)
+    access_token = create_access_token(user_id=user_id, email=req.email, role="authenticated")
     token_type = "bearer"
     if settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
         token_url = f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/token?grant_type=password"
@@ -220,7 +217,7 @@ async def register(req: RegisterRequest):
         }
         token_payload = {
             "email": req.email,
-            "password": auth_password
+            "password": req.password
         }
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
@@ -230,8 +227,8 @@ async def register(req: RegisterRequest):
                 if token_data.get("access_token"):
                     access_token = token_data.get("access_token")
                 token_type = token_data.get("token_type", "bearer")
-        except Exception:
-            pass
+        except Exception as t_err:
+            logger.warning("Could not obtain upstream token, using generated token: %s", t_err)
 
     # 3. Fetch resolved database profile
     db_profile = None
@@ -240,7 +237,7 @@ async def register(req: RegisterRequest):
     except Exception:
         pass
 
-    resolved_role = UserRole.ADMIN if db_profile and db_profile.get("role") == "admin" else (req.role or UserRole.USER)
+    resolved_role = UserRole.ADMIN if db_profile and db_profile.get("role") == "admin" else UserRole.USER
 
     return ApiResponse(
         data=LoginResponse(
@@ -265,29 +262,35 @@ async def register(req: RegisterRequest):
 async def login(req: LoginRequest):
     """
     Authenticates a user using Supabase Auth (email + password).
-    Supports passwords of arbitrary length via deterministic hashing with fallback.
     """
     if not settings.SUPABASE_URL or not settings.SUPABASE_ANON_KEY:
-        # Fallback to direct DB user lookup in development
-        db_user = execute_single("SELECT id, email, full_name, role, institution, department, designation, created_at, updated_at FROM public.profiles WHERE LOWER(email) = LOWER(:email);", {"email": req.email})
-        if db_user:
-            user_id = str(db_user["id"])
-            resolved_role = UserRole.ADMIN if db_user.get("role") == "admin" else UserRole.USER
-            access_token = create_access_token(user_id=user_id, email=db_user["email"], role=db_user.get("role", "authenticated"))
+        # In unconfigured-Supabase environment, verify password against stored password hash
+        db_auth = execute_single("""
+            SELECT u.id, p.email, p.full_name, p.role, p.institution, p.department, p.designation, p.created_at, p.updated_at
+            FROM auth.users u
+            JOIN public.profiles p ON u.id = p.id
+            WHERE LOWER(u.email) = LOWER(:email)
+              AND u.encrypted_password = extensions.crypt(:password, u.encrypted_password);
+        """, {"email": req.email, "password": req.password})
+
+        if db_auth:
+            user_id = str(db_auth["id"])
+            resolved_role = UserRole.ADMIN if db_auth.get("role") == "admin" else UserRole.USER
+            access_token = create_access_token(user_id=user_id, email=db_auth["email"], role=db_auth.get("role", "authenticated"))
             return ApiResponse(
                 data=LoginResponse(
                     access_token=access_token,
                     token_type="bearer",
                     user=UserProfile(
                         id=user_id,
-                        email=db_user["email"],
-                        full_name=db_user.get("full_name"),
+                        email=db_auth["email"],
+                        full_name=db_auth.get("full_name"),
                         role=resolved_role,
-                        institution=db_user.get("institution", "CMLRE"),
-                        department=db_user.get("department"),
-                        designation=db_user.get("designation"),
-                        created_at=str(db_user.get("created_at")) if db_user.get("created_at") else None,
-                        updated_at=str(db_user.get("updated_at")) if db_user.get("updated_at") else None
+                        institution=db_auth.get("institution", "CMLRE"),
+                        department=db_auth.get("department"),
+                        designation=db_auth.get("designation"),
+                        created_at=str(db_auth.get("created_at")) if db_auth.get("created_at") else None,
+                        updated_at=str(db_auth.get("updated_at")) if db_auth.get("updated_at") else None
                     )
                 )
             )
@@ -301,57 +304,22 @@ async def login(req: LoginRequest):
         "apikey": settings.SUPABASE_ANON_KEY,
         "Content-Type": "application/json"
     }
-    auth_password = get_auth_password(req.password)
     payload = {
         "email": req.email,
-        "password": auth_password
+        "password": req.password
     }
 
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(auth_url, json=payload, headers=headers)
-            # If failed, attempt fallback with raw password for any legacy accounts
-            if resp.status_code != 200 and len(req.password) >= 6:
-                legacy_resp = await client.post(
-                    auth_url,
-                    json={"email": req.email, "password": req.password},
-                    headers=headers
-                )
-                if legacy_resp.status_code == 200:
-                    resp = legacy_resp
-    except httpx.RequestError:
-        resp = None
+    except httpx.RequestError as e:
+        logger.error("Upstream authentication service request failed: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail={"code": "UPSTREAM_AUTH_UNAVAILABLE", "message": "Authentication service is currently unavailable."}
+        )
 
-    if not resp or resp.status_code != 200:
-        # Fallback to direct DB user lookup for provisioned users
-        db_user = None
-        try:
-            db_user = execute_single("SELECT id, email, full_name, role, institution, department, designation, created_at, updated_at FROM public.profiles WHERE LOWER(email) = LOWER(:email);", {"email": req.email})
-        except Exception:
-            pass
-
-        if db_user:
-            user_id = str(db_user["id"])
-            resolved_role = UserRole.ADMIN if db_user.get("role") == "admin" else UserRole.USER
-            access_token = create_access_token(user_id=user_id, email=db_user["email"], role=db_user.get("role", "authenticated"))
-            return ApiResponse(
-                data=LoginResponse(
-                    access_token=access_token,
-                    token_type="bearer",
-                    user=UserProfile(
-                        id=user_id,
-                        email=db_user["email"],
-                        full_name=db_user.get("full_name"),
-                        role=resolved_role,
-                        institution=db_user.get("institution", "CMLRE"),
-                        department=db_user.get("department"),
-                        designation=db_user.get("designation"),
-                        created_at=str(db_user.get("created_at")) if db_user.get("created_at") else None,
-                        updated_at=str(db_user.get("updated_at")) if db_user.get("updated_at") else None
-                    )
-                )
-            )
-
+    if resp.status_code != 200:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "INVALID_CREDENTIALS", "message": "Invalid email or password."}
@@ -394,7 +362,7 @@ async def login(req: LoginRequest):
                 full_name=db_profile.get("full_name") if db_profile else user_data.get("user_metadata", {}).get("full_name"),
                 role=resolved_role,
                 institution=db_profile.get("institution") if db_profile else user_data.get("user_metadata", {}).get("institution", "CMLRE"),
-                department=db_profile.get("department") if db_profile else None,
+                department=db_profile.get("department") if db_profile else user_data.get("user_metadata", {}).get("department"),
                 designation=db_profile.get("designation") if db_profile else user_data.get("user_metadata", {}).get("designation"),
                 created_at=str(db_profile.get("created_at")) if db_profile and db_profile.get("created_at") else None,
                 updated_at=str(db_profile.get("updated_at")) if db_profile and db_profile.get("updated_at") else None

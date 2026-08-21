@@ -175,10 +175,10 @@ class MarineService:
         else:
             fisheries = {
                 "dominantCatch": fish_species[0] if fish_species else None,
-                "totalLandingsTons": round(sum(catches) / 1000.0, 2) if catches else 0.0,
+                "totalLandingsTons": round(sum(catches) / 1000.0, 2) if catches else None,
                 "cpueKgPerHour": round(sum(catches) / max(1, len(catches)), 1) if catches else None,
-                "dominantGear": "Pelagic / Demersal Gear",
-                "fishingPressureLevel": "Monitored"
+                "dominantGear": None,
+                "fishingPressureLevel": None
             }
 
         # Biodiversity aggregates
@@ -191,7 +191,7 @@ class MarineService:
                 "speciesRecordedCount": len(bio_species) if bio_species else len(bio_obs),
                 "keySpeciesPresent": bio_species[:5],
                 "shannonWienerIndex": None,
-                "endemicSpeciesFlag": False
+                "endemicSpeciesFlag": None
             }
 
         # eDNA aggregates
@@ -204,7 +204,7 @@ class MarineService:
                 "samplesAnalyzed": len(edna_obs),
                 "taxaIdentified": len(edna_species),
                 "topDetections": [
-                    {"species": sp, "confidence": 0.96, "marker": "12S rRNA"} for sp in edna_species[:3]
+                    {"species": sp, "confidence": None, "marker": None} for sp in edna_species[:3]
                 ]
             }
 

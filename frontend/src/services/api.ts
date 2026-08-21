@@ -79,7 +79,17 @@ export class ApiClient {
       throw new Error(message);
     }
 
-    const json = await response.json();
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      return { data: null as unknown as T, meta: { timestamp: new Date().toISOString() } };
+    }
+
+    let json: any;
+    try {
+      json = await response.json();
+    } catch {
+      return { data: null as unknown as T, meta: { timestamp: new Date().toISOString() } };
+    }
+
     // Backend wraps responses as { data, meta } — unwrap if present
     if (json && typeof json === 'object' && 'data' in json) {
       return json;

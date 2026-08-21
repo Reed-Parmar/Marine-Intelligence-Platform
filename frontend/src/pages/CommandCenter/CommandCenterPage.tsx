@@ -40,26 +40,31 @@ export const CommandCenterPage: React.FC = () => {
   const [recentDatasets, setRecentDatasets] = useState<DatasetMetadata[]>([]);
   const [recentAlerts, setRecentAlerts] = useState<MarineAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const isAdmin = user?.role === 'admin';
 
+  const loadDashboard = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [sum, ds, al] = await Promise.all([
+        marineService.getSummary(),
+        datasetService.getDatasets(),
+        alertsService.getAlerts()
+      ]);
+      setSummary(sum);
+      setRecentDatasets(ds.slice(0, 4));
+      setRecentAlerts(al.slice(0, 3));
+    } catch (err: any) {
+      console.error('Failed to load command center summary', err);
+      setError(err?.message || 'Failed to load command center summary. Please check backend connection and retry.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const [sum, ds, al] = await Promise.all([
-          marineService.getSummary(),
-          datasetService.getDatasets(),
-          alertsService.getAlerts()
-        ]);
-        setSummary(sum);
-        setRecentDatasets(ds.slice(0, 4));
-        setRecentAlerts(al.slice(0, 3));
-      } catch (err) {
-        console.error('Failed to load command center summary', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     loadDashboard();
   }, []);
 
@@ -71,6 +76,23 @@ export const CommandCenterPage: React.FC = () => {
             <CardSkeleton key={i} rows={2} />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error && !summary) {
+    return (
+      <div className="glass-panel rounded-xl p-8 text-center space-y-4 border border-rose-500/30">
+        <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-white">Dashboard Unavailable</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">{error}</p>
+        </div>
+        <Button onClick={loadDashboard} variant="secondary" size="sm">
+          Retry Loading
+        </Button>
       </div>
     );
   }

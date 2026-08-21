@@ -154,10 +154,11 @@ export const RegisterPage: React.FC = () => {
           <form onSubmit={handleRegister} className="space-y-4">
             {/* Full Name */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-300">Full Name & Title</label>
+              <label htmlFor="register-fullName" className="text-xs font-medium text-slate-300">Full Name & Title</label>
               <div className="relative">
                 <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
+                  id="register-fullName"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
@@ -170,10 +171,11 @@ export const RegisterPage: React.FC = () => {
 
             {/* Email */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-300">Institutional Email</label>
+              <label htmlFor="register-email" className="text-xs font-medium text-slate-300">Institutional Email</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
+                  id="register-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -187,10 +189,11 @@ export const RegisterPage: React.FC = () => {
             {/* Institution & Department Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Institution</label>
+                <label htmlFor="register-institution" className="text-xs font-medium text-slate-300">Institution</label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
+                    id="register-institution"
                     type="text"
                     value={institution}
                     onChange={(e) => setInstitution(e.target.value)}
@@ -201,10 +204,11 @@ export const RegisterPage: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Designation / Role</label>
+                <label htmlFor="register-designation" className="text-xs font-medium text-slate-300">Designation / Role</label>
                 <div className="relative">
                   <Briefcase className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
+                    id="register-designation"
                     type="text"
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
@@ -217,10 +221,11 @@ export const RegisterPage: React.FC = () => {
 
             {/* Department */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-300">Division / Department</label>
+              <label htmlFor="register-department" className="text-xs font-medium text-slate-300">Division / Department</label>
               <div className="relative">
                 <Layers className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
+                  id="register-department"
                   type="text"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
@@ -233,10 +238,11 @@ export const RegisterPage: React.FC = () => {
             {/* Password & Confirm Password Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Password</label>
+                <label htmlFor="register-password" className="text-xs font-medium text-slate-300">Password</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
+                    id="register-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -248,10 +254,11 @@ export const RegisterPage: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Confirm Password</label>
+                <label htmlFor="register-confirmPassword" className="text-xs font-medium text-slate-300">Confirm Password</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
+                    id="register-confirmPassword"
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

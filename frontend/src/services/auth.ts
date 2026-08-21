@@ -7,10 +7,10 @@ function normalizeProfile(rawUser: any, fallbackEmail: string = ''): UserProfile
     email: rawUser.email || fallbackEmail,
     fullName: rawUser.fullName || rawUser.full_name || 'Marine Researcher',
     role: (rawUser.role === 'admin' ? 'admin' : 'user'),
-    institution: rawUser.institution || 'Centre for Marine Living Resources & Ecology (CMLRE)',
-    department: rawUser.department || 'Marine Research Division',
+    institution: rawUser.institution || undefined,
+    department: rawUser.department || undefined,
     designation: rawUser.designation || undefined,
-    avatarUrl: rawUser.avatarUrl || rawUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatarUrl: rawUser.avatarUrl || rawUser.avatar_url || undefined,
     createdAt: rawUser.createdAt || rawUser.created_at || new Date().toISOString()
   };
 }
@@ -23,7 +23,7 @@ export const authService = {
         email: data.email,
         password: data.password,
         full_name: data.fullName,
-        institution: data.institution || 'CMLRE, Kochi',
+        institution: data.institution || undefined,
         department: data.department,
         designation: data.designation
       }

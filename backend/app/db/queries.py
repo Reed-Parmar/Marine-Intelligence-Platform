@@ -311,6 +311,8 @@ UNION ALL
       AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
       AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
       AND (:species_id IS NULL OR f.species_id = :species_id)
+      AND (:depth_min IS NULL OR f.depth_meters >= :depth_min)
+      AND (:depth_max IS NULL OR f.depth_meters <= :depth_max)
 )
 UNION ALL
 (
@@ -360,6 +362,8 @@ SELECT (
           AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
           AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
           AND (:species_id IS NULL OR f.species_id = :species_id)
+          AND (:depth_min IS NULL OR f.depth_meters >= :depth_min)
+          AND (:depth_max IS NULL OR f.depth_meters <= :depth_max)
     ) +
     (
         SELECT COUNT(*)

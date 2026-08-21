@@ -12,10 +12,21 @@ export type DatasetStatus =
   | 'uploaded' 
   | 'processing' 
   | 'quality_checking' 
+  | 'standardized'
   | 'completed' 
   | 'failed';
 
-export type QualityStatus = 'excellent' | 'good' | 'warning' | 'critical' | 'unprocessed';
+export type QualityStatus = 
+  | 'pending'
+  | 'passed'
+  | 'flagged'
+  | 'suspect'
+  | 'failed'
+  | 'excellent' 
+  | 'good' 
+  | 'warning' 
+  | 'critical' 
+  | 'unprocessed';
 
 export type FileFormat = 'TXT' | 'CSV' | 'XLSX' | 'JSON' | 'CTD';
 
@@ -54,14 +65,14 @@ export interface DatasetQualityReport {
 
 export interface DatasetProvenance {
   datasetId: string;
-  originalFileName: string;
+  originalFileName?: string;
   fileHashSha256: string;
-  sourceInstitution: string;
+  sourceInstitution?: string;
   vesselCruiseId?: string;
   dataCollector?: string;
   uploadedBy: string;
   uploadedAt: string;
-  ingestionPipelineVersion: string;
+  ingestionPipelineVersion?: string;
   standardizationRulesApplied: string[];
   storagePath: string;
   lineageNotes?: string;
