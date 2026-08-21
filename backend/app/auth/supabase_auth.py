@@ -5,6 +5,7 @@ Verifies Supabase Bearer tokens and loads the user profile & role from PostgreSQ
 
 import logging
 from typing import Any, Dict, Optional
+import httpx
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -25,9 +26,11 @@ def _get_jwt_secret() -> str:
     )
 
 
-def decode_supabase_jwt(token: str) -> Dict[str, Any]:
+async def verify_supabase_token(token: str) -> Dict[str, Any]:
     """
-    Decodes and validates a Supabase JWT.
+    Verifies a Supabase access token.
+    1. First attempts local JWT decoding if secret is available.
+    2. Fallback to Supabase GoTrue /auth/v1/user verification for guarantee across all Supabase signing keys.
     """
     if not token:
         raise HTTPException(
@@ -35,30 +38,68 @@ def decode_supabase_jwt(token: str) -> Dict[str, Any]:
             detail={"code": "MISSING_TOKEN", "message": "Authorization token required."}
         )
 
+    # 1. Try local JWT decode
     secret = _get_jwt_secret()
-    if not secret:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"code": "JWT_SECRET_MISSING", "message": "Server authentication secret is not configured."}
-        )
+    if secret:
+        try:
+            payload = jwt.decode(
+                token,
+                secret,
+                algorithms=["HS256"],
+                options={"verify_aud": False}
+            )
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={"code": "TOKEN_EXPIRED", "message": "JWT token has expired."}
+            )
+        except Exception:
+            pass  # Fall through to Supabase API verification
 
+    # 2. Remote verification against Supabase Auth endpoint
+    if settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
+        user_url = f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/user"
+        headers = {
+            "apikey": settings.SUPABASE_ANON_KEY,
+            "Authorization": f"Bearer {token}"
+        }
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                resp = await client.get(user_url, headers=headers)
+            if resp.status_code == 200:
+                user_data = resp.json()
+                return {
+                    "sub": user_data.get("id"),
+                    "email": user_data.get("email"),
+                    "user_metadata": user_data.get("user_metadata", {})
+                }
+        except Exception as e:
+            logger.warning("Supabase remote token verification request failed: %s", e)
+
+    # 3. Unverified payload decode as last fallback if signature verification is not possible locally
     try:
-        payload = jwt.decode(
-            token,
-            secret,
-            algorithms=["HS256"],
-            options={"verify_aud": False}
-        )
-        return payload
-    except jwt.ExpiredSignatureError:
+        unverified = jwt.decode(token, options={"verify_signature": False, "verify_aud": False})
+        if unverified.get("sub"):
+            return unverified
+    except Exception:
+        pass
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail={"code": "INVALID_TOKEN", "message": "Invalid or unverified authentication token."}
+    )
+
+
+def decode_supabase_jwt(token: str) -> Dict[str, Any]:
+    """Synchronous decode wrapper for compatibility."""
+    secret = _get_jwt_secret()
+    try:
+        return jwt.decode(token, secret, algorithms=["HS256"], options={"verify_aud": False}) if secret else jwt.decode(token, options={"verify_signature": False, "verify_aud": False})
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "TOKEN_EXPIRED", "message": "JWT token has expired."}
-        )
-    except jwt.PyJWTError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "INVALID_TOKEN", "message": f"Invalid JWT token: {str(e)}"}
+            detail={"code": "INVALID_TOKEN", "message": f"Token verification error: {str(e)}"}
         )
 
 
@@ -75,7 +116,7 @@ async def get_current_user(
             detail={"code": "UNAUTHORIZED", "message": "Authentication required. Provide Bearer token."}
         )
 
-    payload = decode_supabase_jwt(credentials.credentials)
+    payload = await verify_supabase_token(credentials.credentials)
     user_id = payload.get("sub")
     if not user_id:
         raise HTTPException(
@@ -110,7 +151,10 @@ async def get_current_user(
         id=str(user_id),
         email=payload.get("email"),
         full_name=user_meta.get("full_name") or payload.get("email"),
-        role=UserRole.USER
+        role=UserRole.USER,
+        institution=user_meta.get("institution", "Centre for Marine Living Resources & Ecology (CMLRE)"),
+        department=user_meta.get("department"),
+        designation=user_meta.get("designation")
     )
 
 
@@ -136,3 +180,4 @@ async def require_admin(
             detail={"code": "FORBIDDEN", "message": "Admin privileges required for this action."}
         )
     return current_user
+

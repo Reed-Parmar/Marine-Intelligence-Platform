@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, AuthSession, RegisterData } from '../types/auth';
 import { authService } from '../services/auth';
+import { supabase } from '../services/supabase';
 import { ApiClient } from '../services/api';
 import { MOCK_USERS } from '../services/mockData';
 
@@ -25,21 +26,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // 1. Initial session load
     const checkAuth = async () => {
-      const storedToken = ApiClient.getToken();
-      if (!storedToken) {
-        setIsLoading(false);
-        return;
-      }
       try {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
-        setSession({
-          accessToken: storedToken,
-          tokenType: 'Bearer',
-          expiresIn: 86400,
-          user: currentUser
-        });
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (currentSession?.access_token) {
+          ApiClient.setToken(currentSession.access_token);
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+          setSession({
+            accessToken: currentSession.access_token,
+            tokenType: currentSession.token_type || 'Bearer',
+            expiresIn: currentSession.expires_in || 86400,
+            user: currentUser
+          });
+        } else {
+          ApiClient.setToken(null);
+          setUser(null);
+          setSession(null);
+        }
       } catch {
         ApiClient.setToken(null);
         setUser(null);
@@ -48,7 +53,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
       }
     };
+
     checkAuth();
+
+    // 2. Realtime auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+      if (newSession?.access_token) {
+        ApiClient.setToken(newSession.access_token);
+        try {
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+          setSession({
+            accessToken: newSession.access_token,
+            tokenType: newSession.token_type || 'Bearer',
+            expiresIn: newSession.expires_in || 86400,
+            user: currentUser
+          });
+        } catch {
+          // fallback
+        }
+      } else {
+        ApiClient.setToken(null);
+        setUser(null);
+        setSession(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
