@@ -26,8 +26,10 @@ class DomainType(str, Enum):
     FISHERIES = "fisheries"
     BIODIVERSITY = "biodiversity"
     EDNA = "edna"
+    MOLECULAR_EDNA = "molecular_edna"
     OTOLITH = "otolith"
     GENERAL = "general"
+
 
 
 @dataclass

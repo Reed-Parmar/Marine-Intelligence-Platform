@@ -112,6 +112,26 @@ DEFAULT_COLUMN_ALIASES: Dict[str, List[str]] = {
     ],
     "basis_of_record": [
         "basis_of_record", "record_basis", "observation_type"
+    ],
+
+    # Molecular eDNA / Metabarcoding fields
+    "sample_code": [
+        "sample_code", "samp_name", "sample_name", "event_id", "samplecode", "source_mat_id"
+    ],
+    "target_gene": [
+        "target_gene", "gene", "marker", "locus", "primer_target"
+    ],
+    "dna_sequence": [
+        "dna_sequence", "sequence", "asv_sequence", "seq", "associatedsequences"
+    ],
+    "read_count": [
+        "read_count", "reads", "reads_count", "organismquantity"
+    ],
+    "blast_identity": [
+        "blast_identity", "blast_identity_percentage", "identity_pct", "percent_identity", "pident"
+    ],
+    "sequencing_platform": [
+        "sequencing_platform", "seq_meth", "sequencer", "platform"
     ]
 }
 
