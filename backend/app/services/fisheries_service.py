@@ -49,10 +49,10 @@ class FisheriesService:
             conditions.append("f.gear_type = :gear_type")
             params["gear_type"] = gear_type
         if date_from:
-            conditions.append("f.recorded_at >= :date_from::timestamptz")
+            conditions.append("f.timestamp >= CAST(:date_from AS timestamptz)")
             params["date_from"] = date_from
         if date_to:
-            conditions.append("f.recorded_at <= :date_to::timestamptz")
+            conditions.append("f.timestamp <= CAST(:date_to AS timestamptz)")
             params["date_to"] = date_to
 
         where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
@@ -64,7 +64,7 @@ class FisheriesService:
         offset = (page - 1) * page_size
         params["limit"] = page_size
         params["offset"] = offset
-        data_query = GET_FISHERIES_OBSERVATIONS + where_clause + " ORDER BY f.recorded_at DESC NULLS LAST, f.id ASC LIMIT :limit OFFSET :offset;"
+        data_query = GET_FISHERIES_OBSERVATIONS + where_clause + " ORDER BY f.timestamp DESC NULLS LAST, f.id ASC LIMIT :limit OFFSET :offset;"
         rows = execute_query(data_query, params)
 
         observations = [
@@ -153,3 +153,7 @@ class FisheriesService:
             for r in rows
         ]
         return FisheriesTrendResponse(trends=trends)
+
+    get_summary = get_fisheries_summary
+    get_trends = get_fisheries_trends
+

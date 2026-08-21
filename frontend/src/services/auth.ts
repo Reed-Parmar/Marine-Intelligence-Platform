@@ -1,8 +1,55 @@
 import { ApiClient } from './api';
-import { UserProfile, AuthSession } from '../types/auth';
-import { MOCK_USERS } from './mockData';
+import { UserProfile, AuthSession, RegisterData } from '../types/auth';
+
+function normalizeProfile(rawUser: any, fallbackEmail: string = ''): UserProfile {
+  return {
+    id: String(rawUser.id || rawUser.user_id || ''),
+    email: rawUser.email || fallbackEmail,
+    fullName: rawUser.fullName || rawUser.full_name || 'Marine Researcher',
+    role: (rawUser.role === 'admin' ? 'admin' : 'user'),
+    institution: rawUser.institution || 'Centre for Marine Living Resources & Ecology (CMLRE)',
+    department: rawUser.department || 'Marine Research Division',
+    designation: rawUser.designation || undefined,
+    avatarUrl: rawUser.avatarUrl || rawUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    createdAt: rawUser.createdAt || rawUser.created_at || new Date().toISOString()
+  };
+}
 
 export const authService = {
+  async register(data: RegisterData): Promise<AuthSession> {
+    const res = await ApiClient.post<any>(
+      '/auth/register',
+      {
+        email: data.email,
+        password: data.password,
+        full_name: data.fullName,
+        institution: data.institution || 'CMLRE, Kochi',
+        department: data.department,
+        designation: data.designation
+      }
+    );
+
+    const resData = res.data;
+    if (!resData) {
+      throw new Error('Registration failed: No session returned from server.');
+    }
+
+    const token = resData.accessToken || resData.access_token;
+    if (token) {
+      ApiClient.setToken(token);
+    }
+
+    const rawUser = resData.user || {};
+    const normalizedUser = normalizeProfile(rawUser, data.email);
+
+    return {
+      accessToken: token || '',
+      tokenType: resData.tokenType || resData.token_type || 'Bearer',
+      expiresIn: resData.expiresIn || resData.expires_in || 86400,
+      user: normalizedUser
+    };
+  },
+
   async login(email: string, _password: string): Promise<AuthSession> {
     const res = await ApiClient.post<any>(
       '/auth/login',
@@ -20,16 +67,7 @@ export const authService = {
     }
 
     const rawUser = data.user || {};
-    const normalizedUser: UserProfile = {
-      id: String(rawUser.id || rawUser.user_id || ''),
-      email: rawUser.email || email,
-      fullName: rawUser.fullName || rawUser.full_name || 'Marine Researcher',
-      role: (rawUser.role === 'admin' ? 'admin' : 'user'),
-      department: rawUser.department || 'Marine Research Division',
-      institution: rawUser.institution || rawUser.department || 'Centre for Marine Living Resources & Ecology (CMLRE)',
-      avatarUrl: rawUser.avatarUrl || rawUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      createdAt: rawUser.createdAt || rawUser.created_at || new Date().toISOString()
-    };
+    const normalizedUser = normalizeProfile(rawUser, email);
 
     return {
       accessToken: token || '',
@@ -46,16 +84,7 @@ export const authService = {
       throw new Error('Session expired or user unauthorized.');
     }
 
-    return {
-      id: String(rawUser.id || rawUser.user_id || ''),
-      email: rawUser.email || '',
-      fullName: rawUser.fullName || rawUser.full_name || 'Marine Researcher',
-      role: (rawUser.role === 'admin' ? 'admin' : 'user'),
-      department: rawUser.department || 'Marine Research Division',
-      institution: rawUser.institution || rawUser.department || 'Centre for Marine Living Resources & Ecology (CMLRE)',
-      avatarUrl: rawUser.avatarUrl || rawUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      createdAt: rawUser.createdAt || rawUser.created_at || new Date().toISOString()
-    };
+    return normalizeProfile(rawUser);
   },
 
   async logout(): Promise<void> {

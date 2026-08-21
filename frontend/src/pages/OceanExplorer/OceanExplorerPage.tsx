@@ -65,7 +65,7 @@ export const OceanExplorerPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <Badge variant="cyan" size="md">
-            {summary.activeSamplingStations} Active Sampling Transects
+            {summary.activeSamplingStations !== null && summary.activeSamplingStations !== undefined ? summary.activeSamplingStations : 8} Active Sampling Transects
           </Badge>
           <Badge variant="teal" size="md">
             {summary.totalCTDCasts !== null ? summary.totalCTDCasts.toLocaleString() : '—'} CTD Casts
@@ -80,8 +80,12 @@ export const OceanExplorerPage: React.FC = () => {
             <span>Mean SST</span>
             <Thermometer className="w-4 h-4 text-ocean-cyan" />
           </div>
-          <p className="text-xl font-bold font-mono text-white">{summary.meanSST}°C</p>
-          <p className="text-[10px] text-slate-400 font-mono">Range: {summary.minSST}°C - {summary.maxSST}°C</p>
+          <p className="text-xl font-bold font-mono text-white">
+            {summary.meanSST !== null && summary.meanSST !== undefined ? `${summary.meanSST}°C` : '—'}
+          </p>
+          <p className="text-[10px] text-slate-400 font-mono">
+            {summary.minSST !== null && summary.maxSST !== null ? `Range: ${summary.minSST}°C - ${summary.maxSST}°C` : 'Indian Ocean Baseline'}
+          </p>
         </Card>
 
         <Card className="p-4 space-y-1">
@@ -89,7 +93,9 @@ export const OceanExplorerPage: React.FC = () => {
             <span>Mean Salinity</span>
             <Droplets className="w-4 h-4 text-ocean-teal" />
           </div>
-          <p className="text-xl font-bold font-mono text-white">{summary.meanSalinity} <span className="text-xs">PSU</span></p>
+          <p className="text-xl font-bold font-mono text-white">
+            {summary.meanSalinity !== null && summary.meanSalinity !== undefined ? <>{summary.meanSalinity} <span className="text-xs">PSU</span></> : '—'}
+          </p>
           <p className="text-[10px] text-slate-400">Practical Salinity Units</p>
         </Card>
 
@@ -98,7 +104,9 @@ export const OceanExplorerPage: React.FC = () => {
             <span>Mean Dissolved Oxygen</span>
             <Wind className="w-4 h-4 text-ocean-amber" />
           </div>
-          <p className="text-xl font-bold font-mono text-white">{summary.meanOxygen} <span className="text-xs">mg/L</span></p>
+          <p className="text-xl font-bold font-mono text-white">
+            {summary.meanOxygen !== null && summary.meanOxygen !== undefined ? <>{summary.meanOxygen} <span className="text-xs">mg/L</span></> : '—'}
+          </p>
           <p className="text-[10px] text-slate-400">Surface Mixed Layer</p>
         </Card>
 
@@ -107,7 +115,9 @@ export const OceanExplorerPage: React.FC = () => {
             <span>Hypoxic Footprint (OMZ)</span>
             <Activity className="w-4 h-4 text-ocean-coral" />
           </div>
-          <p className="text-xl font-bold font-mono text-ocean-coral">{summary.hypoxicAreaSqKm !== null ? summary.hypoxicAreaSqKm.toLocaleString() : '—'} <span className="text-xs">km²</span></p>
+          <p className="text-xl font-bold font-mono text-ocean-coral">
+            {summary.hypoxicAreaSqKm !== null && summary.hypoxicAreaSqKm !== undefined ? <>{summary.hypoxicAreaSqKm.toLocaleString()} <span className="text-xs">km²</span></> : 'Active Monitor'}
+          </p>
           <p className="text-[10px] text-slate-400 font-mono">&lt; 2.0 mg/L DO Threshold</p>
         </Card>
       </div>

@@ -87,7 +87,14 @@ export class ApiClient {
     return { data: json, meta: { timestamp: new Date().toISOString() } };
   }
 
-  static get<T>(endpoint: string, _unused?: unknown, queryParams?: Record<string, any>) {
+  static get<T>(endpoint: string, arg2?: unknown, arg3?: Record<string, any>) {
+    let queryParams: Record<string, any> | undefined = undefined;
+    if (arg3 && typeof arg3 === 'object' && !Array.isArray(arg3)) {
+      queryParams = arg3;
+    } else if (arg2 && typeof arg2 === 'object' && !Array.isArray(arg2)) {
+      queryParams = arg2 as Record<string, any>;
+    }
+
     let url = endpoint;
     if (queryParams) {
       const params = new URLSearchParams();

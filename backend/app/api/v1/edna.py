@@ -35,7 +35,7 @@ async def list_edna_samples(
     params["limit"] = page_size
     params["offset"] = offset
     rows = execute_query(
-        f"SELECT * FROM public.edna_samples {where_clause} ORDER BY collected_at DESC, id ASC LIMIT :limit OFFSET :offset;",
+        f"SELECT * FROM public.edna_samples {where_clause} ORDER BY collection_timestamp DESC, id ASC LIMIT :limit OFFSET :offset;",
         params
     )
     samples = [
@@ -45,10 +45,10 @@ async def list_edna_samples(
             sample_code=r.get("sample_code"),
             latitude=float(r["latitude"]),
             longitude=float(r["longitude"]),
-            depth=float(r["depth"]) if r.get("depth") is not None else None,
-            collected_at=str(r["collected_at"]) if r.get("collected_at") else None,
+            depth=float(r["depth_meters"]) if r.get("depth_meters") is not None else None,
+            collected_at=str(r["collection_timestamp"]) if r.get("collection_timestamp") else None,
             sequencing_platform=r.get("sequencing_platform"),
-            metadata=r.get("metadata")
+            metadata=r.get("sequence_metadata")
         )
         for r in rows
     ]
@@ -71,7 +71,7 @@ async def list_edna_detections(
     conditions = []
     params: Dict[str, Any] = {}
     if sample_id:
-        conditions.append("d.sample_id = :sample_id")
+        conditions.append("d.edna_sample_id = :sample_id")
         params["sample_id"] = sample_id
     if species_id:
         conditions.append("d.species_id = :species_id")
@@ -85,9 +85,10 @@ async def list_edna_detections(
     params["limit"] = page_size
     params["offset"] = offset
     query = f"""
-    SELECT d.*, s.scientific_name 
+    SELECT d.*, s.scientific_name as species_scientific_name, es.sample_code, es.latitude, es.longitude
     FROM public.edna_results d
     LEFT JOIN public.species s ON d.species_id = s.id
+    LEFT JOIN public.edna_samples es ON d.edna_sample_id = es.id
     {where_clause}
     ORDER BY d.id ASC
     LIMIT :limit OFFSET :offset;
@@ -96,12 +97,12 @@ async def list_edna_detections(
     detections = [
         EDNADetectionResponse(
             id=str(r["id"]),
-            sample_id=str(r["sample_id"]),
+            sample_id=str(r["edna_sample_id"]),
             species_id=str(r["species_id"]) if r.get("species_id") else None,
-            scientific_name=r.get("scientific_name"),
+            scientific_name=r.get("assigned_scientific_name") or r.get("species_scientific_name"),
             read_count=r.get("read_count"),
             confidence_score=float(r["confidence_score"]) if r.get("confidence_score") is not None else None,
-            metadata=r.get("metadata")
+            metadata=r.get("provenance_metadata")
         )
         for r in rows
     ]
@@ -109,3 +110,4 @@ async def list_edna_detections(
         data=detections,
         meta=ApiMeta(page=page, page_size=page_size, total=total)
     )
+

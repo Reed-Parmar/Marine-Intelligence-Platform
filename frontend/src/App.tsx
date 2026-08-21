@@ -7,6 +7,7 @@ import { AppShell } from './components/layout/AppShell';
 
 // Pages
 import { LoginPage } from './pages/Login/LoginPage';
+import { RegisterPage } from './pages/Register/RegisterPage';
 import { CommandCenterPage } from './pages/CommandCenter/CommandCenterPage';
 import { DataEnginePage } from './pages/DataEngine/DataEnginePage';
 import { DatasetDetailPage } from './pages/DataEngine/DatasetDetailPage';
@@ -25,8 +26,9 @@ export const App: React.FC = () => {
       <ToastProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public Login Route */}
+            {/* Public Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
             {/* Authenticated Application Shell */}
             <Route element={<ProtectedRoute />}>

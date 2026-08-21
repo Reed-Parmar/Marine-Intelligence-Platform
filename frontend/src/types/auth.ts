@@ -7,6 +7,7 @@ export interface UserProfile {
   role: UserRole;
   institution?: string;
   department?: string;
+  designation?: string;
   avatarUrl?: string;
   lastLogin?: string;
   createdAt: string;
@@ -25,4 +26,13 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  fullName: string;
+  institution?: string;
+  department?: string;
+  designation?: string;
 }

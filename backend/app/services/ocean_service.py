@@ -45,16 +45,16 @@ class OceanService:
             conditions.append("o.station_id = :station_id")
             params["station_id"] = station_id
         if date_from:
-            conditions.append("o.observed_at >= :date_from::timestamptz")
+            conditions.append("o.timestamp >= CAST(:date_from AS timestamptz)")
             params["date_from"] = date_from
         if date_to:
-            conditions.append("o.observed_at <= :date_to::timestamptz")
+            conditions.append("o.timestamp <= CAST(:date_to AS timestamptz)")
             params["date_to"] = date_to
         if depth_min is not None:
-            conditions.append("o.depth >= :depth_min")
+            conditions.append("o.depth_meters >= :depth_min")
             params["depth_min"] = depth_min
         if depth_max is not None:
-            conditions.append("o.depth <= :depth_max")
+            conditions.append("o.depth_meters <= :depth_max")
             params["depth_max"] = depth_max
 
         where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
@@ -66,14 +66,14 @@ class OceanService:
         offset = (page - 1) * page_size
         params["limit"] = page_size
         params["offset"] = offset
-        data_query = GET_OCEAN_OBSERVATIONS + where_clause + " ORDER BY o.observed_at DESC NULLS LAST, o.id ASC LIMIT :limit OFFSET :offset;"
+        data_query = GET_OCEAN_OBSERVATIONS + where_clause + " ORDER BY o.timestamp DESC NULLS LAST, o.id ASC LIMIT :limit OFFSET :offset;"
         rows = execute_query(data_query, params)
 
         observations = [
             OceanObservationResponse(
                 id=str(r["id"]),
                 dataset_id=str(r["dataset_id"]) if r.get("dataset_id") else None,
-                station_id=r.get("station_id"),
+                station_id=str(r["station_id"]) if r.get("station_id") else None,
                 sample_id=r.get("sample_id"),
                 latitude=float(r["latitude"]),
                 longitude=float(r["longitude"]),
@@ -103,7 +103,7 @@ class OceanService:
         return OceanObservationResponse(
             id=str(r["id"]),
             dataset_id=str(r["dataset_id"]) if r.get("dataset_id") else None,
-            station_id=r.get("station_id"),
+            station_id=str(r["station_id"]) if r.get("station_id") else None,
             sample_id=r.get("sample_id"),
             latitude=float(r["latitude"]),
             longitude=float(r["longitude"]),
@@ -122,58 +122,58 @@ class OceanService:
         )
 
     @staticmethod
-    def get_ocean_summary(date_from: Optional[str] = None, date_to: Optional[str] = None) -> OceanSummaryResponse:
-        """Calculates aggregate oceanographic summary statistics."""
+    def get_summary(date_from: Optional[str] = None, date_to: Optional[str] = None) -> OceanSummaryResponse:
+        """Retrieves aggregate physical and chemical oceanographic statistics."""
         params = {"date_from": date_from, "date_to": date_to}
         r = execute_single(GET_OCEAN_SUMMARY, params)
         if not r:
-            return OceanSummaryResponse(total_observations=0)
+            return OceanSummaryResponse(
+                total_observations=0,
+                min_temperature=None,
+                max_temperature=None,
+                avg_temperature=None,
+                min_salinity=None,
+                max_salinity=None,
+                avg_salinity=None,
+                min_dissolved_oxygen=None,
+                max_dissolved_oxygen=None,
+                avg_dissolved_oxygen=None,
+                min_depth=None,
+                max_depth=None
+            )
         return OceanSummaryResponse(
             total_observations=r.get("total_observations", 0),
             min_temperature=float(r["min_temperature"]) if r.get("min_temperature") is not None else None,
             max_temperature=float(r["max_temperature"]) if r.get("max_temperature") is not None else None,
-            avg_temperature=round(float(r["avg_temperature"]), 2) if r.get("avg_temperature") is not None else None,
+            avg_temperature=float(r["avg_temperature"]) if r.get("avg_temperature") is not None else None,
             min_salinity=float(r["min_salinity"]) if r.get("min_salinity") is not None else None,
             max_salinity=float(r["max_salinity"]) if r.get("max_salinity") is not None else None,
-            avg_salinity=round(float(r["avg_salinity"]), 2) if r.get("avg_salinity") is not None else None,
+            avg_salinity=float(r["avg_salinity"]) if r.get("avg_salinity") is not None else None,
             min_dissolved_oxygen=float(r["min_dissolved_oxygen"]) if r.get("min_dissolved_oxygen") is not None else None,
             max_dissolved_oxygen=float(r["max_dissolved_oxygen"]) if r.get("max_dissolved_oxygen") is not None else None,
-            avg_dissolved_oxygen=round(float(r["avg_dissolved_oxygen"]), 2) if r.get("avg_dissolved_oxygen") is not None else None,
+            avg_dissolved_oxygen=float(r["avg_dissolved_oxygen"]) if r.get("avg_dissolved_oxygen") is not None else None,
             min_depth=float(r["min_depth"]) if r.get("min_depth") is not None else None,
             max_depth=float(r["max_depth"]) if r.get("max_depth") is not None else None
         )
 
     @staticmethod
-    def get_ocean_trends(
+    def get_trends(
         variable: str = "temperature",
         interval: str = "month",
         date_from: Optional[str] = None,
         date_to: Optional[str] = None
     ) -> OceanTrendResponse:
-        """Retrieves aggregated time-series trends for oceanographic variables."""
-        valid_variables = {"temperature", "salinity", "dissolved_oxygen", "chlorophyll"}
-        if variable not in valid_variables:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={"code": "INVALID_VARIABLE", "message": f"Variable must be one of: {', '.join(sorted(valid_variables))}"}
-            )
-
-        valid_intervals = {"day", "week", "month", "year"}
-        bucket_interval = interval if interval in valid_intervals else "month"
-        params = {
-            "interval": bucket_interval,
-            "date_from": date_from,
-            "date_to": date_to
-        }
+        """Retrieves temporal trends across physical and chemical variables."""
+        params = {"interval": interval, "date_from": date_from, "date_to": date_to}
         rows = execute_query(GET_OCEAN_TRENDS, params)
         trends = [
             OceanTrendItem(
                 time_bucket=str(r["time_bucket"]),
                 observation_count=r.get("observation_count", 0),
-                avg_temperature=round(float(r["avg_temperature"]), 2) if r.get("avg_temperature") is not None else None,
-                avg_salinity=round(float(r["avg_salinity"]), 2) if r.get("avg_salinity") is not None else None,
-                avg_dissolved_oxygen=round(float(r["avg_dissolved_oxygen"]), 2) if r.get("avg_dissolved_oxygen") is not None else None,
-                avg_chlorophyll=round(float(r["avg_chlorophyll"]), 2) if r.get("avg_chlorophyll") is not None else None
+                avg_temperature=float(r["avg_temperature"]) if r.get("avg_temperature") is not None else None,
+                avg_salinity=float(r["avg_salinity"]) if r.get("avg_salinity") is not None else None,
+                avg_dissolved_oxygen=float(r["avg_dissolved_oxygen"]) if r.get("avg_dissolved_oxygen") is not None else None,
+                avg_chlorophyll=float(r["avg_chlorophyll"]) if r.get("avg_chlorophyll") is not None else None
             )
             for r in rows
         ]
@@ -185,21 +185,22 @@ class OceanService:
         dataset_id: Optional[str] = None
     ) -> List[CTDProfilePointResponse]:
         """Retrieves depth-sorted CTD profile measurements."""
-        conditions = ["o.depth IS NOT NULL"]
+        conditions = ["o.depth_meters IS NOT NULL"]
         params: Dict[str, Any] = {}
         if station_id:
-            conditions.append("o.station_id = :station_id")
+            conditions.append("o.station_id::text = :station_id")
             params["station_id"] = station_id
         if dataset_id:
-            conditions.append("o.dataset_id = :dataset_id")
+            conditions.append("o.dataset_id::text = :dataset_id")
             params["dataset_id"] = dataset_id
 
         where_clause = " WHERE " + " AND ".join(conditions)
         query = f"""
-        SELECT o.depth, o.temperature, o.salinity, o.dissolved_oxygen, o.chlorophyll, o.station_id
+        SELECT o.depth_meters as depth, o.temperature_celsius as temperature, o.salinity_psu as salinity, 
+               o.dissolved_oxygen_mgl as dissolved_oxygen, o.chlorophyll_mg_m3 as chlorophyll, o.station_id::text as station_id
         FROM public.oceanographic_observations o
         {where_clause}
-        ORDER BY o.depth ASC
+        ORDER BY o.depth_meters ASC
         LIMIT 50;
         """
         try:
@@ -236,3 +237,6 @@ class OceanService:
                 )
             )
         return profile_points
+
+    get_ocean_summary = get_summary
+    get_ocean_trends = get_trends

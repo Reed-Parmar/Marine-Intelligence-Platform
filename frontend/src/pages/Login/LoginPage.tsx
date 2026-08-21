@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { 
@@ -11,13 +11,14 @@ import {
   FlaskConical, 
   Globe, 
   Cpu, 
-  AlertCircle 
+  AlertCircle,
+  UserPlus
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('scientist@cmlre.gov.in');
-  const [password, setPassword] = useState('cmlre-secure-2026');
+  const [email, setEmail] = useState('test_scientist_99@cmlre.gov.in');
+  const [password, setPassword] = useState('TestPassword123!');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -48,7 +49,7 @@ export const LoginPage: React.FC = () => {
   const handleQuickDemoLogin = async (type: 'scientist' | 'admin') => {
     const creds = type === 'admin'
       ? { email: 'admin@cmlre.gov.in', pass: 'moes-admin-2026' }
-      : { email: 'scientist@cmlre.gov.in', pass: 'cmlre-secure-2026' };
+      : { email: 'test_scientist_99@cmlre.gov.in', pass: 'TestPassword123!' };
 
     setEmail(creds.email);
     setPassword(creds.pass);
@@ -171,6 +172,16 @@ export const LoginPage: React.FC = () => {
               Authenticate CMLRE Session
             </Button>
           </form>
+
+          <div className="text-center pt-1">
+            <p className="text-xs text-slate-400">
+              New to the platform?{' '}
+              <Link to="/register" className="text-ocean-cyan hover:underline font-medium inline-flex items-center gap-1">
+                <UserPlus className="w-3 h-3" />
+                <span>Create Researcher Account</span>
+              </Link>
+            </p>
+          </div>
 
           {/* Quick Demo Access Buttons */}
           <div className="space-y-2 pt-2 border-t border-marine-800">

@@ -7,13 +7,13 @@ Parameterized SQL queries for Supabase PostgreSQL + PostGIS tables using SQLAlch
 # ==========================================
 
 GET_PROFILE_BY_ID = """
-SELECT id, full_name, email, role, department, designation, created_at, updated_at
+SELECT id, full_name, email, role, institution, department, designation, created_at, updated_at
 FROM public.profiles
 WHERE id = :user_id;
 """
 
 GET_ALL_PROFILES = """
-SELECT id, full_name, email, role, department, designation, created_at, updated_at
+SELECT id, full_name, email, role, institution, department, designation, created_at, updated_at
 FROM public.profiles
 ORDER BY created_at DESC
 LIMIT :limit OFFSET :offset;
@@ -27,7 +27,7 @@ UPDATE_USER_ROLE = """
 UPDATE public.profiles
 SET role = :role, updated_at = NOW()
 WHERE id = :user_id
-RETURNING id, full_name, email, role, department, designation, updated_at;
+RETURNING id, full_name, email, role, institution, department, designation, updated_at;
 """
 
 
@@ -96,10 +96,11 @@ RETURNING id;
 GET_OCEAN_OBSERVATIONS = """
 SELECT 
     o.id, o.dataset_id, o.station_id, o.sample_id,
-    o.latitude, o.longitude, o.depth, o.observed_at,
-    o.temperature, o.salinity, o.dissolved_oxygen, o.chlorophyll,
-    o.ph, o.pressure, o.turbidity, o.conductivity,
-    o.quality_flag, o.metadata, o.created_at
+    o.latitude, o.longitude, o.depth_meters as depth, o.timestamp as observed_at,
+    o.temperature_celsius as temperature, o.salinity_psu as salinity, 
+    o.dissolved_oxygen_mgl as dissolved_oxygen, o.chlorophyll_mg_m3 as chlorophyll,
+    o.ph, o.pressure_dbar as pressure, o.turbidity_ntu as turbidity, o.conductivity_sm as conductivity,
+    o.quality_status::text as quality_flag, o.extra_parameters as metadata, o.created_at
 FROM public.oceanographic_observations o
 """
 
@@ -110,33 +111,33 @@ WHERE o.id = :observation_id;
 GET_OCEAN_SUMMARY = """
 SELECT 
     COUNT(*) as total_observations,
-    MIN(temperature) as min_temperature,
-    MAX(temperature) as max_temperature,
-    AVG(temperature) as avg_temperature,
-    MIN(salinity) as min_salinity,
-    MAX(salinity) as max_salinity,
-    AVG(salinity) as avg_salinity,
-    MIN(dissolved_oxygen) as min_dissolved_oxygen,
-    MAX(dissolved_oxygen) as max_dissolved_oxygen,
-    AVG(dissolved_oxygen) as avg_dissolved_oxygen,
-    MIN(depth) as min_depth,
-    MAX(depth) as max_depth
+    MIN(temperature_celsius) as min_temperature,
+    MAX(temperature_celsius) as max_temperature,
+    AVG(temperature_celsius) as avg_temperature,
+    MIN(salinity_psu) as min_salinity,
+    MAX(salinity_psu) as max_salinity,
+    AVG(salinity_psu) as avg_salinity,
+    MIN(dissolved_oxygen_mgl) as min_dissolved_oxygen,
+    MAX(dissolved_oxygen_mgl) as max_dissolved_oxygen,
+    AVG(dissolved_oxygen_mgl) as avg_dissolved_oxygen,
+    MIN(depth_meters) as min_depth,
+    MAX(depth_meters) as max_depth
 FROM public.oceanographic_observations
-WHERE (:date_from IS NULL OR observed_at >= :date_from::timestamptz)
-  AND (:date_to IS NULL OR observed_at <= :date_to::timestamptz);
+WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
 """
 
 GET_OCEAN_TRENDS = """
 SELECT 
-    DATE_TRUNC(:interval, observed_at) as time_bucket,
+    DATE_TRUNC(:interval, timestamp) as time_bucket,
     COUNT(*) as observation_count,
-    AVG(temperature) as avg_temperature,
-    AVG(salinity) as avg_salinity,
-    AVG(dissolved_oxygen) as avg_dissolved_oxygen,
-    AVG(chlorophyll) as avg_chlorophyll
+    AVG(temperature_celsius) as avg_temperature,
+    AVG(salinity_psu) as avg_salinity,
+    AVG(dissolved_oxygen_mgl) as avg_dissolved_oxygen,
+    AVG(chlorophyll_mg_m3) as avg_chlorophyll
 FROM public.oceanographic_observations
-WHERE (:date_from IS NULL OR observed_at >= :date_from::timestamptz)
-  AND (:date_to IS NULL OR observed_at <= :date_to::timestamptz)
+WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
 GROUP BY time_bucket
 ORDER BY time_bucket ASC;
 """
@@ -149,8 +150,8 @@ ORDER BY time_bucket ASC;
 GET_FISHERIES_OBSERVATIONS = """
 SELECT 
     f.id, f.dataset_id, f.species_id, f.latitude, f.longitude,
-    f.recorded_at, f.catch_weight_kg, f.effort_hours, f.gear_type,
-    f.fishing_zone, f.vessel_name, f.metadata, f.created_at,
+    f.timestamp as recorded_at, f.catch_weight_kg, f.fishing_effort_hours as effort_hours, f.gear_type,
+    f.fishing_zone, f.vessel_name, f.extra_parameters as metadata, f.created_at,
     s.scientific_name, s.common_name
 FROM public.fisheries_records f
 LEFT JOIN public.species s ON f.species_id = s.id
@@ -165,24 +166,24 @@ SELECT
     COUNT(*) as total_records,
     SUM(catch_weight_kg) as total_catch_kg,
     AVG(catch_weight_kg) as avg_catch_kg,
-    SUM(effort_hours) as total_effort_hours,
+    SUM(fishing_effort_hours) as total_effort_hours,
     COUNT(DISTINCT species_id) as distinct_species_count,
     COUNT(DISTINCT fishing_zone) as distinct_zones_count
 FROM public.fisheries_records
-WHERE (:date_from IS NULL OR recorded_at >= :date_from::timestamptz)
-  AND (:date_to IS NULL OR recorded_at <= :date_to::timestamptz);
+WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
 """
 
 GET_FISHERIES_TRENDS = """
 SELECT 
-    DATE_TRUNC(:interval, recorded_at) as time_bucket,
+    DATE_TRUNC(:interval, timestamp) as time_bucket,
     COUNT(*) as record_count,
     SUM(catch_weight_kg) as total_catch_kg,
     AVG(catch_weight_kg) as avg_catch_kg,
-    SUM(effort_hours) as total_effort_hours
+    SUM(fishing_effort_hours) as total_effort_hours
 FROM public.fisheries_records
-WHERE (:date_from IS NULL OR recorded_at >= :date_from::timestamptz)
-  AND (:date_to IS NULL OR recorded_at <= :date_to::timestamptz)
+WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
 GROUP BY time_bucket
 ORDER BY time_bucket ASC;
 """
@@ -195,9 +196,9 @@ ORDER BY time_bucket ASC;
 SEARCH_SPECIES = """
 SELECT 
     s.id, s.taxonomy_id, s.scientific_name, s.common_name,
-    s.worms_aphia_id, s.iucn_red_list_status, s.commercial_importance,
+    s.iucn_conservation_status as iucn_red_list_status, s.commercial_importance,
     s.habitat_type, s.created_at,
-    t.kingdom, t.phylum, t.class, t."order", t.family, t.genus
+    t.kingdom, t.phylum, t.class, t.order_name as "order", t.family, t.genus
 FROM public.species s
 LEFT JOIN public.taxonomy t ON s.taxonomy_id = t.id
 WHERE (:search IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name ILIKE :search_like)
@@ -214,9 +215,9 @@ WHERE (:search IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name 
 GET_SPECIES_BY_ID = """
 SELECT 
     s.id, s.taxonomy_id, s.scientific_name, s.common_name,
-    s.worms_aphia_id, s.iucn_red_list_status, s.commercial_importance,
+    s.iucn_conservation_status as iucn_red_list_status, s.commercial_importance,
     s.habitat_type, s.metadata, s.created_at,
-    t.kingdom, t.phylum, t.class, t."order", t.family, t.genus
+    t.kingdom, t.phylum, t.class, t.order_name as "order", t.family, t.genus
 FROM public.species s
 LEFT JOIN public.taxonomy t ON s.taxonomy_id = t.id
 WHERE s.id = :species_id;
@@ -225,13 +226,13 @@ WHERE s.id = :species_id;
 GET_SPECIES_OCCURRENCES = """
 SELECT 
     o.id, o.dataset_id, o.species_id, o.latitude, o.longitude,
-    o.depth, o.observed_at, o.individual_count, o.basis_of_record,
-    o.recorded_by, o.metadata, o.created_at,
+    o.depth_meters as depth, o.timestamp as observed_at, o.individual_count, o.basis_of_record,
+    o.darwin_core_fields->>'recordedBy' as recorded_by, o.darwin_core_fields as metadata, o.created_at,
     s.scientific_name, s.common_name
 FROM public.species_occurrences o
 JOIN public.species s ON o.species_id = s.id
 WHERE o.species_id = :species_id
-ORDER BY o.observed_at DESC
+ORDER BY o.timestamp DESC
 LIMIT :limit OFFSET :offset;
 """
 
@@ -249,8 +250,8 @@ SELECT
     MAX(latitude) as max_latitude,
     MIN(longitude) as min_longitude,
     MAX(longitude) as max_longitude,
-    MIN(depth) as min_depth,
-    MAX(depth) as max_depth
+    MIN(depth_meters) as min_depth,
+    MAX(depth_meters) as max_depth
 FROM public.species_occurrences
 WHERE species_id = :species_id
 GROUP BY species_id;
@@ -269,22 +270,22 @@ GET_UNIFIED_MARINE_OBSERVATIONS = """
         o.dataset_id::text as dataset_id,
         o.latitude,
         o.longitude,
-        o.depth,
-        o.observed_at as time,
+        o.depth_meters as depth,
+        o.timestamp as time,
         NULL::text as species_id,
         NULL::text as species_name,
         jsonb_build_object(
-            'temperature', o.temperature,
-            'salinity', o.salinity,
-            'dissolved_oxygen', o.dissolved_oxygen,
-            'chlorophyll', o.chlorophyll
+            'temperature', o.temperature_celsius,
+            'salinity', o.salinity_psu,
+            'dissolved_oxygen', o.dissolved_oxygen_mgl,
+            'chlorophyll', o.chlorophyll_mg_m3
         ) as measurements
     FROM public.oceanographic_observations o
-    WHERE (:date_from IS NULL OR o.observed_at >= :date_from::timestamptz)
-      AND (:date_to IS NULL OR o.observed_at <= :date_to::timestamptz)
+    WHERE (:date_from IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
+      AND (:date_to IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
       AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
-      AND (:depth_min IS NULL OR o.depth >= :depth_min)
-      AND (:depth_max IS NULL OR o.depth <= :depth_max)
+      AND (:depth_min IS NULL OR o.depth_meters >= :depth_min)
+      AND (:depth_max IS NULL OR o.depth_meters <= :depth_max)
 )
 UNION ALL
 (
@@ -294,20 +295,20 @@ UNION ALL
         f.dataset_id::text as dataset_id,
         f.latitude,
         f.longitude,
-        NULL::numeric as depth,
-        f.recorded_at as time,
+        f.depth_meters as depth,
+        f.timestamp as time,
         f.species_id::text as species_id,
-        s.common_name as species_name,
+        COALESCE(s.common_name, f.species_name_reported) as species_name,
         jsonb_build_object(
             'catch_weight_kg', f.catch_weight_kg,
-            'effort_hours', f.effort_hours,
+            'effort_hours', f.fishing_effort_hours,
             'gear_type', f.gear_type,
             'fishing_zone', f.fishing_zone
         ) as measurements
     FROM public.fisheries_records f
     LEFT JOIN public.species s ON f.species_id = s.id
-    WHERE (:date_from IS NULL OR f.recorded_at >= :date_from::timestamptz)
-      AND (:date_to IS NULL OR f.recorded_at <= :date_to::timestamptz)
+    WHERE (:date_from IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
+      AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
       AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
       AND (:species_id IS NULL OR f.species_id = :species_id)
 )
@@ -319,22 +320,23 @@ UNION ALL
         occ.dataset_id::text as dataset_id,
         occ.latitude,
         occ.longitude,
-        occ.depth,
-        occ.observed_at as time,
+        occ.depth_meters as depth,
+        occ.timestamp as time,
         occ.species_id::text as species_id,
-        sp.scientific_name as species_name,
+        COALESCE(sp.scientific_name, occ.scientific_name) as species_name,
         jsonb_build_object(
             'individual_count', occ.individual_count,
-            'basis_of_record', occ.basis_of_record
+            'basis_of_record', occ.basis_of_record,
+            'scientific_name', occ.scientific_name
         ) as measurements
     FROM public.species_occurrences occ
     LEFT JOIN public.species sp ON occ.species_id = sp.id
-    WHERE (:date_from IS NULL OR occ.observed_at >= :date_from::timestamptz)
-      AND (:date_to IS NULL OR occ.observed_at <= :date_to::timestamptz)
+    WHERE (:date_from IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
+      AND (:date_to IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
       AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
       AND (:species_id IS NULL OR occ.species_id = :species_id)
-      AND (:depth_min IS NULL OR occ.depth >= :depth_min)
-      AND (:depth_max IS NULL OR occ.depth <= :depth_max)
+      AND (:depth_min IS NULL OR occ.depth_meters >= :depth_min)
+      AND (:depth_max IS NULL OR occ.depth_meters <= :depth_max)
 )
 ORDER BY time DESC NULLS LAST, id ASC
 LIMIT :limit OFFSET :offset;
@@ -345,29 +347,29 @@ SELECT (
     (
         SELECT COUNT(*)
         FROM public.oceanographic_observations o
-        WHERE (:date_from IS NULL OR o.observed_at >= :date_from::timestamptz)
-          AND (:date_to IS NULL OR o.observed_at <= :date_to::timestamptz)
+        WHERE (:date_from IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
+          AND (:date_to IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
           AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
-          AND (:depth_min IS NULL OR o.depth >= :depth_min)
-          AND (:depth_max IS NULL OR o.depth <= :depth_max)
+          AND (:depth_min IS NULL OR o.depth_meters >= :depth_min)
+          AND (:depth_max IS NULL OR o.depth_meters <= :depth_max)
     ) +
     (
         SELECT COUNT(*)
         FROM public.fisheries_records f
-        WHERE (:date_from IS NULL OR f.recorded_at >= :date_from::timestamptz)
-          AND (:date_to IS NULL OR f.recorded_at <= :date_to::timestamptz)
+        WHERE (:date_from IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
+          AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
           AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
           AND (:species_id IS NULL OR f.species_id = :species_id)
     ) +
     (
         SELECT COUNT(*)
         FROM public.species_occurrences occ
-        WHERE (:date_from IS NULL OR occ.observed_at >= :date_from::timestamptz)
-          AND (:date_to IS NULL OR occ.observed_at <= :date_to::timestamptz)
+        WHERE (:date_from IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
+          AND (:date_to IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
           AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
           AND (:species_id IS NULL OR occ.species_id = :species_id)
-          AND (:depth_min IS NULL OR occ.depth >= :depth_min)
-          AND (:depth_max IS NULL OR occ.depth <= :depth_max)
+          AND (:depth_min IS NULL OR occ.depth_meters >= :depth_min)
+          AND (:depth_max IS NULL OR occ.depth_meters <= :depth_max)
     )
 ) as total;
 """
@@ -377,6 +379,8 @@ SELECT
     (SELECT COUNT(*) FROM public.oceanographic_observations) as oceanography_count,
     (SELECT COUNT(*) FROM public.fisheries_records) as fisheries_count,
     (SELECT COUNT(*) FROM public.species_occurrences) as biodiversity_count,
+    (SELECT COUNT(*) FROM public.edna_results) as edna_count,
     (SELECT COUNT(*) FROM public.datasets) as total_datasets,
     (SELECT COUNT(*) FROM public.species) as total_species;
 """
+

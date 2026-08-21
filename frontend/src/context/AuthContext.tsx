@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { UserProfile, AuthSession } from '../types/auth';
+import { UserProfile, AuthSession, RegisterData } from '../types/auth';
 import { authService } from '../services/auth';
 import { ApiClient } from '../services/api';
 import { MOCK_USERS } from '../services/mockData';
@@ -11,6 +11,7 @@ interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   switchDemoRole: (role: 'user' | 'admin') => void;
 }
@@ -18,21 +19,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Start unauthenticated. isLoading=true so ProtectedRoute shows spinner
-  // while we check if a stored token exists and is still valid.
   const [user, setUser] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<AuthSession | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // On mount: try to restore session from stored token.
-    // If stored token is present and valid, /auth/me returns the profile.
-    // If missing/expired/invalid → user stays null → redirect to /login.
     const checkAuth = async () => {
       const storedToken = ApiClient.getToken();
       if (!storedToken) {
-        // No token stored at all — skip network call, go straight to login.
         setIsLoading(false);
         return;
       }
@@ -46,7 +41,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           user: currentUser
         });
       } catch {
-        // Token invalid or expired — clear it and force re-login.
         ApiClient.setToken(null);
         setUser(null);
         setSession(null);
@@ -72,6 +66,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const register = async (data: RegisterData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const authSession = await authService.register(data);
+      setSession(authSession);
+      setUser(authSession.user);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = async () => {
     setIsLoading(true);
     try {
@@ -83,9 +92,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // switchDemoRole: hackathon convenience to flip display profile label only.
-  // Does NOT change the underlying API token — all API calls still use the
-  // real stored Bearer token from the actual login.
   const switchDemoRole = (role: 'user' | 'admin') => {
     const selectedUser = role === 'admin' ? MOCK_USERS.admin : MOCK_USERS.scientist;
     setUser(selectedUser);
@@ -100,6 +106,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isLoading,
         error,
         login,
+        register,
         logout,
         switchDemoRole
       }}
