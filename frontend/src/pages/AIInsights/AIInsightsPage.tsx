@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { mlService } from '../../services/ml';
-import { 
-  MLModelInfo, 
-  AnomalyDetectionResult, 
-  HabitatSuitabilityResult, 
-  CatchForecastResult 
+import {
+  MLModelInfo,
+  AnomalyDetectionResult,
+  HabitatSuitabilityResult,
+  CatchForecastResult
 } from '../../types/ml';
 import { DisclaimerBanner } from '../../components/ai/DisclaimerBanner';
 import { AnomalyCard } from '../../components/ai/AnomalyCard';
 import { HabitatSuitabilityCard } from '../../components/ai/HabitatSuitabilityCard';
-import { PredictionCard } from '../../components/ai/PredictionCard';
-import { Card, CardHeader } from '../../components/ui/Card';
+import { CatchPredictionCard } from '../../components/ai/CatchPredictionCard';
+import { CatchPredictionSimulator } from '../../components/ai/CatchPredictionSimulator';
+import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { CardSkeleton } from '../../components/ui/Skeleton';
-import { Cpu, Sparkles, Layers, Activity, ShieldCheck } from 'lucide-react';
+import { Cpu, Sparkles, Layers, Activity, Fish, TrendingUp } from 'lucide-react';
 
 export const AIInsightsPage: React.FC = () => {
   const [models, setModels] = useState<MLModelInfo[]>([]);
@@ -21,6 +22,9 @@ export const AIInsightsPage: React.FC = () => {
   const [suitability, setSuitability] = useState<HabitatSuitabilityResult[]>([]);
   const [forecasts, setForecasts] = useState<CatchForecastResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [simSpecies, setSimSpecies] = useState<string>('Indian Oil Sardine (Sardinella longiceps)');
+
+  const simulatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadAI = async () => {
@@ -45,6 +49,13 @@ export const AIInsightsPage: React.FC = () => {
     loadAI();
   }, []);
 
+  const handleSimulateClick = (species: string) => {
+    setSimSpecies(species);
+    if (simulatorRef.current) {
+      simulatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -54,7 +65,7 @@ export const AIInsightsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl mx-auto">
+    <div className="space-y-8 animate-fade-in max-w-6xl mx-auto pb-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -63,7 +74,7 @@ export const AIInsightsPage: React.FC = () => {
             AI & Machine Learning Decision Support Suite
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Marine anomaly detection, species habitat suitability envelopes, and biomass yield projections.
+            Marine anomaly detection, species habitat suitability envelopes, and biomass catch prediction pipelines.
           </p>
         </div>
 
@@ -77,12 +88,16 @@ export const AIInsightsPage: React.FC = () => {
 
       {/* 1. Active ML Models Overview */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          Registered Machine Learning Models & Inference Pipelines
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <Layers className="w-3.5 h-3.5 text-ocean-cyan" />
+            Registered Machine Learning Models & Inference Pipelines
+          </h3>
+          <span className="text-[11px] font-mono text-slate-400">Registry Active</span>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {models.map((mod) => (
-            <Card key={mod.id} className="p-4 space-y-3 border-marine-800">
+            <Card key={mod.id} className="p-4 space-y-3 border-marine-800 hover:border-ocean-cyan/40 transition-colors">
               <div className="flex items-start justify-between">
                 <div>
                   <h4 className="text-xs font-bold text-white">{mod.name}</h4>
@@ -107,9 +122,15 @@ export const AIInsightsPage: React.FC = () => {
 
       {/* 2. Detected Environmental Anomalies */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          Active Marine Environmental Anomalies & Stress Events
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <Activity className="w-3.5 h-3.5 text-ocean-coral" />
+            Active Marine Environmental Anomalies & Stress Events
+          </h3>
+          <Badge variant="coral" size="sm">
+            {anomalies.length} Active Alerts
+          </Badge>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {anomalies.map((anom) => (
             <AnomalyCard key={anom.id} anomaly={anom} />
@@ -119,9 +140,15 @@ export const AIInsightsPage: React.FC = () => {
 
       {/* 3. Ecological Habitat Suitability Models */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          Pelagic Species Habitat Suitability Envelopes (MaxEnt)
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-ocean-teal" />
+            Pelagic Species Habitat Suitability Envelopes (MaxEnt)
+          </h3>
+          <Badge variant="teal" size="sm">
+            MaxEnt Spatial Niche
+          </Badge>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {suitability.map((suit, idx) => (
             <HabitatSuitabilityCard key={idx} suitability={suit} />
@@ -129,17 +156,46 @@ export const AIInsightsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Catch Landings & Biomass Forecasting */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          Quarterly Commercial Catch Forecasts (LSTM Ensemble)
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {forecasts.map((fore, idx) => (
-            <PredictionCard key={idx} forecast={fore} />
-          ))}
+      {/* 4. Catch Prediction & Commercial Landings (MBLF-Net) */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Fish className="w-3.5 h-3.5 text-ocean-cyan" />
+              Catch Prediction & Commercial Biomass Yield (MBLF-Net)
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              XGBoost Temporal CNN-LSTM forecaster predicting quarterly marine landings and Catch Per Unit Effort (CPUE).
+            </p>
+          </div>
+          <Badge variant="cyan" size="sm" className="hidden sm:inline-flex">
+            MBLF-Net Ensemble
+          </Badge>
+        </div>
+
+        {/* Live Simulator Tool */}
+        <div ref={simulatorRef}>
+          <CatchPredictionSimulator key={simSpecies} initialSpecies={simSpecies} />
+        </div>
+
+        {/* Forecast Cards Grid */}
+        <div className="space-y-2 pt-2">
+          <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Quarterly Landings Projections by Stock
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {forecasts.map((fore, idx) => (
+              <CatchPredictionCard
+                key={idx}
+                forecast={fore}
+                onSimulate={handleSimulateClick}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default AIInsightsPage;

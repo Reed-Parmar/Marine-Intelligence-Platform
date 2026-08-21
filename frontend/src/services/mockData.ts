@@ -915,7 +915,7 @@ export const MOCK_ML_MODELS: MLModelInfo[] = [
     name: 'Marine Environmental Anomaly Detector (MEAD-v2)',
     type: 'environmental_anomaly_detector',
     version: '2.1.0',
-    framework: 'Scikit-learn',
+    framework: 'Isolation-Forest',
     trainingAccuracyF1: 0.942,
     lastTrainedDate: '2026-08-01',
     inputFeatures: ['SST_anomaly', 'Salinity_deviation', 'DO_gradient', 'Chlorophyll_spike', 'Wind_stress'],
@@ -936,10 +936,10 @@ export const MOCK_ML_MODELS: MLModelInfo[] = [
   },
   {
     id: 'ml-mod-03',
-    name: 'Marine Biomass & Landings Forecaster (MBLF-Net)',
+    name: 'Catch Prediction (MBLF-Net)',
     type: 'catch_forecasting_xgboost',
     version: '3.0.1',
-    framework: 'PyTorch',
+    framework: 'XGBoost',
     trainingAccuracyF1: 0.885,
     lastTrainedDate: '2026-07-15',
     inputFeatures: ['Historical_CPUE', 'Monsoon_Index', 'SST_Lag30', 'Fishing_Effort_Hours'],
@@ -1041,7 +1041,25 @@ export const MOCK_CATCH_FORECASTS: CatchForecastResult[] = [
     confidenceInterval95: [49000, 59400],
     historicalAverageTons: 52800,
     trendDirection: 'stable',
-    modelExplanation: 'Stable thermal regime and steady primary production maintain sustained yields.'
+    modelExplanation: 'Stable thermal regime and steady primary production maintain sustained yields across coastal neritic zones.'
+  },
+  {
+    forecastPeriod: 'Q3 2026 (Post-Monsoon)',
+    targetSpecies: 'Yellowfin Tuna (Thunnus albacares)',
+    predictedCatchTons: 29800,
+    confidenceInterval95: [26500, 33100],
+    historicalAverageTons: 33400,
+    trendDirection: 'declining',
+    modelExplanation: 'Subsurface thermocline deepening in offshore waters indicates temporary dispersal into oceanic EEZ limits.'
+  },
+  {
+    forecastPeriod: 'Q3 2026 (Post-Monsoon)',
+    targetSpecies: 'Karikkadi Shrimp (Parapenaeopsis stylifera)',
+    predictedCatchTons: 38700,
+    confidenceInterval95: [35200, 42200],
+    historicalAverageTons: 32900,
+    trendDirection: 'increasing',
+    modelExplanation: 'High post-ban trawl efficiency and muddy bottom substrate enrichment drive strong coastal landing volumes.'
   }
 ];
 

@@ -1,4 +1,4 @@
-export type MLModelType = 
+export type MLModelType =
   | 'environmental_anomaly_detector'
   | 'habitat_suitability_maxent'
   | 'catch_forecasting_xgboost'
@@ -9,7 +9,7 @@ export interface MLModelInfo {
   name: string;
   type: MLModelType;
   version: string;
-  framework: 'Scikit-learn' | 'XGBoost' | 'PyTorch' | 'ONNX';
+  framework: 'Isolation-Forest' | 'XGBoost' | 'XGBoost' | 'ONNX';
   trainingAccuracyF1: number;
   lastTrainedDate: string;
   inputFeatures: string[];
