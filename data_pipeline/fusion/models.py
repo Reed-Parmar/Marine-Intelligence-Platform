@@ -8,13 +8,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-
-class DomainType(str, Enum):
-    """Marine science domains supported by the platform."""
-    OCEANOGRAPHY = "oceanography"
-    FISHERIES = "fisheries"
-    BIODIVERSITY = "biodiversity"
-    EDNA = "edna"
+from data_pipeline.shared.models import DomainType
 
 
 @dataclass

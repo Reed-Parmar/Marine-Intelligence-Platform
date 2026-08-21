@@ -464,6 +464,69 @@ class TestPhase6ScientificAnalysis(unittest.TestCase):
         self.assertIsNotNone(bio_res.shannon_index)
         self.assertGreater(bio_res.shannon_index, 0.0)
 
+    def test_M_phases_2_to_7_full_platform_end_to_end_integration(self):
+        """M. Full Platform Integration: Traces complete flow from Phase 3 through Phase 7."""
+        from data_pipeline.specialized_science import (
+            EDNAService,
+            OtolithAnalysisService,
+            TaxonomyService,
+            ConfidenceLevel,
+            IdentificationStatus,
+        )
+        from PIL import Image
+
+        dataset_path = ROOT_DIR / "dataset" / "dnaderiveddata1.txt"
+        if not dataset_path.exists():
+            self.skipTest(f"Dataset file {dataset_path} not found.")
+
+        # Phase 3: Ingestion
+        df, meta, _ = parse_cmlre_txt(str(dataset_path))
+        norm_df, _ = normalize_dataframe_columns(df)
+        self.assertGreater(len(norm_df), 0)
+
+        # Phase 4: QC Standardisation
+        qc_output = integrate_with_phase4(norm_df, dataset_metadata=meta)
+        std_df = qc_output["df"]
+        self.assertIn("quality_score", qc_output)
+
+        # Phase 5: Map to MarineObservation objects
+        observations: List[MarineObservation] = []
+        for idx, row in std_df.head(20).iterrows():
+            lat_val = row.get("latitude") if pd.notna(row.get("latitude")) else (row.get("decimalLatitude") if pd.notna(row.get("decimalLatitude")) else 10.0 + idx * 0.1)
+            lon_val = row.get("longitude") if pd.notna(row.get("longitude")) else (row.get("decimalLongitude") if pd.notna(row.get("decimalLongitude")) else 76.0 + idx * 0.1)
+            observations.append(
+                MarineObservation(
+                    domain=DomainType.EDNA.value,
+                    latitude=float(lat_val),
+                    longitude=float(lon_val),
+                    species_name=str(row.get("species_scientific_name") if pd.notna(row.get("species_scientific_name")) else "Rastrelliger kanagurta"),
+                    variable="edna_sequence_length",
+                    value=float(len(str(row.get("DNA_sequence", "")))),
+                )
+            )
+
+        # Phase 6: Spatial and Biodiversity analytics on observation layer
+        spatial_res = ScientificAnalysisService.analyze_spatial(observations=observations, grid_size_deg=2.0)
+        self.assertEqual(spatial_res.domain_distribution.get("edna"), len(observations))
+
+        # Phase 7: Specialized Science pipelines
+        tax_svc = TaxonomyService()
+        edna_svc = EDNAService(taxonomy_service=tax_svc)
+        otolith_svc = OtolithAnalysisService(taxonomy_service=tax_svc)
+
+        # eDNA sequence analysis with taxonomy injection
+        sample_row = std_df.iloc[0].to_dict()
+        edna_res = edna_svc.analyze_cmlre_edna_record(sample_row)
+        self.assertEqual(edna_res.domain, "edna")
+        self.assertIsNotNone(edna_res.target_entity)
+        self.assertIn(edna_res.confidence_level, [ConfidenceLevel.HIGH, ConfidenceLevel.MEDIUM, ConfidenceLevel.LOW, ConfidenceLevel.UNKNOWN])
+
+        # Otolith analysis with feature extraction & taxonomy resolution
+        synth_img = Image.new("L", (128, 64), color=180)
+        otolith_res = otolith_svc.analyze_image(synth_img, image_id="otolith_integ_01")
+        self.assertEqual(otolith_res.domain, "otolith")
+        self.assertIn(otolith_res.status, [IdentificationStatus.PROVISIONAL, IdentificationStatus.CONFIRMED, IdentificationStatus.UNRESOLVED])
+
 
 if __name__ == "__main__":
     unittest.main()
