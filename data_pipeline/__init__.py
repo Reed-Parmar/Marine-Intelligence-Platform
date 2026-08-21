@@ -5,6 +5,7 @@ Modular, phase-oriented data pipeline containing:
 - Phase 3: ingestion (format detection, parsing, normalization, canonical export)
 - Phase 4: quality_standardisation (QC validators, unit converter, quality scoring)
 - Phase 5: fusion (spatial/temporal/depth alignment, unified query, cross-domain linking)
+- Phase 6: analysis (ocean/fisheries trends, biodiversity, spatial/temporal, correlation, ecosystem)
 - shared: common models and enumerations
 """
 
@@ -66,6 +67,32 @@ from data_pipeline.fusion import (
     query_unified_observations,
 )
 
+# Phase 6: Scientific Analysis
+from data_pipeline.analysis import (
+    BiodiversityResult,
+    CorrelationResult,
+    ECOSYSTEM_THEMES,
+    EcosystemRelationshipResult,
+    FisheriesTrendResult,
+    OceanTrendResult,
+    ScientificAnalysisService,
+    SpatialAnalysisResult,
+    SpatialGridCell,
+    SpeciesDistributionResult,
+    TemporalAnalysisResult,
+    TemporalBucket,
+    TrendDataPoint,
+    analyze_ecosystem_relationship,
+    analyze_fisheries_trends,
+    analyze_ocean_trends,
+    analyze_spatial_distribution,
+    analyze_species_distribution,
+    analyze_temporal_dynamics,
+    calculate_biodiversity_indicators,
+    calculate_cross_domain_correlation,
+    pair_cross_domain_observations,
+)
+
 __all__ = [
     # Shared
     "DomainType",
@@ -112,4 +139,27 @@ __all__ = [
     "get_domain_observations",
     "get_unified_summary",
     "get_cross_domain_context",
+    # Phase 6: Scientific Analysis
+    "ScientificAnalysisService",
+    "analyze_ocean_trends",
+    "analyze_fisheries_trends",
+    "analyze_species_distribution",
+    "calculate_biodiversity_indicators",
+    "analyze_spatial_distribution",
+    "analyze_temporal_dynamics",
+    "calculate_cross_domain_correlation",
+    "pair_cross_domain_observations",
+    "analyze_ecosystem_relationship",
+    "ECOSYSTEM_THEMES",
+    "TrendDataPoint",
+    "OceanTrendResult",
+    "FisheriesTrendResult",
+    "SpeciesDistributionResult",
+    "BiodiversityResult",
+    "SpatialGridCell",
+    "SpatialAnalysisResult",
+    "TemporalBucket",
+    "TemporalAnalysisResult",
+    "CorrelationResult",
+    "EcosystemRelationshipResult",
 ]
