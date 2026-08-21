@@ -15,10 +15,10 @@ def get_supabase_client():
     Reuses data_pipeline.file_handler.get_supabase_client().
     """
     try:
-        from data_pipeline.file_handler import get_supabase_client as _get_client
+        from data_pipeline.storage.file_handler import get_supabase_client as _get_client
         return _get_client()
     except ImportError:
-        logger.warning("data_pipeline.file_handler not available, trying direct init")
+        logger.warning("data_pipeline.storage.file_handler not available, trying direct init")
         import os
         url = os.environ.get("SUPABASE_URL")
         key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
