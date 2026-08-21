@@ -1,0 +1,38 @@
+"""
+Authentication and User schemas.
+"""
+
+from enum import Enum
+from typing import Optional
+from pydantic import BaseModel
+
+
+class UserRole(str, Enum):
+    ADMIN = "admin"
+    USER = "user"
+
+
+class UserProfile(BaseModel):
+    id: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    role: UserRole = UserRole.USER
+    department: Optional[str] = None
+    designation: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserProfile
+
+
+class RoleUpdateRequest(BaseModel):
+    role: UserRole
