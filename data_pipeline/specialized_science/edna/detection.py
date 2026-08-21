@@ -3,6 +3,7 @@ Phase 7 — eDNA Species Detection & Baseline Confidence Scoring.
 Transforms sequence matches into structured species detections with transparent confidence derivations.
 """
 
+import math
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -12,13 +13,13 @@ from data_pipeline.specialized_science.common.models import (
     IdentificationStatus,
     ScientificEvidence,
     SpecializedResult,
+    TaxonResolverProtocol,
 )
 from data_pipeline.specialized_science.common.result import (
     build_specialized_result,
     compute_confidence_level,
 )
 from data_pipeline.specialized_science.edna.matching import SequenceMatch
-from data_pipeline.specialized_science.taxonomy.service import TaxonomyService
 
 
 @dataclass
@@ -75,7 +76,7 @@ def calculate_baseline_edna_confidence(
     2. Sequence length penalty if query is shorter than standard barcode threshold
     3. Separation margin bonus/penalty relative to second closest candidate
     """
-    if top_match_score <= 0:
+    if top_match_score is None or top_match_score <= 0 or not math.isfinite(top_match_score):
         return 0.0
 
     # Length scaling factor (scales smoothly with read length, min factor 0.85)
@@ -85,7 +86,7 @@ def calculate_baseline_edna_confidence(
     base_conf = top_match_score * length_factor
 
     # Separation margin penalty if second candidate is nearly identical
-    if second_match_score is not None and second_match_score > 0:
+    if second_match_score is not None and second_match_score > 0 and math.isfinite(second_match_score):
         margin = top_match_score - second_match_score
         if margin < 0.05:
             base_conf *= 0.90 # Slight ambiguity dampening
@@ -98,7 +99,7 @@ def detect_species_from_matches(
     sequence: str,
     matches: List[SequenceMatch],
     confidence_threshold: float = 0.70,
-    taxonomy_service: Optional[TaxonomyService] = None,
+    taxonomy_service: Optional[TaxonResolverProtocol] = None,
 ) -> SpeciesDetection:
     """
     Evaluates sequence matches to generate a structured SpeciesDetection.

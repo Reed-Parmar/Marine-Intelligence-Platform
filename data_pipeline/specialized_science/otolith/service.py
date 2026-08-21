@@ -9,12 +9,16 @@ from typing import Any, BinaryIO, Dict, List, Optional, Tuple, Union
 from PIL import Image
 
 from data_pipeline.specialized_science.common.models import (
+    ConfidenceLevel,
     EvidenceType,
+    IdentificationStatus,
     InMemoryStorageRepository,
     ScientificEvidence,
     SpecializedResult,
     StorageRepository,
+    TaxonResolverProtocol,
 )
+from data_pipeline.specialized_science.common.result import build_specialized_result
 from data_pipeline.specialized_science.otolith.classification import (
     BaselineOtolithClassifier,
     OtolithClassificationResult,
@@ -46,7 +50,7 @@ class OtolithAnalysisService:
         self,
         feature_extractor: Optional[ImageFeatureExtractor] = None,
         classifier: Optional[OtolithClassifier] = None,
-        taxonomy_service: Optional[TaxonomyService] = None,
+        taxonomy_service: Optional[TaxonResolverProtocol] = None,
         storage_repo: Optional[StorageRepository] = None,
     ) -> None:
         self.feature_extractor = feature_extractor or BaselineMorphologicalFeatureExtractor()
@@ -74,19 +78,24 @@ class OtolithAnalysisService:
     def extract_features(
         self,
         image_input: Union[str, Path, bytes, BinaryIO, Image.Image, PreprocessedImage],
+        feature_extractor: Optional[ImageFeatureExtractor] = None,
     ) -> OtolithFeatureVector:
         """Extracts morphological and statistical feature vector."""
+        extractor = feature_extractor or self.feature_extractor
         if isinstance(image_input, PreprocessedImage):
             prep = image_input
         else:
             prep = self.preprocess(image_input)
-        return self.feature_extractor.extract(prep)
+        return extractor.extract(prep)
 
     def analyze_image(
         self,
         image_input: Union[str, Path, bytes, BinaryIO, Image.Image],
         image_id: str = "otolith_01",
         target_size: Tuple[int, int] = (224, 224),
+        classifier: Optional[OtolithClassifier] = None,
+        feature_extractor: Optional[ImageFeatureExtractor] = None,
+        taxonomy_service: Optional[TaxonResolverProtocol] = None,
         persist: bool = True,
     ) -> SpecializedResult:
         """
@@ -98,6 +107,10 @@ class OtolithAnalysisService:
         5. Taxonomy resolution
         6. Storage persistence (if enabled)
         """
+        active_classifier = classifier or self.classifier
+        active_extractor = feature_extractor or self.feature_extractor
+        active_tax = taxonomy_service or self.taxonomy_service
+
         # Step 1: Validation
         val_report = self.validate_image(image_input)
         if not val_report.is_valid:
@@ -107,9 +120,13 @@ class OtolithAnalysisService:
                 source_identifier=image_id,
                 provenance={"validation_status": "failed"},
             )
-            res = SpecializedResult(
+            res = build_specialized_result(
                 result_id=f"otolith-{image_id}",
                 domain="otolith",
+                status=IdentificationStatus.REJECTED,
+                confidence_score=0.0,
+                confidence_method="validation_failure",
+                is_ml_prediction=False,
                 evidence=ev,
                 warnings=val_report.errors,
                 provenance={"image_id": image_id},
@@ -122,7 +139,7 @@ class OtolithAnalysisService:
         prep = self.preprocess(image_input, target_size=target_size)
 
         # Step 3: Feature Extraction
-        feature_vec = self.feature_extractor.extract(prep)
+        feature_vec = active_extractor.extract(prep)
 
         # Step 4: Build Evidence Container
         evidence = ScientificEvidence(
@@ -144,13 +161,13 @@ class OtolithAnalysisService:
         )
 
         # Step 5: Classification
-        class_res = self.classifier.classify(feature_vec)
+        class_res = active_classifier.classify(feature_vec)
 
         # Step 6: Standardization & Taxonomy Integration
         specialized_res = class_res.to_specialized_result(
             image_id=image_id,
             evidence=evidence,
-            taxonomy_service=self.taxonomy_service,
+            taxonomy_service=active_tax,
         )
 
         if persist and self.storage_repo:

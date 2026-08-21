@@ -11,6 +11,7 @@ from data_pipeline.specialized_science.common.models import (
     InMemoryStorageRepository,
     SpecializedResult,
     StorageRepository,
+    TaxonResolverProtocol,
 )
 from data_pipeline.specialized_science.edna.detection import (
     SpeciesDetection,
@@ -44,7 +45,7 @@ class EDNAService:
     def __init__(
         self,
         matcher: Optional[ReferenceMatcher] = None,
-        taxonomy_service: Optional[TaxonomyService] = None,
+        taxonomy_service: Optional[TaxonResolverProtocol] = None,
         storage_repo: Optional[StorageRepository] = None,
     ) -> None:
         self.matcher = matcher or KmerSimilarityMatcher()
@@ -74,6 +75,8 @@ class EDNAService:
         seq_id: str = "seq_01",
         target_gene: Optional[str] = "Cytochrome oxidase",
         confidence_threshold: float = 0.70,
+        matcher: Optional[ReferenceMatcher] = None,
+        taxonomy_service: Optional[TaxonResolverProtocol] = None,
         persist: bool = True,
     ) -> SpecializedResult:
         """
@@ -84,6 +87,9 @@ class EDNAService:
         4. Taxonomy resolution
         5. Storage persistence (if enabled)
         """
+        active_matcher = matcher or self.matcher
+        active_tax = taxonomy_service or self.taxonomy_service
+
         prep = self.preprocess(raw_sequence, seq_id=seq_id)
         if not prep.passed_filter:
             detection = SpeciesDetection(
@@ -98,7 +104,7 @@ class EDNAService:
             return result
 
         # Reference matching
-        matches = self.matcher.match(prep.cleaned_sequence)
+        matches = active_matcher.match(prep.cleaned_sequence)
 
         # Species detection & taxonomy resolution
         detection = detect_species_from_matches(
@@ -106,7 +112,7 @@ class EDNAService:
             sequence=prep.cleaned_sequence,
             matches=matches,
             confidence_threshold=confidence_threshold,
-            taxonomy_service=self.taxonomy_service,
+            taxonomy_service=active_tax,
         )
 
         result = detection.to_specialized_result()

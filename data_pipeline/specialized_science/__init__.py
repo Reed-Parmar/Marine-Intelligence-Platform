@@ -16,6 +16,7 @@ from data_pipeline.specialized_science.common import (
     ScientificEvidence,
     SpecializedResult,
     StorageRepository,
+    TaxonResolverProtocol,
     build_specialized_result,
     compute_confidence_level,
 )
@@ -79,6 +80,7 @@ __all__ = [
     "SpecializedResult",
     "StorageRepository",
     "InMemoryStorageRepository",
+    "TaxonResolverProtocol",
     "compute_confidence_level",
     "build_specialized_result",
     # eDNA

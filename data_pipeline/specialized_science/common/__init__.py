@@ -10,6 +10,7 @@ from data_pipeline.specialized_science.common.models import (
     ScientificEvidence,
     SpecializedResult,
     StorageRepository,
+    TaxonResolverProtocol,
 )
 from data_pipeline.specialized_science.common.result import (
     build_specialized_result,
@@ -24,6 +25,7 @@ __all__ = [
     "SpecializedResult",
     "StorageRepository",
     "InMemoryStorageRepository",
+    "TaxonResolverProtocol",
     "compute_confidence_level",
     "build_specialized_result",
 ]

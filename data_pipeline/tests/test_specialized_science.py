@@ -453,6 +453,37 @@ class TestPhase7SpecializedScience(unittest.TestCase):
         self.assertEqual(res.status, IdentificationStatus.CONFIRMED)
         self.assertEqual(res.evidence.provenance["match_type"], "ncbi_blast_local")
 
+    def test_D5_invalid_image_analysis_rejection(self):
+        """D5. Safety & Rejection: Rejects corrupt/empty image with REJECTED status and 0 confidence."""
+        res = self.otolith_service.analyze_image(b"", image_id="corrupt_01")
+        self.assertEqual(res.domain, "otolith")
+        self.assertEqual(res.status, IdentificationStatus.REJECTED)
+        self.assertEqual(res.confidence_score, 0.0)
+        self.assertIsNone(res.target_entity)
+        self.assertGreater(len(res.warnings), 0)
+
+    def test_F4_custom_taxon_resolver_injection(self):
+        """F4. Phase 8 Extension: Verifies TaxonResolverProtocol injection in EDNA and Otolith services."""
+        # Simulated Phase 8 live WoRMS / OBIS API resolver
+        class MockPhase8TaxonResolver:
+            def resolve_taxon(self, candidate_name: str):
+                class DummyResult:
+                    is_resolved = True
+                    scientific_name = "Thunnus albacares"
+                    common_name = "Yellowfin Tuna (Live WoRMS)"
+                    hierarchy = TaxonHierarchy(family="Scombridae", genus="Thunnus", species="Thunnus albacares")
+                    warnings = ["Resolved via Phase 8 Live OBIS Connector"]
+                return DummyResult()
+
+        custom_resolver = MockPhase8TaxonResolver()
+        svc = EDNAService(taxonomy_service=custom_resolver)
+        ref_seq = DEFAULT_EDNA_REFERENCE_DATABASE["REF_COI_005"]["sequence"]
+        res = svc.analyze_sequence(ref_seq, seq_id="resolver_test")
+
+        self.assertEqual(res.target_entity, "Thunnus albacares")
+        self.assertEqual(res.common_name, "Yellowfin Tuna (Live WoRMS)")
+        self.assertIn("Resolved via Phase 8 Live OBIS Connector", res.warnings)
+
 
 if __name__ == "__main__":
     unittest.main()

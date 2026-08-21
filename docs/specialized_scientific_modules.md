@@ -138,6 +138,7 @@ Phase 7 provides explicit Protocols allowing Phase 8 machine learning models to 
 | **eDNA Matcher** | `ReferenceMatcher` | `KmerSimilarityMatcher` | NCBI BLAST+ / Neural Sequence Embeddings |
 | **Image Features** | `ImageFeatureExtractor` | `BaselineMorphologicalFeatureExtractor` | ResNet50 / ViT Deep Embeddings |
 | **Otolith Classifier**| `OtolithClassifier` | `BaselineOtolithClassifier` | PyTorch / ONNX Trained CNN Model |
+| **Taxonomy Resolver**| `TaxonResolverProtocol` | `TaxonomyService` | Live WoRMS / OBIS REST API Connector |
 | **Persistence** | `StorageRepository` | `InMemoryStorageRepository` | PostgreSQL / Supabase Vector Storage |
 
 ### Example: Plugging a Phase 8 CNN Model into Phase 7:

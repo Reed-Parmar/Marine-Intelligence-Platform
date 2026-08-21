@@ -13,13 +13,13 @@ from data_pipeline.specialized_science.common.models import (
     IdentificationStatus,
     ScientificEvidence,
     SpecializedResult,
+    TaxonResolverProtocol,
 )
 from data_pipeline.specialized_science.common.result import (
     build_specialized_result,
     compute_confidence_level,
 )
 from data_pipeline.specialized_science.otolith.features import OtolithFeatureVector
-from data_pipeline.specialized_science.taxonomy.service import TaxonomyService
 
 
 @dataclass
@@ -41,7 +41,7 @@ class OtolithClassificationResult:
         self,
         image_id: str,
         evidence: Optional[ScientificEvidence] = None,
-        taxonomy_service: Optional[TaxonomyService] = None,
+        taxonomy_service: Optional[TaxonResolverProtocol] = None,
     ) -> SpecializedResult:
         """Converts classification output into the standard platform SpecializedResult."""
         common_name = None
