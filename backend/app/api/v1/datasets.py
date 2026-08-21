@@ -5,11 +5,12 @@ Requires authenticated user and enforces ownership authorization on mutations.
 
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from backend.app.auth.supabase_auth import get_current_user
+from backend.app.auth.supabase_auth import get_current_user, get_optional_user
 from backend.app.schemas.auth import UserProfile, UserRole
 from backend.app.schemas.common import ApiListResponse, ApiMeta, ApiResponse
 from backend.app.schemas.dataset import (
     DatasetCreateRequest,
+    DatasetPreviewResponse,
     DatasetProvenanceResponse,
     DatasetQualityResponse,
     DatasetResponse,
@@ -173,3 +174,20 @@ async def get_dataset_provenance(
             detail={"code": "DATASET_NOT_FOUND", "message": f"Dataset '{dataset_id}' not found."}
         )
     return ApiResponse(data=prov)
+
+
+@router.get("/{dataset_id}/preview", response_model=ApiResponse[DatasetPreviewResponse])
+async def get_dataset_preview(
+    dataset_id: str,
+    user: Optional[UserProfile] = Depends(get_optional_user)
+):
+    """
+    Retrieves tabular preview data for a registered dataset.
+    """
+    prev = DatasetService.get_dataset_preview(dataset_id)
+    if not prev:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "DATASET_NOT_FOUND", "message": f"Dataset '{dataset_id}' not found."}
+        )
+    return ApiResponse(data=prev)

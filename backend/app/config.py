@@ -1,10 +1,13 @@
-"""
-Backend configuration and environment variable validation using pydantic-settings.
-"""
-
+import os
 from typing import List, Union
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
+try:
+    from pydantic_settings import BaseSettings, SettingsConfigDict
+except ImportError:
+    from pydantic import BaseModel as BaseSettings
+    def SettingsConfigDict(**kwargs):
+        return {"extra": "ignore"}
 
 
 class Settings(BaseSettings):
@@ -13,6 +16,22 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore"
     )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Load environment variables into attributes if not already set
+        for k in self.__class__.model_fields.keys():
+            if k in os.environ:
+                val = os.environ[k]
+                if isinstance(getattr(self, k), bool):
+                    setattr(self, k, val.lower() in ("true", "1", "t"))
+                elif isinstance(getattr(self, k), int):
+                    try:
+                        setattr(self, k, int(val))
+                    except ValueError:
+                        pass
+                elif isinstance(getattr(self, k), str):
+                    setattr(self, k, val)
 
     PROJECT_NAME: str = "CMLRE Marine Intelligence Platform API"
     VERSION: str = "1.0.0"

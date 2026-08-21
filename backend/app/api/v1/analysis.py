@@ -49,18 +49,133 @@ async def list_analyses(
     )
 
 
+def _infer_domain(var_name: str, fallback_domain: Optional[str] = None) -> str:
+    v = (var_name or "").lower()
+    if any(k in v for k in ["temp", "salin", "oxygen", "ctd", "depth", "chlorophyll", "turbidity"]):
+        return "oceanography"
+    if any(k in v for k in ["catch", "cpue", "effort", "gear", "vessel", "landing"]):
+        return "fisheries"
+    if any(k in v for k in ["richness", "count", "shannon", "simpson", "species", "pielou"]):
+        return "biodiversity"
+    if any(k in v for k in ["edna", "dna", "sequence"]):
+        return "edna"
+    return fallback_domain or "oceanography"
+
+
 @router.post("/correlation", response_model=ApiResponse[CorrelationAnalysisResponse])
 async def run_correlation(req: CorrelationAnalysisRequest):
     """
     Cross-domain scientific correlation analysis hook (Phase 6).
+    Invokes deterministic Phase 6 ScientificAnalysisService.
     """
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail={
-            "code": "ANALYSIS_MODULE_PENDING",
-            "message": "Cross-domain scientific correlation analysis (Phase 6) is pending integration of the statistical compute module."
-        }
+    from data_pipeline.analysis.service import ScientificAnalysisService
+    from data_pipeline.fusion.models import UnifiedQueryParams
+
+    var_x = req.variable_x or req.independentVariable
+    var_y = req.variable_y or req.dependentVariable
+
+    if not var_x or not var_y:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_PARAMETERS", "message": "Both variable_x and variable_y must be provided."}
+        )
+
+    dom_x = req.domain_x or _infer_domain(var_x, "oceanography")
+    dom_y = req.domain_y or _infer_domain(var_y, "fisheries")
+
+    params = None
+    if req.date_from or req.date_to:
+        params = UnifiedQueryParams(date_from=req.date_from, date_to=req.date_to)
+
+    try:
+        res = ScientificAnalysisService.calculate_correlation(
+            domain_x=dom_x,
+            variable_x=var_x,
+            domain_y=dom_y,
+            variable_y=var_y,
+            method=req.method or "pearson",
+            spatial_radius_km=req.spatial_radius_km,
+            temporal_window_hours=req.temporal_window_hours,
+            depth_tolerance_m=req.depth_tolerance_m
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "ANALYSIS_FAILED", "message": f"Scientific correlation computation failed: {str(e)}"}
+        )
+
+    # Format scatter points and regression line for frontend visualization
+    scatter_points = []
+    x_vals = []
+    for p in res.paired_data:
+        x_val = p.get("x")
+        y_val = p.get("y")
+        if x_val is not None and y_val is not None:
+            scatter_points.append({
+                "x": float(x_val),
+                "y": float(y_val),
+                "stationId": p.get("station_id"),
+                "depth": p.get("depth"),
+                "latitude": p.get("latitude"),
+                "longitude": p.get("longitude")
+            })
+            x_vals.append(float(x_val))
+
+    x_min = min(x_vals) if x_vals else 0.0
+    x_max = max(x_vals) if x_vals else 10.0
+    res_dict = res.to_dict()
+    slope = float(res_dict.get("slope") or 0.0)
+    intercept = float(res_dict.get("intercept") or 0.0)
+    r_sq = float(res_dict.get("r_squared") or (res.correlation_coefficient ** 2 if res.correlation_coefficient is not None else 0.0))
+    p_val = res.p_value if res.p_value is not None else 0.05
+
+    statistics = {
+        "sampleSize": res.sample_size,
+        "pearsonR": res.correlation_coefficient if res.correlation_coefficient is not None else 0.0,
+        "rSquared": r_sq,
+        "pValue": p_val,
+        "standardError": float(res_dict.get("std_err") or 0.0),
+        "fStatistic": 0.0,
+        "slope": slope,
+        "intercept": intercept
+    }
+
+    regression_line = {
+        "xMin": x_min,
+        "xMax": x_max,
+        "yAtMin": round(slope * x_min + intercept, 4),
+        "yAtMax": round(slope * x_max + intercept, 4)
+    }
+
+    response_data = CorrelationAnalysisResponse(
+        id=f"analysis-{var_x}-{var_y}",
+        title=f"{var_x.replace('_', ' ').title()} vs {var_y.replace('_', ' ').title()} Correlation",
+        variable_x=var_x,
+        variable_y=var_y,
+        domain_x=dom_x,
+        domain_y=dom_y,
+        method=res.method,
+        correlation_coefficient=res.correlation_coefficient,
+        sample_size=res.sample_size,
+        p_value=res.p_value,
+        interpretation=res.interpretation,
+        is_statistically_significant=res.is_statistically_significant,
+        disclaimer=res.disclaimer,
+        data_points=res.paired_data,
+        scatterPoints=scatter_points,
+        statistics=statistics,
+        regressionLine=regression_line,
+        ecologicalInterpretation=f"{res.interpretation}. {res.disclaimer}",
+        provenance={
+            "algorithmName": f"Phase 6 {res.method.title()} Cross-Domain Correlation",
+            "recordsUsedCount": res.sample_size,
+            "domainX": dom_x,
+            "domainY": dom_y
+        },
+        warnings=res.warnings
     )
+
+    return ApiResponse(data=response_data)
 
 
 @router.get("/{analysis_id}", response_model=ApiResponse[AnalysisJobResponse])

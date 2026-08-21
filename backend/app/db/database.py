@@ -20,14 +20,18 @@ if settings.DATABASE_URL:
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
     
-    _engine = create_engine(
-        db_url,
-        pool_size=5,
-        max_overflow=10,
-        pool_recycle=300,
-        pool_pre_ping=True
-    )
-    _SessionFactory = sessionmaker(bind=_engine, autocommit=False, autoflush=False)
+    try:
+        _engine = create_engine(
+            db_url,
+            pool_size=5,
+            max_overflow=10,
+            pool_recycle=300,
+            pool_pre_ping=True
+        )
+        _SessionFactory = sessionmaker(bind=_engine, autocommit=False, autoflush=False)
+    except Exception:
+        _engine = None
+        _SessionFactory = None
 
 
 def get_engine():

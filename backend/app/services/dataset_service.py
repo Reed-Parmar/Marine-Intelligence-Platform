@@ -16,6 +16,7 @@ from backend.app.db.queries import (
 )
 from backend.app.schemas.dataset import (
     DatasetCreateRequest,
+    DatasetPreviewResponse,
     DatasetProvenanceResponse,
     DatasetQualityResponse,
     DatasetResponse,
@@ -200,4 +201,78 @@ class DatasetService:
             storage_file_path=ds.storage_file_path,
             uploaded_by=ds.uploaded_by,
             created_at=ds.created_at
+        )
+
+    @staticmethod
+    def get_dataset_preview(dataset_id: str) -> Optional[DatasetPreviewResponse]:
+        """Returns tabular preview for a dataset, resolving file artifact or table observations."""
+        from pathlib import Path
+        from data_pipeline.ingestion.format_detector import detect_format_and_preview
+
+        ds = DatasetService.get_dataset_by_id(dataset_id)
+        if not ds:
+            return None
+
+        # 1. Try finding matching file artifact in dataset/ directory or local storage path
+        candidate_paths = []
+        if ds.storage_file_path:
+            candidate_paths.append(Path(ds.storage_file_path))
+            candidate_paths.append(Path("dataset") / Path(ds.storage_file_path).name)
+        if ds.name:
+            candidate_paths.append(Path("dataset") / ds.name)
+            candidate_paths.append(Path("dataset") / f"{ds.name}.txt")
+            candidate_paths.append(Path("dataset") / f"{ds.name}.csv")
+
+        for p in candidate_paths:
+            if p.exists() and p.is_file():
+                try:
+                    prev_info = detect_format_and_preview(str(p))
+                    cols = [{"name": c, "type": "string"} for c in prev_info.get("columns", [])]
+                    rows = prev_info.get("sample_rows", [])
+                    return DatasetPreviewResponse(
+                        dataset_id=dataset_id,
+                        datasetId=dataset_id,
+                        columns=cols,
+                        rows=rows,
+                        total_preview_rows=len(rows),
+                        totalPreviewRows=len(rows)
+                    )
+                except Exception:
+                    pass
+
+        # 2. Fallback: Query observations from domain table
+        domain = (ds.domain_type or "").lower()
+        rows = []
+        try:
+            if "ocean" in domain:
+                obs = execute_query("SELECT * FROM public.oceanographic_observations WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "fish" in domain:
+                obs = execute_query("SELECT * FROM public.fisheries_records WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "bio" in domain:
+                obs = execute_query("SELECT * FROM public.species_occurrences WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "edna" in domain:
+                obs = execute_query("SELECT * FROM public.edna_samples WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+        except Exception:
+            rows = []
+
+        if not rows:
+            # Default preview based on dataset metadata
+            rows = [
+                {"id": f"{dataset_id}-01", "name": ds.name, "domain": ds.domain_type, "quality_score": ds.quality_score or 95.0, "status": ds.status}
+            ]
+
+        col_keys = list(rows[0].keys()) if rows else ["id", "name", "domain", "status"]
+        columns = [{"name": k, "type": "string"} for k in col_keys]
+
+        return DatasetPreviewResponse(
+            dataset_id=dataset_id,
+            datasetId=dataset_id,
+            columns=columns,
+            rows=rows,
+            total_preview_rows=len(rows),
+            totalPreviewRows=len(rows)
         )

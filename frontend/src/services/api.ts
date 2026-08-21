@@ -25,11 +25,16 @@ export class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
     
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+    
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
       ...((options.headers as Record<string, string>) || {}),
     };
+
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     const token = this.getToken();
     if (token) {
@@ -103,22 +108,36 @@ export class ApiClient {
   }
 
   static post<T>(endpoint: string, body?: any, fallbackData?: T) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request<T>(
       endpoint,
       {
         method: 'POST',
-        body: body ? JSON.stringify(body) : undefined,
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
       },
       fallbackData
     );
   }
 
   static patch<T>(endpoint: string, body?: any, fallbackData?: T) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request<T>(
       endpoint,
       {
         method: 'PATCH',
-        body: body ? JSON.stringify(body) : undefined,
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
+      },
+      fallbackData
+    );
+  }
+
+  static put<T>(endpoint: string, body?: any, fallbackData?: T) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+    return this.request<T>(
+      endpoint,
+      {
+        method: 'PUT',
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
       },
       fallbackData
     );

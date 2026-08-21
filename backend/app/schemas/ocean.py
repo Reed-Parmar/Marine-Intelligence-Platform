@@ -54,3 +54,16 @@ class OceanTrendItem(BaseModel):
 class OceanTrendResponse(BaseModel):
     variable: str
     trends: List[OceanTrendItem]
+
+
+class CTDProfilePointResponse(BaseModel):
+    depth: float
+    temperature: Optional[float] = None
+    salinity: Optional[float] = None
+    dissolvedOxygen: Optional[float] = None
+    dissolved_oxygen: Optional[float] = None
+    chlorophyllA: Optional[float] = None
+    chlorophyll: Optional[float] = None
+    densitySigmaT: Optional[float] = None
+    stationId: Optional[str] = None
+    station_id: Optional[str] = None

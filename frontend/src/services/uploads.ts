@@ -1,6 +1,20 @@
 import { ApiClient } from './api';
 import { DatasetUploadResponse, FileFormat } from '../types/dataset';
 
+function normalizeUploadResponse(d: any, fallback: DatasetUploadResponse): DatasetUploadResponse {
+  if (!d) return fallback;
+  return {
+    uploadId: String(d.uploadId || d.upload_id || fallback.uploadId),
+    fileName: d.fileName || d.filename || fallback.fileName,
+    fileSize: Number(d.fileSize ?? d.file_size_bytes ?? fallback.fileSize),
+    detectedFormat: (d.detectedFormat || d.detected_format || d.file_type || fallback.detectedFormat).toUpperCase() as FileFormat,
+    status: d.status || fallback.status,
+    progressPercent: d.progressPercent ?? 100,
+    message: d.message || `File ${d.filename || fallback.fileName} processed successfully.`,
+    datasetId: d.datasetId || d.dataset_id || fallback.datasetId
+  };
+}
+
 export const uploadService = {
   async uploadFile(file: File): Promise<DatasetUploadResponse> {
     const extension = file.name.split('.').pop()?.toUpperCase() || 'TXT';
@@ -21,12 +35,11 @@ export const uploadService = {
       datasetId: `ds-cmlre-${uploadId}`
     };
 
-    // Simulated / live endpoint
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await ApiClient.post<DatasetUploadResponse>('/uploads', formData, fallback);
-      return res.data;
+      const res = await ApiClient.post<any>('/uploads', formData, fallback);
+      return normalizeUploadResponse(res.data, fallback);
     } catch {
       return fallback;
     }
@@ -44,8 +57,8 @@ export const uploadService = {
       datasetId: `ds-cmlre-${uploadId}`
     };
 
-    const res = await ApiClient.post<DatasetUploadResponse>(`/uploads/${uploadId}/process`, {}, fallback);
-    return res.data;
+    const res = await ApiClient.post<any>(`/uploads/${uploadId}/process`, {}, fallback);
+    return normalizeUploadResponse(res.data, fallback);
   },
 
   async getUploadStatus(uploadId: string): Promise<DatasetUploadResponse> {
@@ -60,7 +73,7 @@ export const uploadService = {
       datasetId: `ds-cmlre-${uploadId}`
     };
 
-    const res = await ApiClient.get<DatasetUploadResponse>(`/uploads/${uploadId}`, fallback);
-    return res.data;
+    const res = await ApiClient.get<any>(`/uploads/${uploadId}`, fallback);
+    return normalizeUploadResponse(res.data, fallback);
   }
 };

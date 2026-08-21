@@ -6,6 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, status
 from backend.app.schemas.common import ApiListResponse, ApiMeta, ApiResponse
 from backend.app.schemas.ocean import (
+    CTDProfilePointResponse,
     OceanObservationResponse,
     OceanSummaryResponse,
     OceanTrendResponse
@@ -88,3 +89,18 @@ async def get_ocean_trends(
         date_to=date_to
     )
     return ApiResponse(data=trends)
+
+
+@router.get("/ctd-profile", response_model=ApiListResponse[CTDProfilePointResponse])
+async def get_ctd_profile(
+    station_id: Optional[str] = Query(None),
+    dataset_id: Optional[str] = Query(None)
+):
+    """
+    Returns depth-sorted CTD hydrographic profile points (temperature, salinity, oxygen, chlorophyll).
+    """
+    points = OceanService.get_ctd_profile(station_id=station_id, dataset_id=dataset_id)
+    return ApiListResponse(
+        data=points,
+        meta=ApiMeta(page=1, page_size=len(points), total=len(points))
+    )

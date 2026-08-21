@@ -6,6 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, Query
 from backend.app.schemas.common import ApiListResponse, ApiMeta, ApiResponse
 from backend.app.schemas.marine import (
+    CrossDomainLocationDetailResponse,
     MarineObservationItem,
     MarineQueryRequest,
     MarineSummaryResponse
@@ -58,3 +59,24 @@ async def query_marine(req: MarineQueryRequest):
         data=items,
         meta=ApiMeta(page=req.page, page_size=req.page_size, total=total)
     )
+
+
+@router.get("/location-detail", response_model=ApiResponse[CrossDomainLocationDetailResponse])
+async def get_location_detail(
+    lat: float = Query(..., description="Latitude coordinate"),
+    lon: float = Query(..., description="Longitude coordinate"),
+    radius_km: float = Query(50.0, ge=1.0, le=500.0),
+    temporal_window_hours: float = Query(72.0, ge=1.0),
+    depth_tolerance_m: float = Query(50.0, ge=1.0)
+):
+    """
+    Discovers associated observations across all domains near a geographic point using Phase 5 Fusion engine.
+    """
+    res = MarineService.get_location_detail(
+        lat=lat,
+        lon=lon,
+        radius_km=radius_km,
+        temporal_window_hours=temporal_window_hours,
+        depth_tolerance_m=depth_tolerance_m
+    )
+    return ApiResponse(data=res)
