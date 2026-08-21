@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { 
-  Waves, 
-  Lock, 
-  Mail, 
+import {
+  Waves,
+  Lock,
+  Mail,
   User,
   Building2,
   Briefcase,
   Layers,
-  ArrowRight, 
-  Globe, 
+  ArrowRight,
+  Globe,
   AlertCircle,
   CheckCircle2,
   LogIn
@@ -36,8 +36,16 @@ export const RegisterPage: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !fullName) {
+    const cleanEmail = email.trim();
+    const cleanFullName = fullName.trim();
+
+    if (!cleanEmail || !password || !cleanFullName) {
       setErrorMsg('Please complete all required fields.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMsg('Password must be at least 8 characters long.');
       return;
     }
 
@@ -51,12 +59,12 @@ export const RegisterPage: React.FC = () => {
 
     try {
       await register({
-        email,
+        email: cleanEmail,
         password,
-        fullName,
-        institution,
-        department,
-        designation
+        fullName: cleanFullName,
+        institution: institution.trim() || undefined,
+        department: department.trim() || undefined,
+        designation: designation.trim() || undefined
       });
       addToast('success', 'Registration Successful', 'Welcome to CMLRE Marine Intelligence Platform.');
       navigate('/');
@@ -180,6 +188,7 @@ export const RegisterPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="r.varma@cmlre.gov.in"
+                  autoComplete="email"
                   required
                   className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
                 />
@@ -238,7 +247,7 @@ export const RegisterPage: React.FC = () => {
             {/* Password & Confirm Password Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label htmlFor="register-password" className="text-xs font-medium text-slate-300">Password</label>
+                <label htmlFor="register-password" className="text-xs font-medium text-slate-300">Password (min. 8 chars)</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -247,6 +256,8 @@ export const RegisterPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
+                    minLength={8}
+                    autoComplete="new-password"
                     required
                     className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
                   />
@@ -263,6 +274,8 @@ export const RegisterPage: React.FC = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••••••"
+                    minLength={8}
+                    autoComplete="new-password"
                     required
                     className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
                   />

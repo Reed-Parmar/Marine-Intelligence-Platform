@@ -70,10 +70,22 @@ export class ApiClient {
         };
       }
 
+      let detailMsg: string | null = null;
+      const rawDetail = (errorBody as any)?.detail;
+      if (Array.isArray(rawDetail)) {
+        detailMsg = rawDetail
+          .map((err: any) => {
+            const field = Array.isArray(err.loc) ? err.loc.slice(1).join('.') : err.loc || '';
+            return field ? `${field}: ${err.msg}` : err.msg;
+          })
+          .join('; ');
+      }
+
       const message =
         (errorBody as any)?.error?.message ||
         (errorBody as any)?.detail?.message ||
-        (typeof (errorBody as any)?.detail === 'string' ? (errorBody as any).detail : null) ||
+        detailMsg ||
+        (typeof rawDetail === 'string' ? rawDetail : null) ||
         `Request failed with status ${response.status}`;
 
       throw new Error(message);

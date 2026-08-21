@@ -1,10 +1,7 @@
-"""
-Authentication and User schemas.
-"""
-
+import re
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class UserRole(str, Enum):
@@ -36,12 +33,20 @@ class LoginResponse(BaseModel):
 
 
 class RegisterRequest(BaseModel):
-    email: EmailStr
+    email: str = Field(..., description="Institutional email address")
     password: str = Field(..., min_length=8, description="Password for account (min 8 characters)")
     full_name: str = Field(..., min_length=1, description="Full name of researcher")
     institution: Optional[str] = Field(default=None, description="Research institution name")
     department: Optional[str] = Field(default=None, description="Department / Research Division")
     designation: Optional[str] = Field(default=None, description="Designation / Scientific Role")
+
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, v: str) -> str:
+        clean = v.strip().lower()
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", clean):
+            raise ValueError("Invalid email address format.")
+        return clean
 
 
 class RoleUpdateRequest(BaseModel):

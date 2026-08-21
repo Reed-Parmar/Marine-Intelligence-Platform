@@ -17,10 +17,17 @@ logger = logging.getLogger(__name__)
 security = HTTPBearer(auto_error=False)
 
 
+def _get_jwt_secret() -> str:
+    return (
+        settings.SUPABASE_JWT_SECRET
+        or settings.SUPABASE_SERVICE_ROLE_KEY
+        or ("cmlre-development-fallback-secret-key-32chars" if settings.ENVIRONMENT == "development" else "")
+    )
+
+
 def decode_supabase_jwt(token: str) -> Dict[str, Any]:
     """
     Decodes and validates a Supabase JWT.
-    Fails closed when SUPABASE_JWT_SECRET is missing.
     """
     if not token:
         raise HTTPException(
@@ -28,7 +35,8 @@ def decode_supabase_jwt(token: str) -> Dict[str, Any]:
             detail={"code": "MISSING_TOKEN", "message": "Authorization token required."}
         )
 
-    if not settings.SUPABASE_JWT_SECRET:
+    secret = _get_jwt_secret()
+    if not secret:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={"code": "JWT_SECRET_MISSING", "message": "Server authentication secret is not configured."}
@@ -37,7 +45,7 @@ def decode_supabase_jwt(token: str) -> Dict[str, Any]:
     try:
         payload = jwt.decode(
             token,
-            settings.SUPABASE_JWT_SECRET,
+            secret,
             algorithms=["HS256"],
             options={"verify_aud": False}
         )

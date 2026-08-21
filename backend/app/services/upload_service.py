@@ -6,7 +6,7 @@ import csv
 import io
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from fastapi import HTTPException, UploadFile, status
 from backend.app.schemas.dataset import DatasetCreateRequest, DatasetUpdateRequest
 from backend.app.schemas.upload import (
@@ -217,7 +217,7 @@ class UploadService:
         }
 
         try:
-            from data_pipeline.pipeline import QualityPipeline
+            from data_pipeline.quality_standardisation import QualityPipeline
             pipeline = QualityPipeline(
                 unit_hints=req.unit_hints,
                 custom_column_mapping=req.column_mapping
