@@ -16,7 +16,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 # Find root .env file
-root_dir = Path(__file__).resolve().parent.parent
+root_dir = Path(__file__).resolve().parent.parent.parent
 env_file = root_dir / ".env"
 if env_file.exists():
     load_dotenv(dotenv_path=env_file)
@@ -27,7 +27,7 @@ else:
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
-from data_pipeline.ingestion_manager import process_upload
+from data_pipeline.ingestion.ingestion_manager import process_upload
 
 
 def process_all_datasets(dataset_dir: str = None):

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Set, Union
 import json
 
-from data_pipeline.models import (
+from data_pipeline.quality_standardisation.models import (
     DatasetQualityResult,
     DomainType,
     IssueSeverity,
@@ -17,10 +17,10 @@ from data_pipeline.models import (
     TransformationRecord,
     ValidationIssue,
 )
-from data_pipeline.quality_scorer import QualityScorer
-from data_pipeline.schema_mapper import SchemaMapper
-from data_pipeline.unit_converter import UnitConverter
-from data_pipeline.validators import (
+from data_pipeline.quality_standardisation.quality_scorer import QualityScorer
+from data_pipeline.quality_standardisation.schema_mapper import SchemaMapper
+from data_pipeline.quality_standardisation.unit_converter import UnitConverter
+from data_pipeline.quality_standardisation.validators import (
     CoordinateValidator,
     DuplicateValidator,
     MissingValueValidator,

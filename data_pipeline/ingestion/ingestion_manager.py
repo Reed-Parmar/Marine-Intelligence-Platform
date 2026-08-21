@@ -9,13 +9,13 @@ import uuid
 from typing import Any, Dict, Optional
 import pandas as pd
 
-from .canonical_exporter import export_canonical_csv, export_canonical_xlsx
-from .dataset_registrar import register_dataset
-from .file_handler import upload_to_storage
-from .format_detector import classify_domain, detect_format_and_preview
-from .phase4_boundary import integrate_with_phase4
-from .schema_normalizer import normalize_dataframe_columns
-from .txt_parser import parse_cmlre_txt
+from data_pipeline.ingestion.canonical_exporter import export_canonical_csv, export_canonical_xlsx
+from data_pipeline.ingestion.format_detector import classify_domain, detect_format_and_preview
+from data_pipeline.ingestion.schema_normalizer import normalize_dataframe_columns
+from data_pipeline.ingestion.txt_parser import parse_cmlre_txt
+from data_pipeline.quality_standardisation.phase4_boundary import integrate_with_phase4
+from data_pipeline.storage.dataset_registrar import register_dataset
+from data_pipeline.storage.file_handler import upload_to_storage
 
 DEFAULT_PROJECT_ID = "c1d2e3f4-0000-0000-0000-000000000001"
 

@@ -20,9 +20,9 @@ else:
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
-from data_pipeline.format_detector import detect_format_and_preview, classify_domain
-from data_pipeline.ingestion_manager import process_upload
-from data_pipeline.file_handler import get_supabase_client
+from data_pipeline.ingestion.format_detector import detect_format_and_preview, classify_domain
+from data_pipeline.ingestion.ingestion_manager import process_upload
+from data_pipeline.storage.file_handler import get_supabase_client
 
 def test_domain_classification():
     print("[Test 1/4] Testing domain classification heuristics...")

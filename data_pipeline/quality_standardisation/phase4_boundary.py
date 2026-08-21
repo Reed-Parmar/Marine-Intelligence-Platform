@@ -41,7 +41,7 @@ def integrate_with_phase4(
     records: List[Dict[str, Any]] = clean_df.to_dict(orient="records")
 
     try:
-        from data_pipeline.pipeline import QualityPipeline
+        from data_pipeline.quality_standardisation.pipeline import QualityPipeline
         pipeline = QualityPipeline(
             unit_hints=unit_hints,
             custom_column_mapping=custom_column_mapping

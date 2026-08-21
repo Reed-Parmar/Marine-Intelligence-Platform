@@ -8,7 +8,11 @@ from datetime import datetime, timezone
 import math
 import re
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from data_pipeline.models import IssueSeverity, TransformationRecord, ValidationIssue
+from data_pipeline.quality_standardisation.models import (
+    IssueSeverity,
+    TransformationRecord,
+    ValidationIssue,
+)
 
 
 # Standard missing value tokens in oceanographic and scientific datasets

@@ -4,7 +4,7 @@ Computes a transparent 0-100 dataset quality score and quality status flag.
 """
 
 from typing import Any, Dict, List
-from data_pipeline.models import (
+from data_pipeline.quality_standardisation.models import (
     IssueSeverity,
     QualityScoreSummary,
     QualityStatus,

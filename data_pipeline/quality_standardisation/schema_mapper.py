@@ -5,7 +5,11 @@ Maps diverse raw input field names to canonical platform field names.
 
 import re
 from typing import Any, Dict, List, Optional, Set, Tuple
-from data_pipeline.models import ValidationIssue, IssueSeverity, TransformationRecord
+from data_pipeline.quality_standardisation.models import (
+    IssueSeverity,
+    TransformationRecord,
+    ValidationIssue,
+)
 
 
 # Canonical platform field definitions and known aliases

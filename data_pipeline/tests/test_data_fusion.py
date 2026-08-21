@@ -50,9 +50,9 @@ from data_pipeline.fusion.temporal import (
     parse_marine_timestamp,
     temporal_distance_hours,
 )
-from data_pipeline.phase4_boundary import integrate_with_phase4
-from data_pipeline.schema_normalizer import normalize_dataframe_columns
-from data_pipeline.txt_parser import parse_cmlre_txt
+from data_pipeline.ingestion.schema_normalizer import normalize_dataframe_columns
+from data_pipeline.ingestion.txt_parser import parse_cmlre_txt
+from data_pipeline.quality_standardisation.phase4_boundary import integrate_with_phase4
 
 
 class TestPhase5DataFusion(unittest.TestCase):
