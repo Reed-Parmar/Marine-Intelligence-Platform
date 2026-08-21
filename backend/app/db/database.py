@@ -108,3 +108,17 @@ def execute_write(query_str: str, params: Optional[Dict[str, Any]] = None) -> Op
             first_row = result.mappings().first()
             return dict(first_row) if first_row else None
         return None
+
+
+def execute_write_all(query_str: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    """
+    Executes an INSERT / UPDATE / DELETE query using SQLAlchemy, commits the transaction,
+    and returns all RETURNING rows as a list of dictionaries.
+    """
+    if _engine is None:
+        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+    with _engine.begin() as conn:
+        result = conn.execute(text(query_str), params or {})
+        if result.returns_rows:
+            return [dict(row) for row in result.mappings()]
+        return []

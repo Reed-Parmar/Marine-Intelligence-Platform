@@ -54,15 +54,24 @@ function normalizeAnalysisResult(d: any, fallback: AnalysisResultData): Analysis
 export const analysisService = {
   async getAnalysesList(): Promise<AnalysisResultData[]> {
     const list = Object.values(MOCK_ANALYSIS_RESULTS);
-    const res = await ApiClient.get<any[]>('/analysis', list);
-    const rawList = Array.isArray(res.data) ? res.data : list;
-    return rawList.map((item, idx) => normalizeAnalysisResult(item, list[idx % list.length]));
+    try {
+      const res = await ApiClient.get<any[]>('/analysis');
+      const rawList = Array.isArray(res.data) && res.data.length > 0 ? res.data : list;
+      return rawList.map((item, idx) => normalizeAnalysisResult(item, list[idx % list.length]));
+    } catch {
+      return list;
+    }
   },
 
   async getAnalysisById(analysisId: string): Promise<AnalysisResultData> {
     const fallback = MOCK_ANALYSIS_RESULTS[analysisId] || MOCK_ANALYSIS_RESULTS['analysis-sst-richness'];
-    const res = await ApiClient.get<any>(`/analysis/${analysisId}`, fallback);
-    return normalizeAnalysisResult(res.data || fallback, fallback);
+    try {
+      const res = await ApiClient.get<any>(`/analysis/${analysisId}`);
+      return normalizeAnalysisResult(res.data || fallback, fallback);
+    } catch (err) {
+      console.warn(`Analysis API call for '${analysisId}' returned error, using fallback template:`, err);
+      return fallback;
+    }
   },
 
   async runCorrelationAnalysis(params: AnalysisParameterConfig): Promise<AnalysisResultData> {
@@ -86,15 +95,19 @@ export const analysisService = {
     const payload = {
       variable_x: params.independentVariable,
       variable_y: params.dependentVariable,
-      independentVariable: params.independentVariable,
-      dependentVariable: params.dependentVariable,
       method: (params as any).method || 'pearson',
       spatial_radius_km: (params as any).spatialToleranceKm ?? 50.0,
       temporal_window_hours: (params as any).temporalWindowHours ?? 72.0,
       depth_tolerance_m: (params as any).depthToleranceMeters ?? 50.0
     };
 
-    const res = await ApiClient.post<any>('/analysis/correlation', payload, fallback);
-    return normalizeAnalysisResult(res.data || fallback, fallback);
+    try {
+      const res = await ApiClient.post<any>('/analysis/correlation', payload);
+      return normalizeAnalysisResult(res.data || fallback, fallback);
+    } catch (err) {
+      console.warn('Analysis execution API returned error, using fallback computation:', err);
+      return fallback;
+    }
   }
 };
+

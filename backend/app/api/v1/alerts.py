@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("", response_model=ApiListResponse[AlertResponse])
-async def list_alerts(
+def list_alerts(
     status_filter: Optional[str] = Query(None, alias="status"),
     severity: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
@@ -63,7 +63,7 @@ async def list_alerts(
 
 
 @router.get("/summary", response_model=ApiResponse[AlertSummaryResponse])
-async def get_alerts_summary():
+def get_alerts_summary():
     """
     Returns aggregate alert counts by severity and alert type from public.alerts.
     """
@@ -110,7 +110,7 @@ async def get_alerts_summary():
 
 
 @router.patch("/{alert_id}", response_model=ApiResponse[AlertResponse])
-async def update_alert(alert_id: str, status_val: str = Query("acknowledged", alias="status")):
+def update_alert(alert_id: str, status_val: str = Query("acknowledged", alias="status")):
     """
     Acknowledges or resolves an alert in public.alerts.
     Only 'acknowledged' and 'resolved' are permitted status transitions.

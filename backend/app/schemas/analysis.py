@@ -39,6 +39,8 @@ class CorrelationAnalysisResponse(BaseModel):
     domain_y: Optional[str] = None
     method: str = "pearson"
     correlation_coefficient: Optional[float] = None
+    pearson_r: Optional[float] = None
+    r_squared: Optional[float] = None
     sample_size: int = 0
     p_value: Optional[float] = None
     interpretation: Optional[str] = None

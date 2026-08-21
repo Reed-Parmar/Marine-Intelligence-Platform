@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 @router.get("/observations", response_model=ApiListResponse[MarineObservationItem])
-async def get_marine_observations(
+def get_marine_observations(
     date_from: Optional[str] = Query(None),
     date_to: Optional[str] = Query(None),
     dataset_id: Optional[str] = Query(None),
@@ -41,7 +41,7 @@ async def get_marine_observations(
 
 
 @router.get("/summary", response_model=ApiResponse[MarineSummaryResponse])
-async def get_marine_summary():
+def get_marine_summary():
     """
     Returns unified summary counts across all marine datasets and domains.
     """
@@ -50,7 +50,7 @@ async def get_marine_summary():
 
 
 @router.post("/query", response_model=ApiListResponse[MarineObservationItem])
-async def query_marine(req: MarineQueryRequest):
+def query_marine(req: MarineQueryRequest):
     """
     Executes a structured spatial/temporal cross-domain marine query.
     """
@@ -62,7 +62,7 @@ async def query_marine(req: MarineQueryRequest):
 
 
 @router.get("/location-detail", response_model=ApiResponse[CrossDomainLocationDetailResponse])
-async def get_location_detail(
+def get_location_detail(
     lat: float = Query(..., ge=-90.0, le=90.0, description="Latitude coordinate"),
     lon: float = Query(..., ge=-180.0, le=180.0, description="Longitude coordinate"),
     radius_km: float = Query(50.0, ge=1.0, le=500.0),

@@ -44,7 +44,11 @@ export const DatasetUploadPage: React.FC = () => {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
-  const handleFileSelected = async (selectedFile: File) => {
+  const handleFileSelected = async (selectedFile: File, suggestedDomain?: string) => {
+    const activeDomain = suggestedDomain || domainType;
+    if (suggestedDomain) {
+      setDomainType(suggestedDomain);
+    }
     setFile(selectedFile);
     setUploadStatus('uploading');
     setProgress(15);
@@ -69,13 +73,13 @@ export const DatasetUploadPage: React.FC = () => {
         // Preview is optional — processing can still succeed
       }
 
-      setProgress(65);
+      setProgress(70);
       setUploadStatus('quality_checking');
-      setStatusMessage('Running quality control and standardization pipeline...');
+      setStatusMessage(`Standardizing ${selectedFile.name} & running Phase 4 Quality Control...`);
 
       // Step 3: Process the upload (triggers Phase 3/4 pipeline)
       const result = await uploadService.processUpload(uploadRes.uploadId, {
-        domainType,
+        domainType: activeDomain,
         datasetName: selectedFile.name.replace(/\.[^/.]+$/, '')
       });
 

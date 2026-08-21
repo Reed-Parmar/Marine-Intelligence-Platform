@@ -79,6 +79,7 @@ class MarineService:
                 oceanography_count=0,
                 fisheries_count=0,
                 biodiversity_count=0,
+                edna_count=0,
                 total_species=0
             )
         return MarineSummaryResponse(
@@ -86,6 +87,7 @@ class MarineService:
             oceanography_count=r.get("oceanography_count", 0),
             fisheries_count=r.get("fisheries_count", 0),
             biodiversity_count=r.get("biodiversity_count", 0),
+            edna_count=r.get("edna_count", 0),
             total_species=r.get("total_species", 0)
         )
 

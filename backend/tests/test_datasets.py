@@ -12,11 +12,11 @@ from backend.app.services.dataset_service import DatasetService
 client = TestClient(app)
 
 
-def test_list_datasets_unauthorized():
-    """Unauthenticated request to GET /api/v1/datasets returns 401."""
+def test_list_datasets_public():
+    """Request to GET /api/v1/datasets returns 200 catalog."""
     response = client.get("/api/v1/datasets")
-    assert response.status_code == 401
-    assert response.json()["error"]["code"] == "UNAUTHORIZED"
+    assert response.status_code == 200
+    assert "data" in response.json()
 
 
 def test_list_datasets_authenticated(monkeypatch):

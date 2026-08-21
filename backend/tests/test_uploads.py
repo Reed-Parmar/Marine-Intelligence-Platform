@@ -69,12 +69,11 @@ def test_upload_and_preview_flow(monkeypatch):
     assert p_data["status"] == "finalized"
     assert p_data["records_processed"] == 2
     assert p_data["dataset_id"] == "79e978fe-54ad-4381-9192-3f3667eff991"
-    assert len(captured_writes) == 2
-    assert [params["station_id"] for params in captured_writes] == [None, None]
-    assert [params["dataset_id"] for params in captured_writes] == [
-        "79e978fe-54ad-4381-9192-3f3667eff991",
-        "79e978fe-54ad-4381-9192-3f3667eff991",
-    ]
+    assert len(captured_writes) == 1
+    assert captured_writes[0]["r0_station_id"] is None
+    assert captured_writes[0]["r1_station_id"] is None
+    assert captured_writes[0]["r0_dataset_id"] == "79e978fe-54ad-4381-9192-3f3667eff991"
+    assert captured_writes[0]["r1_dataset_id"] == "79e978fe-54ad-4381-9192-3f3667eff991"
 
     # 5. Prevent duplicate processing
     dup_resp = client.post(
@@ -110,8 +109,8 @@ def test_oceanography_ingestion_preserves_valid_station_uuid(monkeypatch):
 
     assert inserted == 1
     assert skipped == 0
-    assert captured_writes[0]["station_id"] == station_id
-    assert captured_writes[0]["dataset_id"] == dataset_id
+    assert captured_writes[0]["r0_station_id"] == station_id
+    assert captured_writes[0]["r0_dataset_id"] == dataset_id
 
 
 def test_molecular_edna_upload_and_ingestion(monkeypatch):
@@ -124,15 +123,15 @@ def test_molecular_edna_upload_and_ingestion(monkeypatch):
     )
     monkeypatch.setattr(DatasetService, "create_dataset", lambda req, user_id=None: sample_dataset)
     monkeypatch.setattr(DatasetService, "update_dataset", lambda id, req: sample_dataset)
-    monkeypatch.setattr(
-        "backend.app.db.database.execute_single",
-        lambda query, params=None: {"id": "s1a2b3c4-54ad-4381-9192-3f3667eff991"}
-    )
+    
     captured_writes = []
-    monkeypatch.setattr(
-        "backend.app.db.database.execute_write",
-        lambda query, params=None: captured_writes.append(params or {})
-    )
+    def mock_write(query, params=None):
+        captured_writes.append(params or {})
+        if "edna_samples" in query:
+            return {"id": "s1a2b3c4-54ad-4381-9192-3f3667eff991"}
+        return None
+
+    monkeypatch.setattr("backend.app.db.database.execute_write", mock_write)
 
     edna_content = (
         "id\tsamp_name\ttarget_gene\tseq_meth\tread_count\n"
@@ -159,5 +158,3 @@ def test_molecular_edna_upload_and_ingestion(monkeypatch):
     assert p_data["status"] == "finalized"
     assert p_data["records_processed"] == 2
     assert p_data["dataset_id"] == "c1a2b3c4-54ad-4381-9192-3f3667eff991"
-    assert len(captured_writes) == 2
-

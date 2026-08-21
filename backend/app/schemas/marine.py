@@ -24,6 +24,7 @@ class MarineSummaryResponse(BaseModel):
     oceanography_count: int
     fisheries_count: int
     biodiversity_count: int
+    edna_count: int = 0
     total_species: int
 
 

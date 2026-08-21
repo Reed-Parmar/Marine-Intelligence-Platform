@@ -329,7 +329,7 @@ class UploadService:
     ) -> Tuple[int, int]:
         """
         Parses raw and canonical records and writes real observation entities
-        into PostgreSQL domain tables:
+        into PostgreSQL domain tables using high-performance multi-row batching.
         - species_occurrences & species (biodiversity)
         - oceanographic_observations (oceanography)
         - fisheries_records (fisheries)
@@ -356,17 +356,58 @@ class UploadService:
             except (ValueError, TypeError):
                 return None
 
+        def _sanitize_timestamp(ts_raw: Any, fallback: str) -> str:
+            if not ts_raw:
+                return fallback
+            s = str(ts_raw).strip()
+            if not s:
+                return fallback
+            # Handle ISO 8601 interval ranges: '2009-02-16/2009-02-23' or '2008/2011' -> take start date
+            if "/" in s:
+                s = s.split("/")[0].strip()
+            if len(s) == 4 and s.isdigit():
+                return f"{s}-01-01T00:00:00Z"
+            if len(s) == 7 and s.count("-") == 1:
+                parts = s.split("-")
+                if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                    return f"{s}-01T00:00:00Z"
+            if len(s) == 10 and s.count("-") == 2:
+                parts = s.split("-")
+                if len(parts) == 3 and parts[0].isdigit() and parts[1].isdigit() and parts[2].isdigit():
+                    return f"{s}T00:00:00Z"
+            try:
+                dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+                return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            except Exception:
+                return fallback
+
         domain = (domain_type or "").lower()
         now_iso = datetime.now(timezone.utc).isoformat()
         inserted_count = 0
         skipped_count = 0
-        
+        records_to_ingest = records
+
         # 1. BIODIVERSITY / OCCURRENCE
         if any(d in domain for d in ["bio", "species", "occur"]):
-            species_cache: Dict[str, str] = {}
+            # Pre-collect unique species metadata for high-speed bulk upsert
+            species_to_ensure: List[Dict[str, Any]] = []
+            seen_sc_names = set()
+            for r in records_to_ingest:
+                sc = (r.get("scientificName") or r.get("scientific_name") or "Unknown Marine Species").strip()
+                if sc and sc not in seen_sc_names:
+                    seen_sc_names.add(sc)
+                    species_to_ensure.append({
+                        "scientific_name": sc,
+                        "common_name": r.get("vernacularName") or r.get("common_name") or r.get("commonName"),
+                        "habitat": r.get("habitat") or "Marine",
+                        "desc": f"Observed via CMLRE Marine Survey ({r.get('datasetName') or 'Survey'})"
+                    })
+
+            species_cache = UploadService._bulk_ensure_species(species_to_ensure)
+
             occurrence_batch: List[Dict[str, Any]] = []
 
-            for r in records:
+            for r in records_to_ingest:
                 try:
                     coords = _validate_coords(
                         r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
@@ -382,24 +423,6 @@ class UploadService:
                         sc_name = "Unknown Marine Species"
                         
                     species_id = species_cache.get(sc_name)
-                    if not species_id:
-                        sp_res = execute_single(
-                            """
-                            INSERT INTO public.species (id, scientific_name, common_name, habitat_type, description, created_at, updated_at)
-                            VALUES (gen_random_uuid(), :name, :common, :habitat, :desc, NOW(), NOW())
-                            ON CONFLICT (scientific_name) DO UPDATE SET updated_at = NOW()
-                            RETURNING id;
-                            """,
-                            {
-                                "name": sc_name,
-                                "common": r.get("vernacularName") or r.get("common_name") or r.get("commonName"),
-                                "habitat": r.get("habitat") or "Marine",
-                                "desc": f"Observed via CMLRE Deep Sea dataset ({r.get('datasetName') or 'Survey'})"
-                            }
-                        )
-                        if sp_res:
-                            species_id = str(sp_res["id"])
-                            species_cache[sc_name] = species_id
 
                     depth_val = None
                     d_raw = r.get("minimumDepthInMeters") or r.get("depth_meters") or r.get("depth") or r.get("maximumDepthInMeters")
@@ -419,9 +442,9 @@ class UploadService:
                         except (ValueError, TypeError):
                             count_val = 1
 
-                    ts_val = r.get("eventDate") or r.get("timestamp") or r.get("date") or now_iso
-                    basis = r.get("basisOfRecord") or r.get("basis_of_record") or "HumanObservation"
-                    status_occ = r.get("occurrenceStatus") or r.get("occurrence_status") or "present"
+                    ts_val = _sanitize_timestamp(r.get("eventDate") or r.get("timestamp") or r.get("date"), now_iso)
+                    basis = (r.get("basisOfRecord") or r.get("basis_of_record") or "HumanObservation")[:100]
+                    status_occ = (r.get("occurrenceStatus") or r.get("occurrence_status") or "present")[:50]
 
                     occurrence_batch.append({
                         "dataset_id": UploadService._nullable_uuid_param(dataset_id),
@@ -438,25 +461,18 @@ class UploadService:
                         "darwin_core_fields": json.dumps(r)
                     })
 
-                    # Batch write in chunks of 500
-                    if len(occurrence_batch) >= 500:
-                        UploadService._batch_insert_occurrences(occurrence_batch)
-                        inserted_count += len(occurrence_batch)
-                        occurrence_batch.clear()
-
                 except Exception as ex:
-                    logger.warning("Error processing biodiversity record: %s", ex)
+                    logger.warning("Error preparing biodiversity record: %s", ex)
                     skipped_count += 1
                     continue
 
             if occurrence_batch:
-                UploadService._batch_insert_occurrences(occurrence_batch)
-                inserted_count += len(occurrence_batch)
-                occurrence_batch.clear()
+                inserted_count += UploadService._batch_insert_occurrences(occurrence_batch)
 
         # 2. OCEANOGRAPHY
         elif any(d in domain for d in ["ocean", "ctd", "hydro"]):
-            for r in records:
+            ocean_batch: List[Dict[str, Any]] = []
+            for r in records_to_ingest:
                 try:
                     coords = _validate_coords(
                         r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
@@ -485,43 +501,33 @@ class UploadService:
                     do_val = _flt(["dissolved_oxygen_mgl", "dissolved_oxygen", "oxygen", "do"])
                     chl_val = _flt(["chlorophyll_mg_m3", "chlorophyll", "chla"])
                     ph_val = _flt(["ph"])
-                    ts_val = r.get("timestamp") or r.get("observed_at") or r.get("eventDate") or now_iso
+                    ts_val = _sanitize_timestamp(r.get("timestamp") or r.get("observed_at") or r.get("eventDate"), now_iso)
 
-                    execute_write(
-                        """
-                        INSERT INTO public.oceanographic_observations (
-                            id, dataset_id, station_id, timestamp, latitude, longitude,
-                            depth_meters, temperature_celsius, salinity_psu, dissolved_oxygen_mgl,
-                            chlorophyll_mg_m3, ph, quality_status, created_at, updated_at
-                        ) VALUES (
-                            gen_random_uuid(), :dataset_id, :station_id, CAST(:timestamp AS timestamptz), :latitude, :longitude,
-                            :depth_meters, :temperature, :salinity, :dissolved_oxygen,
-                            :chlorophyll, :ph, 'passed'::quality_flag, NOW(), NOW()
-                        );
-                        """,
-                        {
-                            "dataset_id": UploadService._nullable_uuid_param(dataset_id),
-                            "station_id": UploadService._nullable_uuid_param(r.get("station_id") or r.get("stationID") or r.get("eventID")),
-                            "timestamp": ts_val,
-                            "latitude": lat,
-                            "longitude": lon,
-                            "depth_meters": depth_val,
-                            "temperature": temp_val,
-                            "salinity": sal_val,
-                            "dissolved_oxygen": do_val,
-                            "chlorophyll": chl_val,
-                            "ph": ph_val
-                        }
-                    )
-                    inserted_count += 1
+                    ocean_batch.append({
+                        "dataset_id": UploadService._nullable_uuid_param(dataset_id),
+                        "station_id": UploadService._nullable_uuid_param(r.get("station_id") or r.get("stationID") or r.get("eventID")),
+                        "timestamp": ts_val,
+                        "latitude": lat,
+                        "longitude": lon,
+                        "depth_meters": depth_val,
+                        "temperature": temp_val,
+                        "salinity": sal_val,
+                        "dissolved_oxygen": do_val,
+                        "chlorophyll": chl_val,
+                        "ph": ph_val
+                    })
                 except Exception as ex:
-                    logger.warning("Error processing oceanographic record: %s", ex)
+                    logger.warning("Error preparing oceanographic record: %s", ex)
                     skipped_count += 1
                     continue
 
+            if ocean_batch:
+                inserted_count += UploadService._batch_insert_oceanography(ocean_batch)
+
         # 3. FISHERIES
         elif any(d in domain for d in ["fish", "catch"]):
-            for r in records:
+            fisheries_batch: List[Dict[str, Any]] = []
+            for r in records_to_ingest:
                 try:
                     coords = _validate_coords(
                         r.get("decimalLatitude") or r.get("latitude") or r.get("lat"),
@@ -546,44 +552,33 @@ class UploadService:
 
                     catch_wt = _flt(["catch_weight_kg", "catch_weight", "landing_weight", "weight"])
                     effort = _flt(["fishing_effort_hours", "effort_hours", "trawl_hours", "effort"])
-                    species_name = r.get("species_name_reported") or r.get("species_name") or r.get("scientificName") or "Marine Finfish"
-                    ts_val = r.get("timestamp") or r.get("recorded_at") or r.get("date") or now_iso
+                    species_name = (r.get("species_name_reported") or r.get("species_name") or r.get("scientificName") or "Marine Finfish")[:255]
+                    ts_val = _sanitize_timestamp(r.get("timestamp") or r.get("recorded_at") or r.get("date"), now_iso)
 
-                    execute_write(
-                        """
-                        INSERT INTO public.fisheries_records (
-                            id, dataset_id, timestamp, latitude, longitude,
-                            species_name_reported, catch_weight_kg, fishing_effort_hours,
-                            gear_type, fishing_zone, vessel_name, quality_status, created_at, updated_at
-                        ) VALUES (
-                            gen_random_uuid(), :dataset_id, CAST(:timestamp AS timestamptz), :latitude, :longitude,
-                            :species_name, :catch_weight_kg, :fishing_effort_hours,
-                            :gear_type, :fishing_zone, :vessel_name, 'passed'::quality_flag, NOW(), NOW()
-                        );
-                        """,
-                        {
-                            "dataset_id": UploadService._nullable_uuid_param(dataset_id),
-                            "timestamp": ts_val,
-                            "latitude": lat,
-                            "longitude": lon,
-                            "species_name": species_name,
-                            "catch_weight_kg": catch_wt,
-                            "fishing_effort_hours": effort,
-                            "gear_type": r.get("gear_type") or "Trawl Net",
-                            "fishing_zone": r.get("fishing_zone") or "West Coast EEZ",
-                            "vessel_name": r.get("vessel_name") or r.get("vesselID") or "FORV Sagar Sampada"
-                        }
-                    )
-                    inserted_count += 1
+                    fisheries_batch.append({
+                        "dataset_id": UploadService._nullable_uuid_param(dataset_id),
+                        "timestamp": ts_val,
+                        "latitude": lat,
+                        "longitude": lon,
+                        "species_name": species_name,
+                        "catch_weight_kg": catch_wt,
+                        "fishing_effort_hours": effort,
+                        "gear_type": (r.get("gear_type") or "Trawl Net")[:100],
+                        "fishing_zone": (r.get("fishing_zone") or "West Coast EEZ")[:100],
+                        "vessel_name": (r.get("vessel_name") or r.get("vesselID") or "FORV Sagar Sampada")[:100]
+                    })
                 except Exception as ex:
-                    logger.warning("Error processing fisheries record: %s", ex)
+                    logger.warning("Error preparing fisheries record: %s", ex)
                     skipped_count += 1
                     continue
+
+            if fisheries_batch:
+                inserted_count += UploadService._batch_insert_fisheries(fisheries_batch)
 
         # 4. MOLECULAR eDNA
         elif any(d in domain for d in ["dna", "edna", "mole"]):
             sample_cache: Dict[str, str] = {}
-            for i, r in enumerate(records):
+            for i, r in enumerate(records_to_ingest):
                 try:
                     coords = _validate_coords(
                         r.get("latitude") or r.get("decimalLatitude"),
@@ -601,10 +596,11 @@ class UploadService:
                     if not sample_id:
                         d_raw = r.get("depth_meters") or r.get("depth") or r.get("minimumDepthInMeters")
                         depth_val = float(str(d_raw).strip()) if d_raw is not None and str(d_raw).strip() else (15.0 + (i % 10) * 10.0)
-                        target_gene = r.get("target_gene") or r.get("marker") or "16S rRNA / COI"
-                        seq_platform = r.get("sequencing_platform") or r.get("seq_meth") or "Illumina NovaSeq 6000"
+                        target_gene = (r.get("target_gene") or r.get("marker") or "16S rRNA / COI")[:100]
+                        seq_platform = (r.get("sequencing_platform") or r.get("seq_meth") or "Illumina NovaSeq 6000")[:100]
+                        ts_val = _sanitize_timestamp(r.get("collection_timestamp") or r.get("eventDate"), now_iso)
 
-                        s_res = execute_single(
+                        s_res = execute_write(
                             """
                             INSERT INTO public.edna_samples (
                                 id, dataset_id, sample_code, collection_timestamp, latitude, longitude,
@@ -616,8 +612,8 @@ class UploadService:
                             """,
                             {
                                 "dataset_id": UploadService._nullable_uuid_param(dataset_id),
-                                "sample_code": sample_code,
-                                "timestamp": r.get("collection_timestamp") or r.get("eventDate") or now_iso,
+                                "sample_code": sample_code[:100],
+                                "timestamp": ts_val,
                                 "latitude": lat,
                                 "longitude": lon,
                                 "depth_meters": depth_val,
@@ -630,7 +626,7 @@ class UploadService:
                             sample_cache[sample_code] = sample_id
 
                     if sample_id:
-                        sc_name = r.get("assigned_scientific_name") or r.get("scientificName") or r.get("associatedSequences") or f"Marine ASV-{(i+1):03d}"
+                        sc_name = (r.get("assigned_scientific_name") or r.get("scientificName") or r.get("associatedSequences") or f"Marine ASV-{(i+1):03d}")[:100]
                         r_raw = r.get("read_count") or r.get("reads") or r.get("organismQuantity")
                         reads = int(float(str(r_raw).strip())) if r_raw is not None and str(r_raw).strip() else (250 + (i * 17) % 4500)
 
@@ -652,7 +648,7 @@ class UploadService:
                             """,
                             {
                                 "sample_id": UploadService._nullable_uuid_param(sample_id),
-                                "scientific_name": sc_name[:100],
+                                "scientific_name": sc_name,
                                 "read_count": reads,
                                 "blast_identity": blast_val,
                                 "confidence_score": conf_val
@@ -667,26 +663,237 @@ class UploadService:
         return (inserted_count, skipped_count)
 
     @staticmethod
-    def _batch_insert_occurrences(batch: List[Dict[str, Any]]) -> None:
-        """Helper to batch-insert species occurrences."""
+    def _bulk_ensure_species(species_list: List[Dict[str, Any]]) -> Dict[str, str]:
+        """
+        Pre-fetches and bulk-upserts all distinct species entities in bulk chunks.
+        Returns a mapping from scientific_name -> species_id UUID string.
+        """
+        from backend.app.db.database import execute_query, execute_write_all
+        species_cache: Dict[str, str] = {}
+        
+        # 1. Fetch all existing species in 1 query
+        try:
+            existing_rows = execute_query("SELECT id, scientific_name FROM public.species;")
+            for row in existing_rows:
+                if row.get("scientific_name"):
+                    species_cache[row["scientific_name"]] = str(row["id"])
+        except Exception as e:
+            logger.warning("Could not prefetch existing species: %s", e)
+                
+        # 2. Identify missing species
+        missing_species: List[Dict[str, Any]] = []
+        seen_names = set()
+        for item in species_list:
+            sc_name = (item.get("scientific_name") or "Unknown Marine Species").strip()
+            if sc_name not in species_cache and sc_name not in seen_names:
+                seen_names.add(sc_name)
+                missing_species.append(item)
+                
+        # 3. Bulk insert missing species in chunks of 250
+        chunk_size = 250
+        for i in range(0, len(missing_species), chunk_size):
+            chunk = missing_species[i:i + chunk_size]
+            value_clauses = []
+            params: Dict[str, Any] = {}
+            for idx, item in enumerate(chunk):
+                p = f"s{idx}_"
+                value_clauses.append(f"""(
+                    gen_random_uuid(),
+                    :{p}name,
+                    :{p}common,
+                    :{p}habitat,
+                    :{p}desc,
+                    NOW(),
+                    NOW()
+                )""")
+                params[f"{p}name"] = str(item.get("scientific_name") or "Unknown Marine Species")[:255]
+                params[f"{p}common"] = str(item.get("common_name"))[:255] if item.get("common_name") else None
+                params[f"{p}habitat"] = str(item.get("habitat") or "Marine")[:100]
+                params[f"{p}desc"] = str(item.get("desc") or "CMLRE Marine Survey Observation")[:255]
+
+            sql = f"""
+            INSERT INTO public.species (id, scientific_name, common_name, habitat_type, description, created_at, updated_at)
+            VALUES {", ".join(value_clauses)}
+            ON CONFLICT (scientific_name) DO UPDATE SET updated_at = NOW()
+            RETURNING id, scientific_name;
+            """
+            try:
+                upserted = execute_write_all(sql, params)
+                for u in upserted:
+                    if u.get("scientific_name"):
+                        species_cache[u["scientific_name"]] = str(u["id"])
+            except Exception as e:
+                logger.warning("Bulk species upsert chunk failed: %s", e)
+
+        return species_cache
+
+    @staticmethod
+    def _batch_insert_occurrences(batch: List[Dict[str, Any]]) -> int:
+        """Helper to batch-insert species occurrences with multi-row SQL."""
+        if not batch:
+            return 0
         from backend.app.db.database import execute_write
-        for item in batch:
-            item = {
-                **item,
-                "dataset_id": UploadService._nullable_uuid_param(item.get("dataset_id")),
-                "species_id": UploadService._nullable_uuid_param(item.get("species_id")),
-            }
-            execute_write(
-                """
-                INSERT INTO public.species_occurrences (
-                    id, dataset_id, species_id, scientific_name, common_name, timestamp,
-                    latitude, longitude, depth_meters, individual_count, occurrence_status,
-                    basis_of_record, darwin_core_fields, quality_status, created_at, updated_at
-                ) VALUES (
-                    gen_random_uuid(), :dataset_id, :species_id, :scientific_name, :common_name, CAST(:timestamp AS timestamptz),
-                    :latitude, :longitude, :depth_meters, :individual_count, :occurrence_status,
-                    :basis_of_record, CAST(:darwin_core_fields AS jsonb), 'passed'::quality_flag, NOW(), NOW()
-                );
-                """,
-                item
-            )
+        chunk_size = 250
+        total_inserted = 0
+        for i in range(0, len(batch), chunk_size):
+            chunk = batch[i:i + chunk_size]
+            value_clauses = []
+            params: Dict[str, Any] = {}
+            for idx, item in enumerate(chunk):
+                p = f"r{idx}_"
+                value_clauses.append(f"""(
+                    gen_random_uuid(),
+                    :{p}dataset_id,
+                    :{p}species_id,
+                    :{p}scientific_name,
+                    :{p}common_name,
+                    CAST(:{p}timestamp AS timestamptz),
+                    :{p}latitude,
+                    :{p}longitude,
+                    :{p}depth_meters,
+                    :{p}individual_count,
+                    :{p}occurrence_status,
+                    :{p}basis_of_record,
+                    CAST(:{p}darwin_core_fields AS jsonb),
+                    'passed'::quality_flag,
+                    NOW(),
+                    NOW()
+                )""")
+                params[f"{p}dataset_id"] = item.get("dataset_id")
+                params[f"{p}species_id"] = item.get("species_id")
+                params[f"{p}scientific_name"] = str(item.get("scientific_name") or "Unknown Marine Species")[:255]
+                params[f"{p}common_name"] = str(item.get("common_name"))[:255] if item.get("common_name") else None
+                params[f"{p}timestamp"] = item.get("timestamp")
+                params[f"{p}latitude"] = item.get("latitude")
+                params[f"{p}longitude"] = item.get("longitude")
+                params[f"{p}depth_meters"] = item.get("depth_meters")
+                params[f"{p}individual_count"] = item.get("individual_count") or 1
+                params[f"{p}occurrence_status"] = str(item.get("occurrence_status") or "present")[:50]
+                params[f"{p}basis_of_record"] = str(item.get("basis_of_record") or "HumanObservation")[:100]
+                params[f"{p}darwin_core_fields"] = item.get("darwin_core_fields") or "{}"
+
+            sql = f"""
+            INSERT INTO public.species_occurrences (
+                id, dataset_id, species_id, scientific_name, common_name, timestamp,
+                latitude, longitude, depth_meters, individual_count, occurrence_status,
+                basis_of_record, darwin_core_fields, quality_status, created_at, updated_at
+            ) VALUES {", ".join(value_clauses)};
+            """
+            try:
+                execute_write(sql, params)
+                total_inserted += len(chunk)
+            except Exception as e:
+                logger.warning("Batch insert occurrences chunk failed: %s", e)
+        return total_inserted
+
+    @staticmethod
+    def _batch_insert_oceanography(batch: List[Dict[str, Any]]) -> int:
+        """Helper to batch-insert oceanographic observations."""
+        if not batch:
+            return 0
+        from backend.app.db.database import execute_write
+        chunk_size = 100
+        total_inserted = 0
+        for i in range(0, len(batch), chunk_size):
+            chunk = batch[i:i + chunk_size]
+            value_clauses = []
+            params: Dict[str, Any] = {}
+            for idx, item in enumerate(chunk):
+                p = f"r{idx}_"
+                value_clauses.append(f"""(
+                    gen_random_uuid(),
+                    :{p}dataset_id,
+                    :{p}station_id,
+                    CAST(:{p}timestamp AS timestamptz),
+                    :{p}latitude,
+                    :{p}longitude,
+                    :{p}depth_meters,
+                    :{p}temperature,
+                    :{p}salinity,
+                    :{p}dissolved_oxygen,
+                    :{p}chlorophyll,
+                    :{p}ph,
+                    'passed'::quality_flag,
+                    NOW(),
+                    NOW()
+                )""")
+                params[f"{p}dataset_id"] = item.get("dataset_id")
+                params[f"{p}station_id"] = item.get("station_id")
+                params[f"{p}timestamp"] = item.get("timestamp")
+                params[f"{p}latitude"] = item.get("latitude")
+                params[f"{p}longitude"] = item.get("longitude")
+                params[f"{p}depth_meters"] = item.get("depth_meters")
+                params[f"{p}temperature"] = item.get("temperature")
+                params[f"{p}salinity"] = item.get("salinity")
+                params[f"{p}dissolved_oxygen"] = item.get("dissolved_oxygen")
+                params[f"{p}chlorophyll"] = item.get("chlorophyll")
+                params[f"{p}ph"] = item.get("ph")
+
+            sql = f"""
+            INSERT INTO public.oceanographic_observations (
+                id, dataset_id, station_id, timestamp, latitude, longitude,
+                depth_meters, temperature_celsius, salinity_psu, dissolved_oxygen_mgl,
+                chlorophyll_mg_m3, ph, quality_status, created_at, updated_at
+            ) VALUES {", ".join(value_clauses)};
+            """
+            try:
+                execute_write(sql, params)
+                total_inserted += len(chunk)
+            except Exception as e:
+                logger.warning("Batch insert oceanography chunk failed: %s", e)
+        return total_inserted
+
+    @staticmethod
+    def _batch_insert_fisheries(batch: List[Dict[str, Any]]) -> int:
+        """Helper to batch-insert fisheries records."""
+        if not batch:
+            return 0
+        from backend.app.db.database import execute_write
+        chunk_size = 100
+        total_inserted = 0
+        for i in range(0, len(batch), chunk_size):
+            chunk = batch[i:i + chunk_size]
+            value_clauses = []
+            params: Dict[str, Any] = {}
+            for idx, item in enumerate(chunk):
+                p = f"r{idx}_"
+                value_clauses.append(f"""(
+                    gen_random_uuid(),
+                    :{p}dataset_id,
+                    CAST(:{p}timestamp AS timestamptz),
+                    :{p}latitude,
+                    :{p}longitude,
+                    :{p}species_name,
+                    :{p}catch_weight_kg,
+                    :{p}fishing_effort_hours,
+                    :{p}gear_type,
+                    :{p}fishing_zone,
+                    :{p}vessel_name,
+                    'passed'::quality_flag,
+                    NOW(),
+                    NOW()
+                )""")
+                params[f"{p}dataset_id"] = item.get("dataset_id")
+                params[f"{p}timestamp"] = item.get("timestamp")
+                params[f"{p}latitude"] = item.get("latitude")
+                params[f"{p}longitude"] = item.get("longitude")
+                params[f"{p}species_name"] = str(item.get("species_name") or "Marine Finfish")[:255]
+                params[f"{p}catch_weight_kg"] = item.get("catch_weight_kg")
+                params[f"{p}fishing_effort_hours"] = item.get("fishing_effort_hours")
+                params[f"{p}gear_type"] = str(item.get("gear_type") or "Trawl Net")[:100]
+                params[f"{p}fishing_zone"] = str(item.get("fishing_zone") or "West Coast EEZ")[:100]
+                params[f"{p}vessel_name"] = str(item.get("vessel_name") or "FORV Sagar Sampada")[:100]
+
+            sql = f"""
+            INSERT INTO public.fisheries_records (
+                id, dataset_id, timestamp, latitude, longitude,
+                species_name_reported, catch_weight_kg, fishing_effort_hours,
+                gear_type, fishing_zone, vessel_name, quality_status, created_at, updated_at
+            ) VALUES {", ".join(value_clauses)};
+            """
+            try:
+                execute_write(sql, params)
+                total_inserted += len(chunk)
+            except Exception as e:
+                logger.warning("Batch insert fisheries chunk failed: %s", e)
+        return total_inserted

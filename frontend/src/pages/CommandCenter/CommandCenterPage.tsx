@@ -33,6 +33,8 @@ import { AlertSeverityBadge } from '../../components/alerts/AlertSeverityBadge';
 import { QualityScoreBadge } from '../../components/data/QualityScoreBadge';
 import { CardSkeleton } from '../../components/ui/Skeleton';
 
+const COMMAND_CENTER_LOAD_TIMEOUT_MS = 20000;
+
 export const CommandCenterPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -47,23 +49,43 @@ export const CommandCenterPage: React.FC = () => {
   const loadDashboard = async () => {
     setIsLoading(true);
     setError(null);
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     try {
-      const [sum, ds, al] = await Promise.all([
+      const dashboardLoad = Promise.allSettled([
         marineService.getSummary(),
         datasetService.getDatasets(),
         alertsService.getAlerts()
       ]);
-      setSummary(sum);
-      setRecentDatasets(ds.slice(0, 4));
-      setRecentAlerts(al.slice(0, 3));
+      const timeout = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error('Command Center data request timed out. Please retry after the backend finishes reloading or processing.'));
+        }, COMMAND_CENTER_LOAD_TIMEOUT_MS);
+      });
+      const [sumRes, dsRes, alRes] = await Promise.race([dashboardLoad, timeout]);
+
+      if (sumRes.status === 'fulfilled') {
+        setSummary(sumRes.value);
+      }
+      if (dsRes.status === 'fulfilled') {
+        setRecentDatasets(Array.isArray(dsRes.value) ? dsRes.value.slice(0, 4) : []);
+      }
+      if (alRes.status === 'fulfilled') {
+        setRecentAlerts(Array.isArray(alRes.value) ? alRes.value.slice(0, 3) : []);
+      }
+
+      if (sumRes.status === 'rejected' && dsRes.status === 'rejected') {
+        setError(sumRes.reason?.message || 'Failed to load command center summary. Please check backend connection and retry.');
+      }
     } catch (err: any) {
       console.error('Failed to load command center summary', err);
       setError(err?.message || 'Failed to load command center summary. Please check backend connection and retry.');
     } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -283,7 +305,7 @@ export const CommandCenterPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {summary?.regionsBreakdown.map((r, idx) => (
+            {(summary?.regionsBreakdown || []).map((r, idx) => (
               <Card key={idx} className="p-4 space-y-3">
                 <div className="flex items-center justify-between border-b border-marine-800 pb-2">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
@@ -315,7 +337,7 @@ export const CommandCenterPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-bold text-white">Recent Marine Ingestion Catalogue</h3>
               <Button size="sm" variant="ghost" onClick={() => navigate('/data')}>
-                View All Datasets ({summary?.totalDatasets})
+                View All Datasets ({summary?.totalDatasets ?? recentDatasets.length})
               </Button>
             </div>
             <div className="glass-panel rounded-2xl p-2 divide-y divide-marine-850 border border-marine-800">

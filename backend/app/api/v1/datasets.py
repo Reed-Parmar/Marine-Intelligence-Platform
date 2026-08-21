@@ -22,14 +22,14 @@ router = APIRouter()
 
 
 @router.get("", response_model=ApiListResponse[DatasetResponse])
-async def list_datasets(
+def list_datasets(
     domain_type: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
     quality_status: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=100),
-    current_user: UserProfile = Depends(get_current_user)
+    current_user: Optional[UserProfile] = Depends(get_optional_user)
 ):
     """
     Lists datasets with optional domain and quality filtering.
@@ -49,9 +49,9 @@ async def list_datasets(
 
 
 @router.get("/{dataset_id}", response_model=ApiResponse[DatasetResponse])
-async def get_dataset(
+def get_dataset(
     dataset_id: str,
-    current_user: UserProfile = Depends(get_current_user)
+    current_user: Optional[UserProfile] = Depends(get_optional_user)
 ):
     """
     Retrieves full metadata for a single dataset.
@@ -66,7 +66,7 @@ async def get_dataset(
 
 
 @router.post("", response_model=ApiResponse[DatasetResponse], status_code=status.HTTP_201_CREATED)
-async def create_dataset(
+def create_dataset(
     req: DatasetCreateRequest,
     current_user: UserProfile = Depends(get_current_user)
 ):
@@ -83,7 +83,7 @@ async def create_dataset(
 
 
 @router.patch("/{dataset_id}", response_model=ApiResponse[DatasetResponse])
-async def update_dataset(
+def update_dataset(
     dataset_id: str,
     req: DatasetUpdateRequest,
     current_user: UserProfile = Depends(get_current_user)
@@ -114,7 +114,7 @@ async def update_dataset(
 
 
 @router.delete("/{dataset_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_dataset(
+def delete_dataset(
     dataset_id: str,
     current_user: UserProfile = Depends(get_current_user)
 ):
@@ -143,9 +143,9 @@ async def delete_dataset(
 
 
 @router.get("/{dataset_id}/quality", response_model=ApiResponse[DatasetQualityResponse])
-async def get_dataset_quality(
+def get_dataset_quality(
     dataset_id: str,
-    current_user: UserProfile = Depends(get_current_user)
+    current_user: Optional[UserProfile] = Depends(get_optional_user)
 ):
     """
     Retrieves data quality evaluation report.
@@ -160,9 +160,9 @@ async def get_dataset_quality(
 
 
 @router.get("/{dataset_id}/provenance", response_model=ApiResponse[DatasetProvenanceResponse])
-async def get_dataset_provenance(
+def get_dataset_provenance(
     dataset_id: str,
-    current_user: UserProfile = Depends(get_current_user)
+    current_user: Optional[UserProfile] = Depends(get_optional_user)
 ):
     """
     Retrieves dataset origin and processing audit logs.
@@ -177,9 +177,9 @@ async def get_dataset_provenance(
 
 
 @router.get("/{dataset_id}/preview", response_model=ApiResponse[DatasetPreviewResponse])
-async def get_dataset_preview(
+def get_dataset_preview(
     dataset_id: str,
-    current_user: UserProfile = Depends(get_current_user)
+    current_user: Optional[UserProfile] = Depends(get_optional_user)
 ):
     """
     Retrieves tabular preview data for a registered dataset.
