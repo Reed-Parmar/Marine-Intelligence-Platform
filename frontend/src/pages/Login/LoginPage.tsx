@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { 
@@ -11,19 +11,22 @@ import {
   FlaskConical, 
   Globe, 
   Cpu, 
-  AlertCircle 
+  AlertCircle,
+  UserPlus
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('scientist@cmlre.gov.in');
-  const [password, setPassword] = useState('cmlre-secure-2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+
+  const isDevOrDemo = import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEMO_LOGIN === 'true';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,16 +49,24 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleQuickDemoLogin = async (type: 'scientist' | 'admin') => {
-    const creds = type === 'admin'
-      ? { email: 'admin@cmlre.gov.in', pass: 'moes-admin-2026' }
-      : { email: 'scientist@cmlre.gov.in', pass: 'cmlre-secure-2026' };
+    const demoEmail = type === 'admin'
+      ? (import.meta.env.VITE_DEMO_ADMIN_EMAIL || 'admin@cmlre.gov.in')
+      : (import.meta.env.VITE_DEMO_SCIENTIST_EMAIL || 'scientist@cmlre.gov.in');
+    const demoPass = type === 'admin'
+      ? (import.meta.env.VITE_DEMO_ADMIN_PASSWORD || '')
+      : (import.meta.env.VITE_DEMO_SCIENTIST_PASSWORD || '');
 
-    setEmail(creds.email);
-    setPassword(creds.pass);
+    if (!demoPass) {
+      setErrorMsg('Demo credentials are not configured in this environment.');
+      return;
+    }
+
+    setEmail(demoEmail);
+    setPassword(demoPass);
     setIsLoading(true);
     setErrorMsg(null);
     try {
-      await login(creds.email, creds.pass);
+      await login(demoEmail, demoPass);
       addToast('success', 'Logged in as ' + (type === 'admin' ? 'MoES Administrator' : 'Marine Scientist'));
       navigate('/');
     } catch (err: any) {
@@ -139,6 +150,7 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="scientist@cmlre.gov.in"
+                  autoComplete="username"
                   required
                   className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
                 />
@@ -154,6 +166,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
+                  autoComplete="current-password"
                   required
                   className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
                 />
@@ -172,31 +185,43 @@ export const LoginPage: React.FC = () => {
             </Button>
           </form>
 
-          {/* Quick Demo Access Buttons */}
-          <div className="space-y-2 pt-2 border-t border-marine-800">
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold text-center">
-              Quick Hackathon Demo Login
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('scientist')}
-                className="p-2 rounded-lg bg-marine-900 hover:bg-marine-850 border border-marine-700 hover:border-ocean-cyan text-xs text-slate-200 transition-all text-center flex items-center justify-center gap-1.5"
-              >
-                <FlaskConical className="w-3.5 h-3.5 text-ocean-cyan" />
-                <span>Marine Scientist</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('admin')}
-                className="p-2 rounded-lg bg-marine-900 hover:bg-marine-850 border border-marine-700 hover:border-ocean-amber text-xs text-slate-200 transition-all text-center flex items-center justify-center gap-1.5"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-ocean-amber" />
-                <span>MoES Admin</span>
-              </button>
-            </div>
+          <div className="text-center pt-1">
+            <p className="text-xs text-slate-400">
+              New to the platform?{' '}
+              <Link to="/register" className="text-ocean-cyan hover:underline font-medium inline-flex items-center gap-1">
+                <UserPlus className="w-3 h-3" />
+                <span>Create Researcher Account</span>
+              </Link>
+            </p>
           </div>
+
+          {/* Quick Demo Access Buttons */}
+          {isDevOrDemo && (
+            <div className="space-y-2 pt-2 border-t border-marine-800">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold text-center">
+                Quick Hackathon Demo Login
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('scientist')}
+                  className="p-2 rounded-lg bg-marine-900 hover:bg-marine-850 border border-marine-700 hover:border-ocean-cyan text-xs text-slate-200 transition-all text-center flex items-center justify-center gap-1.5"
+                >
+                  <FlaskConical className="w-3.5 h-3.5 text-ocean-cyan" />
+                  <span>Marine Scientist</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('admin')}
+                  className="p-2 rounded-lg bg-marine-900 hover:bg-marine-850 border border-marine-700 hover:border-ocean-amber text-xs text-slate-200 transition-all text-center flex items-center justify-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-ocean-amber" />
+                  <span>MoES Admin</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

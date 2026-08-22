@@ -5,39 +5,65 @@ import { DistributionBarChart } from '../../components/charts/DistributionBarCha
 import { TimeSeriesChart } from '../../components/charts/TimeSeriesChart';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Button } from '../../components/ui/Button';
 import { CardSkeleton } from '../../components/ui/Skeleton';
-import { Fish, Anchor, Activity, TrendingUp, Ship, MapPin } from 'lucide-react';
+import { Fish, Anchor, Activity, TrendingUp, Ship, MapPin, AlertTriangle } from 'lucide-react';
 
 export const FisheriesExplorerPage: React.FC = () => {
   const [summary, setSummary] = useState<FisheriesSummaryMetrics | null>(null);
   const [trends, setTrends] = useState<FisheriesTrendPoint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadFisheries = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [sum, tr] = await Promise.all([
+        fisheriesService.getSummary(),
+        fisheriesService.getTrends()
+      ]);
+      setSummary(sum);
+      setTrends(tr);
+    } catch (err: any) {
+      console.error('Failed to load fisheries data', err);
+      setError(err?.message || 'Failed to load fisheries data.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadFisheries = async () => {
-      setIsLoading(true);
-      try {
-        const [sum, tr] = await Promise.all([
-          fisheriesService.getSummary(),
-          fisheriesService.getTrends()
-        ]);
-        setSummary(sum);
-        setTrends(tr);
-      } catch (err) {
-        console.error('Failed to load fisheries data', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     loadFisheries();
   }, []);
 
-  if (isLoading || !summary) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <CardSkeleton rows={6} />
       </div>
     );
+  }
+
+  if (error && !summary) {
+    return (
+      <div className="glass-panel rounded-xl p-8 text-center space-y-4 border border-rose-500/30">
+        <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-white">Fisheries Data Unavailable</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">{error}</p>
+        </div>
+        <Button onClick={loadFisheries} variant="secondary" size="sm">
+          Retry Loading
+        </Button>
+      </div>
+    );
+  }
+
+  if (!summary) {
+    return null;
   }
 
   const barSeries = [
@@ -62,10 +88,10 @@ export const FisheriesExplorerPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <Badge variant="amber" size="md">
-            Sustainability Index: {summary.sustainabilityIndex}/100
+            Sustainability Index: {summary.sustainabilityIndex !== null && summary.sustainabilityIndex !== undefined ? `${summary.sustainabilityIndex}/100` : '—'}
           </Badge>
           <Badge variant="cyan" size="md">
-            {summary.activeVesselsTracked.toLocaleString()} Vessels Monitored
+            {summary.activeVesselsTracked !== null ? summary.activeVesselsTracked.toLocaleString() : '—'} Vessels Monitored
           </Badge>
         </div>
       </div>
@@ -78,7 +104,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <Anchor className="w-4 h-4 text-ocean-cyan" />
           </div>
           <p className="text-xl font-bold font-mono text-white">
-            {summary.totalCatchAnnualTons.toLocaleString()} <span className="text-xs">Tons</span>
+            {summary.totalCatchAnnualTons !== null ? summary.totalCatchAnnualTons.toLocaleString() : '—'} <span className="text-xs">Tons</span>
           </p>
           <p className="text-[10px] text-slate-400">All Indian Coastal States</p>
         </Card>
@@ -89,7 +115,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <TrendingUp className="w-4 h-4 text-ocean-teal" />
           </div>
           <p className="text-xl font-bold font-mono text-white">
-            {summary.overallAvgCPUE} <span className="text-xs">kg/hour</span>
+            {summary.overallAvgCPUE !== null && summary.overallAvgCPUE !== undefined ? <>{summary.overallAvgCPUE} <span className="text-xs">kg/hour</span></> : '—'}
           </p>
           <p className="text-[10px] text-slate-400">Catch Per Unit Effort</p>
         </Card>
@@ -99,7 +125,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <span>Dominant Commercial Stock</span>
             <Fish className="w-4 h-4 text-ocean-amber" />
           </div>
-          <p className="text-sm font-bold text-white truncate">{summary.dominantCatchGroup}</p>
+          <p className="text-sm font-bold text-white truncate">{summary.dominantCatchGroup ?? '—'}</p>
           <p className="text-[10px] text-slate-400">62% of Coastal Landings</p>
         </Card>
 
@@ -109,7 +135,7 @@ export const FisheriesExplorerPage: React.FC = () => {
             <Ship className="w-4 h-4 text-ocean-coral" />
           </div>
           <p className="text-xl font-bold font-mono text-white">
-            {summary.activeVesselsTracked.toLocaleString()}
+            {summary.activeVesselsTracked !== null ? summary.activeVesselsTracked.toLocaleString() : '—'}
           </p>
           <p className="text-[10px] text-slate-400">Trawlers, Purse Seiners, Liners</p>
         </Card>

@@ -1,8 +1,8 @@
 export interface CTDProfilePoint {
   depth: number;
-  temperature: number;
-  salinity: number;
-  dissolvedOxygen: number;
+  temperature: number | null;
+  salinity: number | null;
+  dissolvedOxygen: number | null;
   chlorophyllA?: number;
   densitySigmaT?: number;
 }
@@ -27,20 +27,20 @@ export interface OceanObservation {
 
 export interface OceanTrendPoint {
   date: string;
-  avgSST: number;
-  avgSalinity: number;
-  avgOxygen: number;
-  avgChlorophyll: number;
+  avgSST: number | null;
+  avgSalinity: number | null;
+  avgOxygen: number | null;
+  avgChlorophyll: number | null;
   anomalyFlag?: boolean;
 }
 
 export interface OceanSummaryMetrics {
-  meanSST: number;
-  minSST: number;
-  maxSST: number;
-  meanSalinity: number;
-  meanOxygen: number;
-  hypoxicAreaSqKm: number;
-  activeSamplingStations: number;
-  totalCTDCasts: number;
+  meanSST: number | null;
+  minSST: number | null;
+  maxSST: number | null;
+  meanSalinity: number | null;
+  meanOxygen: number | null;
+  hypoxicAreaSqKm: number | null;
+  activeSamplingStations: number | null;
+  totalCTDCasts: number | null;
 }

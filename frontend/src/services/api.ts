@@ -20,78 +20,116 @@ export class ApiClient {
 
   static async request<T>(
     endpoint: string,
-    options: RequestInit = {},
-    fallbackData?: T
+    options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
-    
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      ...((options.headers as Record<string, string>) || {}),
-    };
+
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
+    const headers = new Headers(options.headers || {});
+
+    if (!headers.has('Accept')) {
+      headers.set('Accept', 'application/json');
+    }
+
+    if (!isFormData && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json');
+    }
 
     const token = this.getToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    if (token && !headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${token}`);
     }
 
+    let response: Response;
     try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
-
-      if (!response.ok) {
-        // If 401 Unauthorized, notify or clear session if needed
-        if (response.status === 401) {
-          console.warn('API returned 401 Unauthorized');
-        }
-        
-        let errorBody: ApiError;
-        try {
-          errorBody = await response.json();
-        } catch {
-          errorBody = {
-            error: {
-              code: `HTTP_${response.status}`,
-              message: response.statusText || 'An error occurred during request execution',
-            }
-          };
-        }
-
-        // If fallback data exists (e.g. backend offline during hackathon demo), use fallback
-        if (fallbackData !== undefined) {
-          console.info(`Using CMLRE fallback fixture for ${endpoint} due to HTTP ${response.status}`);
-          return { data: fallbackData, meta: { source: 'local_cmlre_engine', timestamp: new Date().toISOString() } };
-        }
-
-        throw new Error(errorBody.error.message || `Request failed with status ${response.status}`);
-      }
-
-      const json = await response.json();
-      // If backend returns unwrapped data, wrap it in { data, meta }
-      if (json && typeof json === 'object' && 'data' in json) {
-        return json;
-      }
-      return { data: json, meta: { timestamp: new Date().toISOString() } };
-    } catch (err: any) {
-      // Network error (e.g. backend server not currently running locally) -> graceful fallback to mock data
-      if (fallbackData !== undefined) {
-        console.info(`Using offline CMLRE scientific engine fallback for ${endpoint}`);
-        return { data: fallbackData, meta: { source: 'offline_cmlre_engine', timestamp: new Date().toISOString() } };
-      }
-      throw err;
+      response = await fetch(url, { ...options, headers });
+    } catch (networkErr: any) {
+      // True network failure (backend not running, DNS failure, etc.)
+      throw new Error(
+        `Cannot connect to the Marine Intelligence Platform backend at ${API_BASE_URL}. ` +
+        `Please ensure the backend server is running. (${networkErr.message})`
+      );
     }
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Clear invalid/expired token so the user gets redirected to login on next render.
+        ApiClient.setToken(null);
+      }
+
+      let errorBody: ApiError;
+      try {
+        errorBody = await response.json();
+      } catch {
+        errorBody = {
+          error: {
+            code: `HTTP_${response.status}`,
+            message: response.statusText || 'An error occurred during request execution',
+          }
+        };
+      }
+
+      let detailMsg: string | null = null;
+      const rawDetail = (errorBody as any)?.detail;
+      if (Array.isArray(rawDetail)) {
+        detailMsg = rawDetail
+          .map((err: any) => {
+            const field = Array.isArray(err.loc) ? err.loc.slice(1).join('.') : err.loc || '';
+            return field ? `${field}: ${err.msg}` : err.msg;
+          })
+          .join('; ');
+      }
+
+      const message =
+        (errorBody as any)?.error?.message ||
+        (errorBody as any)?.detail?.message ||
+        detailMsg ||
+        (typeof rawDetail === 'string' ? rawDetail : null) ||
+        `Request failed with status ${response.status}`;
+
+      throw new Error(message);
+    }
+
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      return { data: null as unknown as T, meta: { timestamp: new Date().toISOString() } };
+    }
+
+    let json: any;
+    try {
+      json = await response.json();
+    } catch {
+      return { data: null as unknown as T, meta: { timestamp: new Date().toISOString() } };
+    }
+
+    // Backend wraps responses as { data, meta } — unwrap if present
+    if (json && typeof json === 'object' && 'data' in json) {
+      return json;
+    }
+    return { data: json, meta: { timestamp: new Date().toISOString() } };
   }
 
-  static get<T>(endpoint: string, fallbackData?: T, queryParams?: Record<string, any>) {
+  static get<T>(endpoint: string, queryParamsOrFallback?: unknown, explicitQueryParams?: Record<string, any>) {
+    let queryParams: Record<string, any> | undefined = undefined;
+    if (explicitQueryParams && typeof explicitQueryParams === 'object' && !Array.isArray(explicitQueryParams)) {
+      queryParams = explicitQueryParams;
+    } else if (queryParamsOrFallback && typeof queryParamsOrFallback === 'object' && !Array.isArray(queryParamsOrFallback)) {
+      // Only treat as queryParams if it doesn't look like a rich domain model (e.g. not having complex nested objects)
+      const obj = queryParamsOrFallback as Record<string, any>;
+      const hasComplexObjects = Object.values(obj).some(v => v !== null && typeof v === 'object');
+      if (!hasComplexObjects) {
+        queryParams = obj;
+      }
+    }
+
     let url = endpoint;
     if (queryParams) {
       const params = new URLSearchParams();
       Object.entries(queryParams).forEach(([key, val]) => {
         if (val !== undefined && val !== null && val !== '') {
-          params.append(key, String(val));
+          if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+            params.append(key, String(val));
+          }
         }
       });
       const qs = params.toString();
@@ -99,32 +137,43 @@ export class ApiClient {
         url += (url.includes('?') ? '&' : '?') + qs;
       }
     }
-    return this.request<T>(url, { method: 'GET' }, fallbackData);
+    return this.request<T>(url, { method: 'GET' });
   }
 
-  static post<T>(endpoint: string, body?: any, fallbackData?: T) {
+  static post<T>(endpoint: string, body?: any, _unused?: unknown) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request<T>(
       endpoint,
       {
         method: 'POST',
-        body: body ? JSON.stringify(body) : undefined,
-      },
-      fallbackData
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
+      }
     );
   }
 
-  static patch<T>(endpoint: string, body?: any, fallbackData?: T) {
+  static patch<T>(endpoint: string, body?: any, _unused?: unknown) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
     return this.request<T>(
       endpoint,
       {
         method: 'PATCH',
-        body: body ? JSON.stringify(body) : undefined,
-      },
-      fallbackData
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
+      }
     );
   }
 
-  static delete<T>(endpoint: string, fallbackData?: T) {
-    return this.request<T>(endpoint, { method: 'DELETE' }, fallbackData);
+  static put<T>(endpoint: string, body?: any, _unused?: unknown) {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+    return this.request<T>(
+      endpoint,
+      {
+        method: 'PUT',
+        body: isFormData ? body : (body !== undefined ? JSON.stringify(body) : undefined),
+      }
+    );
+  }
+
+  static delete<T>(endpoint: string, _unused?: unknown) {
+    return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }

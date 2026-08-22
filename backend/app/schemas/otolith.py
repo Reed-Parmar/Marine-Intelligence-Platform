@@ -23,5 +23,9 @@ class OtolithAnalysisResponse(BaseModel):
     status: str
     estimated_age_years: Optional[float] = None
     confidence_score: Optional[float] = None
+    confidence_level: Optional[str] = None
     annuli_count: Optional[int] = None
+    scientific_name: Optional[str] = None
+    morphological_features: Optional[Dict[str, Any]] = None
+    details: Optional[Dict[str, Any]] = None
     created_at: Optional[str] = None

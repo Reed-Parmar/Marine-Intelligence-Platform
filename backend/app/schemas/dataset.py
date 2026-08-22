@@ -65,3 +65,18 @@ class DatasetProvenanceResponse(BaseModel):
     storage_file_path: Optional[str] = None
     uploaded_by: Optional[str] = None
     created_at: Optional[str] = None
+
+
+class DatasetPreviewColumn(BaseModel):
+    name: str
+    type: str = "string"
+    unit: Optional[str] = None
+
+
+class DatasetPreviewResponse(BaseModel):
+    dataset_id: str
+    datasetId: Optional[str] = None
+    columns: List[Any] = Field(default_factory=list)
+    rows: List[Dict[str, Any]] = Field(default_factory=list)
+    total_preview_rows: int = 0
+    totalPreviewRows: Optional[int] = None

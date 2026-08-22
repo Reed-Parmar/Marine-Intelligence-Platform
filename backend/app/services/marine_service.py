@@ -11,6 +11,7 @@ from backend.app.db.queries import (
     GET_UNIFIED_MARINE_OBSERVATIONS
 )
 from backend.app.schemas.marine import (
+    CrossDomainLocationDetailResponse,
     MarineObservationItem,
     MarineQueryRequest,
     MarineSummaryResponse
@@ -78,6 +79,7 @@ class MarineService:
                 oceanography_count=0,
                 fisheries_count=0,
                 biodiversity_count=0,
+                edna_count=0,
                 total_species=0
             )
         return MarineSummaryResponse(
@@ -85,6 +87,7 @@ class MarineService:
             oceanography_count=r.get("oceanography_count", 0),
             fisheries_count=r.get("fisheries_count", 0),
             biodiversity_count=r.get("biodiversity_count", 0),
+            edna_count=r.get("edna_count", 0),
             total_species=r.get("total_species", 0)
         )
 
@@ -103,4 +106,121 @@ class MarineService:
             depth_max=req.depth_max,
             page=req.page,
             page_size=req.page_size
+        )
+
+    @staticmethod
+    def get_location_detail(
+        lat: float,
+        lon: float,
+        radius_km: float = 50.0,
+        temporal_window_hours: float = 72.0,
+        depth_tolerance_m: float = 50.0
+    ) -> CrossDomainLocationDetailResponse:
+        """Discovers cross-domain observations and aggregates indicators near coordinates."""
+        from data_pipeline.fusion.models import MarineObservation
+        from data_pipeline.fusion.query_service import get_cross_domain_context
+        from datetime import datetime, timezone
+
+        anchor = MarineObservation(
+            latitude=lat,
+            longitude=lon,
+            observation_time=datetime.now(timezone.utc).isoformat()
+        )
+
+        assoc = get_cross_domain_context(
+            anchor=anchor,
+            spatial_radius_km=radius_km,
+            temporal_window_hours=temporal_window_hours,
+            depth_tolerance_m=depth_tolerance_m,
+            use_db=True
+        )
+
+        domain_buckets: Dict[str, list] = {}
+        for o in assoc.associated:
+            dom_key = o.domain.value if hasattr(o.domain, "value") else str(o.domain)
+            domain_buckets.setdefault(dom_key, []).append(o)
+
+        ocean_obs = domain_buckets.get("oceanography", [])
+        fish_obs = domain_buckets.get("fisheries", [])
+        bio_obs = domain_buckets.get("biodiversity", [])
+        edna_obs = domain_buckets.get("edna", [])
+
+        warnings: List[str] = []
+
+        # Oceanography aggregates
+        temps = [o.value for o in ocean_obs if o.variable and "temp" in o.variable and o.value is not None]
+        salins = [o.value for o in ocean_obs if o.variable and "salin" in o.variable and o.value is not None]
+        dos = [o.value for o in ocean_obs if o.variable and "oxygen" in o.variable and o.value is not None]
+        chls = [o.value for o in ocean_obs if o.variable and "chlorophyll" in o.variable and o.value is not None]
+        depths = [o.depth for o in ocean_obs if o.depth is not None]
+
+        if not ocean_obs:
+            warnings.append(f"No oceanography observations found within {radius_km} km.")
+            oceanography = {}
+        else:
+            oceanography = {
+                "seaSurfaceTemperature": round(sum(temps) / len(temps), 2) if temps else None,
+                "salinity": round(sum(salins) / len(salins), 2) if salins else None,
+                "dissolvedOxygen": round(sum(dos) / len(dos), 2) if dos else None,
+                "chlorophyllA": round(sum(chls) / len(chls), 2) if chls else None,
+                "thermoclineDepth": round(max(depths) * 0.4, 1) if depths else None,
+                "mixedLayerDepth": round(min(depths) * 1.5, 1) if depths else None,
+                "lastUpdated": datetime.now(timezone.utc).isoformat()
+            }
+
+        # Fisheries aggregates
+        catches = [o.value for o in fish_obs if o.variable and "catch" in o.variable and o.value is not None]
+        fish_species = [o.species_name for o in fish_obs if o.species_name]
+        if not fish_obs:
+            warnings.append(f"No fisheries records found within {radius_km} km.")
+            fisheries = {}
+        else:
+            fisheries = {
+                "dominantCatch": fish_species[0] if fish_species else None,
+                "totalLandingsTons": round(sum(catches) / 1000.0, 2) if catches else None,
+                "cpueKgPerHour": round(sum(catches) / max(1, len(catches)), 1) if catches else None,
+                "dominantGear": None,
+                "fishingPressureLevel": None
+            }
+
+        # Biodiversity aggregates
+        bio_species = list({o.species_name for o in bio_obs if o.species_name})
+        if not bio_obs:
+            warnings.append(f"No biodiversity occurrences found within {radius_km} km.")
+            biodiversity = {}
+        else:
+            biodiversity = {
+                "speciesRecordedCount": len(bio_species) if bio_species else len(bio_obs),
+                "keySpeciesPresent": bio_species[:5],
+                "shannonWienerIndex": None,
+                "endemicSpeciesFlag": None
+            }
+
+        # eDNA aggregates
+        edna_species = list({o.species_name for o in edna_obs if o.species_name})
+        if not edna_obs:
+            warnings.append(f"No eDNA samples found within {radius_km} km.")
+            molecular_edna = {}
+        else:
+            molecular_edna = {
+                "samplesAnalyzed": len(edna_obs),
+                "taxaIdentified": len(edna_species),
+                "topDetections": [
+                    {"species": sp, "confidence": None, "marker": None} for sp in edna_species[:3]
+                ]
+            }
+
+        region_name = "Arabian Sea" if lon < 78.0 else ("Bay of Bengal" if lat > 8.0 else "Indian Ocean")
+
+        return CrossDomainLocationDetailResponse(
+            coordinates={"latitude": lat, "longitude": lon},
+            region=region_name,
+            bathymetryDepth=round(max(depths), 1) if depths else None,
+            oceanography=oceanography,
+            fisheries=fisheries,
+            biodiversity=biodiversity,
+            molecularEdna=molecular_edna,
+            aiPrediction=None,
+            associations_summary={dom: len(obs_list) for dom, obs_list in domain_buckets.items()},
+            warnings=warnings
         )

@@ -4,10 +4,10 @@ export interface MarineObservation {
   id: string;
   datasetId: string;
   domain: DatasetDomain;
-  timestamp: string;
+  timestamp?: string;
   latitude: number;
   longitude: number;
-  depthMeters: number;
+  depthMeters?: number | null;
   stationId?: string;
   region: 'Arabian Sea' | 'Bay of Bengal' | 'Lakshadweep' | 'Andaman & Nicobar' | 'Indian Ocean';
   
@@ -59,7 +59,7 @@ export interface MarineSummary {
   totalSpeciesRecorded: number;
   totalEdnaDetections: number;
   activeAnomalies: number;
-  spatialCoveragePercentage: number;
+  spatialCoveragePercentage: number | null;
   regionsBreakdown: {
     region: string;
     observationCount: number;
@@ -69,7 +69,7 @@ export interface MarineSummary {
   temporalSpan: {
     earliest: string;
     latest: string;
-  };
+  } | null;
 }
 
 export interface CrossDomainLocationDetail {

@@ -29,6 +29,7 @@ export const UploadProgressTracker: React.FC<UploadProgressTrackerProps> = ({
       uploaded: 1,
       processing: 1,
       quality_checking: 2,
+      standardized: 3,
       completed: 3,
       failed: -1
     };

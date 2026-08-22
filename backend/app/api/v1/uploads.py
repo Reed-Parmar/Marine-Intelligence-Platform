@@ -31,7 +31,7 @@ async def upload_file(
 
 
 @router.get("/{upload_id}", response_model=ApiResponse[UploadResponse])
-async def get_upload_status(upload_id: str):
+def get_upload_status(upload_id: str):
     """
     Returns upload status and detected format.
     """
@@ -45,7 +45,7 @@ async def get_upload_status(upload_id: str):
 
 
 @router.get("/{upload_id}/preview", response_model=ApiResponse[UploadPreviewResponse])
-async def get_upload_preview(upload_id: str):
+def get_upload_preview(upload_id: str):
     """
     Parses and returns a tabular preview of the staged dataset for frontend inspection.
     """
@@ -59,7 +59,7 @@ async def get_upload_preview(upload_id: str):
 
 
 @router.post("/{upload_id}/process", response_model=ApiResponse[UploadProcessResponse])
-async def process_upload(
+def process_upload(
     upload_id: str,
     req: UploadProcessRequest,
     user: Optional[UserProfile] = Depends(get_optional_user)
@@ -77,7 +77,7 @@ async def process_upload(
 
 
 @router.delete("/{upload_id}", response_model=ApiResponse[dict])
-async def cancel_upload(upload_id: str):
+def cancel_upload(upload_id: str):
     """
     Cancels and removes a staged upload.
     """

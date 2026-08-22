@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { marineService } from '../../services/marine';
 import { datasetService } from '../../services/datasets';
 import { alertsService } from '../../services/alerts';
+import { useAuth } from '../../context/AuthContext';
 import { MarineSummary } from '../../types/marine';
 import { DatasetMetadata } from '../../types/dataset';
 import { MarineAlert } from '../../types/alert';
@@ -20,7 +21,10 @@ import {
   ShieldCheck, 
   Sparkles,
   Layers,
-  Compass
+  Compass,
+  Users,
+  CheckCircle2,
+  Server
 } from 'lucide-react';
 import { Card, CardHeader } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -29,30 +33,60 @@ import { AlertSeverityBadge } from '../../components/alerts/AlertSeverityBadge';
 import { QualityScoreBadge } from '../../components/data/QualityScoreBadge';
 import { CardSkeleton } from '../../components/ui/Skeleton';
 
+const COMMAND_CENTER_LOAD_TIMEOUT_MS = 20000;
+
 export const CommandCenterPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [summary, setSummary] = useState<MarineSummary | null>(null);
   const [recentDatasets, setRecentDatasets] = useState<DatasetMetadata[]>([]);
   const [recentAlerts, setRecentAlerts] = useState<MarineAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const [sum, ds, al] = await Promise.all([
-          marineService.getSummary(),
-          datasetService.getDatasets(),
-          alertsService.getAlerts()
-        ]);
-        setSummary(sum);
-        setRecentDatasets(ds.slice(0, 4));
-        setRecentAlerts(al.slice(0, 3));
-      } catch (err) {
-        console.error('Failed to load command center summary', err);
-      } finally {
-        setIsLoading(false);
+  const isAdmin = user?.role === 'admin';
+
+  const loadDashboard = async () => {
+    setIsLoading(true);
+    setError(null);
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const dashboardLoad = Promise.allSettled([
+        marineService.getSummary(),
+        datasetService.getDatasets(),
+        alertsService.getAlerts()
+      ]);
+      const timeout = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error('Command Center data request timed out. Please retry after the backend finishes reloading or processing.'));
+        }, COMMAND_CENTER_LOAD_TIMEOUT_MS);
+      });
+      const [sumRes, dsRes, alRes] = await Promise.race([dashboardLoad, timeout]);
+
+      if (sumRes.status === 'fulfilled') {
+        setSummary(sumRes.value);
       }
-    };
+      if (dsRes.status === 'fulfilled') {
+        setRecentDatasets(Array.isArray(dsRes.value) ? dsRes.value.slice(0, 4) : []);
+      }
+      if (alRes.status === 'fulfilled') {
+        setRecentAlerts(Array.isArray(alRes.value) ? alRes.value.slice(0, 3) : []);
+      }
+
+      if (sumRes.status === 'rejected' && dsRes.status === 'rejected') {
+        setError(sumRes.reason?.message || 'Failed to load command center summary. Please check backend connection and retry.');
+      }
+    } catch (err: any) {
+      console.error('Failed to load command center summary', err);
+      setError(err?.message || 'Failed to load command center summary. Please check backend connection and retry.');
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     loadDashboard();
   }, []);
 
@@ -68,10 +102,27 @@ export const CommandCenterPage: React.FC = () => {
     );
   }
 
+  if (error && !summary) {
+    return (
+      <div className="glass-panel rounded-xl p-8 text-center space-y-4 border border-rose-500/30">
+        <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-white">Dashboard Unavailable</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">{error}</p>
+        </div>
+        <Button onClick={loadDashboard} variant="secondary" size="sm">
+          Retry Loading
+        </Button>
+      </div>
+    );
+  }
+
   const kpis = [
     {
       title: 'Datasets Registered',
-      value: summary?.totalDatasets || 18,
+      value: summary?.totalDatasets ?? 0,
       sub: 'TXT, CTD, CSV, XLSX',
       icon: Database,
       color: 'text-ocean-cyan',
@@ -79,7 +130,7 @@ export const CommandCenterPage: React.FC = () => {
     },
     {
       title: 'Unified Observations',
-      value: (summary?.totalObservations || 142850).toLocaleString(),
+      value: (summary?.totalObservations ?? 0).toLocaleString(),
       sub: 'Spatial-Temporal Points',
       icon: Layers,
       color: 'text-ocean-teal',
@@ -87,7 +138,7 @@ export const CommandCenterPage: React.FC = () => {
     },
     {
       title: 'Catalogued Species',
-      value: summary?.totalSpeciesRecorded || 1420,
+      value: summary?.totalSpeciesRecorded ?? 0,
       sub: 'WoRMS / Darwin Core',
       icon: Compass,
       color: 'text-emerald-400',
@@ -95,7 +146,7 @@ export const CommandCenterPage: React.FC = () => {
     },
     {
       title: 'eDNA Records',
-      value: (summary?.totalEdnaDetections || 3840).toLocaleString(),
+      value: (summary?.totalEdnaDetections ?? 0).toLocaleString(),
       sub: '12S, 16S, COI Barcodes',
       icon: Dna,
       color: 'text-purple-400',
@@ -103,7 +154,7 @@ export const CommandCenterPage: React.FC = () => {
     },
     {
       title: 'Active Scientific Analyses',
-      value: '6 Completed',
+      value: 'Completed',
       sub: 'Regression & Trends',
       icon: Microscope,
       color: 'text-ocean-amber',
@@ -111,7 +162,7 @@ export const CommandCenterPage: React.FC = () => {
     },
     {
       title: 'Ecological Alerts',
-      value: summary?.activeAnomalies || 3,
+      value: summary?.activeAnomalies ?? 0,
       sub: 'Hypoxia & Heatwave',
       icon: AlertTriangle,
       color: 'text-ocean-coral',
@@ -139,32 +190,74 @@ export const CommandCenterPage: React.FC = () => {
             Integrating physical oceanographic casts, commercial fisheries catch metrics, biodiversity records, and high-throughput molecular eDNA evidence for marine conservation and fisheries management.
           </p>
 
-          {/* Quick Action Shortcuts */}
+          {/* Role-Specific Quick Action Shortcuts */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button
-              onClick={() => navigate('/map')}
-              variant="primary"
-              leftIcon={<MapIcon className="w-4 h-4" />}
-            >
-              Open 2D Research Map
-            </Button>
-            <Button
-              onClick={() => navigate('/data/upload')}
-              variant="glow"
-              leftIcon={<Upload className="w-4 h-4" />}
-            >
-              Ingest Marine Dataset (TXT/CTD)
-            </Button>
-            <Button
-              onClick={() => navigate('/analysis')}
-              variant="outline"
-              leftIcon={<Microscope className="w-4 h-4" />}
-            >
-              Scientific Correlation Studio
-            </Button>
+            {isAdmin ? (
+              <>
+                <Button
+                  onClick={() => navigate('/data')}
+                  variant="primary"
+                  leftIcon={<ShieldCheck className="w-4 h-4" />}
+                >
+                  Dataset Governance & Moderation
+                </Button>
+                <Button
+                  onClick={() => navigate('/data/upload')}
+                  variant="glow"
+                  leftIcon={<Upload className="w-4 h-4" />}
+                >
+                  Direct Pipeline Ingestion
+                </Button>
+                <Button
+                  onClick={() => navigate('/alerts')}
+                  variant="outline"
+                  leftIcon={<AlertTriangle className="w-4 h-4 text-ocean-coral" />}
+                >
+                  System Anomalies & Alerts
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => navigate('/map')}
+                  variant="primary"
+                  leftIcon={<MapIcon className="w-4 h-4" />}
+                >
+                  Open 2D Research Map
+                </Button>
+                <Button
+                  onClick={() => navigate('/data/upload')}
+                  variant="glow"
+                  leftIcon={<Upload className="w-4 h-4" />}
+                >
+                  Ingest Marine Dataset (TXT/CTD)
+                </Button>
+                <Button
+                  onClick={() => navigate('/analysis')}
+                  variant="outline"
+                  leftIcon={<Microscope className="w-4 h-4" />}
+                >
+                  Scientific Correlation Studio
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Top Right Admin / Researcher Badge */}
+        <div className="hidden lg:block absolute right-8 bottom-8 p-4 rounded-2xl bg-marine-950/80 border border-marine-800 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isAdmin ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-ocean-cyan/20 text-ocean-cyan border border-ocean-cyan/30'}`}>
+              {isAdmin ? <ShieldCheck className="w-5 h-5" /> : <Compass className="w-5 h-5" />}
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white uppercase tracking-wider">{user?.role || 'Researcher'} Console</p>
+              <p className="text-[11px] text-slate-400 font-mono">{user?.email || 'authenticated user'}</p>
+            </div>
           </div>
         </div>
       </div>
+
 
       {/* 6 Key Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -212,7 +305,7 @@ export const CommandCenterPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {summary?.regionsBreakdown.map((r, idx) => (
+            {(summary?.regionsBreakdown || []).map((r, idx) => (
               <Card key={idx} className="p-4 space-y-3">
                 <div className="flex items-center justify-between border-b border-marine-800 pb-2">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
@@ -244,7 +337,7 @@ export const CommandCenterPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-bold text-white">Recent Marine Ingestion Catalogue</h3>
               <Button size="sm" variant="ghost" onClick={() => navigate('/data')}>
-                View All Datasets ({summary?.totalDatasets})
+                View All Datasets ({summary?.totalDatasets ?? recentDatasets.length})
               </Button>
             </div>
             <div className="glass-panel rounded-2xl p-2 divide-y divide-marine-850 border border-marine-800">

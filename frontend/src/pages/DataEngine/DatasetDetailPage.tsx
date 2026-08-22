@@ -46,16 +46,25 @@ export const DatasetDetailPage: React.FC = () => {
     const loadAllDetails = async () => {
       setIsLoading(true);
       try {
-        const [ds, q, prov, prev] = await Promise.all([
+        const [dsRes, qRes, provRes, prevRes] = await Promise.allSettled([
           datasetService.getDatasetById(datasetId),
           datasetService.getDatasetQuality(datasetId),
           datasetService.getDatasetProvenance(datasetId),
           datasetService.getDatasetPreview(datasetId)
         ]);
-        setDataset(ds);
-        setQuality(q);
-        setProvenance(prov);
-        setPreview(prev);
+
+        if (dsRes.status === 'fulfilled') {
+          setDataset(dsRes.value);
+        }
+        if (qRes.status === 'fulfilled') {
+          setQuality(qRes.value);
+        }
+        if (provRes.status === 'fulfilled') {
+          setProvenance(provRes.value);
+        }
+        if (prevRes.status === 'fulfilled') {
+          setPreview(prevRes.value);
+        }
       } catch (err) {
         console.error('Failed to load dataset details', err);
       } finally {

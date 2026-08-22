@@ -24,6 +24,7 @@ class MarineSummaryResponse(BaseModel):
     oceanography_count: int
     fisheries_count: int
     biodiversity_count: int
+    edna_count: int = 0
     total_species: int
 
 
@@ -42,3 +43,16 @@ class MarineQueryRequest(BaseModel):
     variable: Optional[str] = None
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=50, ge=1, le=100)
+
+
+class CrossDomainLocationDetailResponse(BaseModel):
+    coordinates: Dict[str, float]
+    region: str = "Indian Ocean"
+    bathymetryDepth: Optional[float] = None
+    oceanography: Dict[str, Any] = Field(default_factory=dict)
+    fisheries: Dict[str, Any] = Field(default_factory=dict)
+    biodiversity: Dict[str, Any] = Field(default_factory=dict)
+    molecularEdna: Dict[str, Any] = Field(default_factory=dict)
+    aiPrediction: Optional[Dict[str, Any]] = None
+    associations_summary: Optional[Dict[str, Any]] = None
+    warnings: List[str] = Field(default_factory=list)

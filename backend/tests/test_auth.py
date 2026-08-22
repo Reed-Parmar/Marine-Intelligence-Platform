@@ -40,17 +40,11 @@ def test_auth_me_authenticated():
         app.dependency_overrides.clear()
 
 
-def test_login_fallback():
-    """Login endpoint returns access token."""
-    response = client.post(
-        "/api/v1/auth/login",
-        json={"email": "researcher@cmlre.gov.in", "password": "SamplePassword123!"}
-    )
-    assert response.status_code in (200, 401, 503)
-    if response.status_code == 200:
-        data = response.json()["data"]
-        assert "access_token" in data
-        assert "user" in data
+def test_auth_me_bearer_required():
+    """Requesting /me without Authorization header returns 401."""
+    response = client.get("/api/v1/auth/me")
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "UNAUTHORIZED"
 
 
 def test_users_admin_forbidden_for_regular_user():

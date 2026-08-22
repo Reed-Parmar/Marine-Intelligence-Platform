@@ -46,7 +46,16 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:3000
 
 Start the development server with automatic reloading:
 ```bash
-uvicorn backend.app.main:app --reload --port 8000
+python -m backend.dev_server
+```
+
+This scopes Uvicorn reload watching to backend source paths instead of the whole
+repository, so dataset files, frontend files, docs, cache directories, and other
+generated artifacts do not trigger backend restarts. If you need to run Uvicorn
+directly, use explicit reload directories:
+
+```bash
+python -m uvicorn backend.app.main:app --reload --reload-dir backend/app --reload-dir data_pipeline/fusion --reload-dir data_pipeline/ingestion --reload-dir data_pipeline/quality_standardisation --reload-dir data_pipeline/shared --reload-dir data_pipeline/specialized_science --reload-dir data_pipeline/storage --port 8000
 ```
 
 - **API Base URL**: `http://localhost:8000/api/v1`

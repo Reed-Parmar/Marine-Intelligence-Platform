@@ -149,11 +149,15 @@ export const SpeciesExplorerPage: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
                   <div className="p-2 rounded bg-marine-900 border border-marine-850">
                     <span className="text-[9px] text-slate-400 block font-sans">Depth Window:</span>
-                    <span className="text-white font-bold">{sp.knownDepthRange[0]}-{sp.knownDepthRange[1]}m</span>
+                    <span className="text-white font-bold">
+                      {Array.isArray(sp.knownDepthRange) && sp.knownDepthRange.length >= 2 ? `${sp.knownDepthRange[0]}-${sp.knownDepthRange[1]}m` : '—'}
+                    </span>
                   </div>
                   <div className="p-2 rounded bg-marine-900 border border-marine-850">
                     <span className="text-[9px] text-slate-400 block font-sans">Temp Window:</span>
-                    <span className="text-ocean-cyan font-bold">{sp.preferredTemperatureRange[0]}-{sp.preferredTemperatureRange[1]}°C</span>
+                    <span className="text-ocean-cyan font-bold">
+                      {Array.isArray(sp.preferredTemperatureRange) && sp.preferredTemperatureRange.length >= 2 ? `${sp.preferredTemperatureRange[0]}-${sp.preferredTemperatureRange[1]}°C` : '—'}
+                    </span>
                   </div>
                   <div className="p-2 rounded bg-marine-900 border border-marine-850">
                     <span className="text-[9px] text-slate-400 block font-sans">Occurrences:</span>

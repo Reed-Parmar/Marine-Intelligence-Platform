@@ -1,92 +1,127 @@
 import { ApiClient } from './api';
-import { 
-  DatasetMetadata, 
-  DatasetQualityReport, 
-  DatasetProvenance, 
+import {
+  DatasetMetadata,
+  DatasetQualityReport,
+  DatasetProvenance,
   DatasetPreviewData,
-  DatasetDomain 
+  DatasetDomain,
+  FileFormat
 } from '../types/dataset';
-import { 
-  MOCK_DATASETS, 
-  MOCK_QUALITY_REPORTS, 
-  MOCK_PROVENANCE, 
-  MOCK_PREVIEW_DATA 
-} from './mockData';
+
+function parseNullableNumber(val: any): number | null {
+  if (val === null || val === undefined || val === '') return null;
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+}
+
+function normalizeDataset(d: any): DatasetMetadata {
+  return {
+    id: String(d.id || ''),
+    title: d.title || d.name || 'Untitled Dataset',
+    description: d.description || d.validation_notes || 'Marine scientific observation dataset.',
+    domain: (d.domain || d.domain_type || 'oceanography') as DatasetDomain,
+    format: (d.format || d.file_type || 'TXT').toUpperCase() as FileFormat,
+    status: d.status || 'ready',
+    qualityStatus: d.qualityStatus || d.quality_status || 'pending',
+    qualityScore: d.qualityScore ?? parseNullableNumber(d.quality_score) ?? undefined,
+    rowCount: d.rowCount ?? (d.row_count !== undefined ? Number(d.row_count) : 0),
+    fileSizeBytes: d.fileSizeBytes ?? (d.file_size_bytes !== undefined ? Number(d.file_size_bytes) : 0),
+    source: d.source || d.source_name || '',
+    region: d.region || '',
+    spatialBounds: d.spatialBounds || d.spatial_bounds,
+    temporalCoverage: d.temporalCoverage || d.temporal_coverage || {
+      start: d.created_at || '',
+      end: d.updated_at || ''
+    },
+    tags: Array.isArray(d.tags) ? d.tags : (d.domain_type ? [d.domain_type] : []),
+    createdAt: d.createdAt || d.created_at || new Date().toISOString(),
+    updatedAt: d.updatedAt || d.updated_at || new Date().toISOString(),
+    uploadedBy: d.uploadedBy || d.uploaded_by || ''
+  };
+}
 
 export const datasetService = {
   async getDatasets(params?: { domain?: DatasetDomain; status?: string; search?: string }): Promise<DatasetMetadata[]> {
-    let fallback = [...MOCK_DATASETS];
-    if (params?.domain) {
-      fallback = fallback.filter(d => d.domain === params.domain);
-    }
-    if (params?.search) {
-      const q = params.search.toLowerCase();
-      fallback = fallback.filter(d => 
-        d.title.toLowerCase().includes(q) || 
-        d.description.toLowerCase().includes(q) ||
-        d.tags.some(t => t.toLowerCase().includes(q))
-      );
-    }
+    const queryParams: Record<string, any> = {};
+    if (params?.domain) queryParams.domain_type = params.domain;
+    if (params?.status) queryParams.status = params.status;
+    if (params?.search) queryParams.search = params.search;
 
-    const res = await ApiClient.get<DatasetMetadata[]>('/datasets', fallback, params);
-    return res.data;
+    const res = await ApiClient.get<any>('/datasets', undefined, queryParams);
+    // Backend returns ApiListResponse: { data: [...], meta: {...} }
+    const raw = res.data;
+    const list = Array.isArray(raw) ? raw : (raw?.data && Array.isArray(raw.data) ? raw.data : []);
+    return list.map(normalizeDataset);
   },
 
   async getDatasetById(datasetId: string): Promise<DatasetMetadata> {
-    const fallback = MOCK_DATASETS.find(d => d.id === datasetId) || MOCK_DATASETS[0];
-    const res = await ApiClient.get<DatasetMetadata>(`/datasets/${datasetId}`, fallback);
-    return res.data;
+    const res = await ApiClient.get<any>(`/datasets/${datasetId}`);
+    if (!res.data) throw new Error(`Dataset '${datasetId}' not found.`);
+    return normalizeDataset(res.data);
   },
 
   async getDatasetQuality(datasetId: string): Promise<DatasetQualityReport> {
-    const fallback = MOCK_QUALITY_REPORTS[datasetId] || {
-      datasetId,
-      score: 95,
-      status: 'good',
-      totalRows: 4500,
-      validRows: 4320,
-      flaggedRows: 180,
-      duplicateCount: 5,
-      missingValueRatio: 0.02,
-      spatialCompleteness: 98.0,
-      temporalCompleteness: 99.2,
-      issues: [
+    const res = await ApiClient.get<any>(`/datasets/${datasetId}/quality`);
+    const q = res.data;
+    if (!q) throw new Error(`Quality report for dataset '${datasetId}' not found.`);
+    return {
+      datasetId: q.dataset_id || datasetId,
+      score: parseNullableNumber(q.quality_score ?? q.score),
+      status: q.quality_status || q.status || 'pending',
+      totalRows: parseNullableNumber(q.total_rows ?? q.totalRows) ?? 0,
+      validRows: parseNullableNumber(q.valid_rows ?? q.validRows) ?? 0,
+      flaggedRows: parseNullableNumber(q.flagged_rows ?? q.flaggedRows) ?? 0,
+      duplicateCount: parseNullableNumber(q.duplicate_count ?? q.duplicateCount) ?? 0,
+      missingValueRatio: parseNullableNumber(q.missing_value_ratio ?? q.missingValueRatio) ?? 0,
+      spatialCompleteness: parseNullableNumber(q.spatialCompleteness ?? q.spatial_completeness),
+      temporalCompleteness: parseNullableNumber(q.temporalCompleteness ?? q.temporal_completeness),
+      issues: Array.isArray(q.issues) ? q.issues : (q.validation_notes ? [
         {
-          id: 'iss-def',
-          type: 'info',
-          category: 'schema',
-          message: 'Dataset compliant with CF 1.8 oceanographic standards.',
+          id: 'iss-note',
+          type: 'info' as const,
+          category: 'schema' as const,
+          message: q.validation_notes,
           affectedRowsCount: 0
         }
-      ],
-      computedAt: new Date().toISOString()
+      ] : []),
+      computedAt: q.computed_at || q.computedAt || new Date().toISOString()
     };
-
-    const res = await ApiClient.get<DatasetQualityReport>(`/datasets/${datasetId}/quality`, fallback);
-    return res.data;
   },
 
   async getDatasetProvenance(datasetId: string): Promise<DatasetProvenance> {
-    const fallback = MOCK_PROVENANCE[datasetId] || {
-      datasetId,
-      originalFileName: 'dataset_source.txt',
-      fileHashSha256: 'a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890',
-      sourceInstitution: 'Centre for Marine Living Resources & Ecology (CMLRE)',
-      vesselCruiseId: 'FORV Sagar Sampada',
-      uploadedBy: 'Dr. Ananya Nair',
-      uploadedAt: '2026-08-15T09:20:00Z',
-      ingestionPipelineVersion: 'CMLRE-Ingest-v2.4.1',
-      standardizationRulesApplied: ['CF Ocean Conventions', 'WGS84 Projection'],
-      storagePath: `supabase-storage://cmlre-datasets/${datasetId}`
+    const res = await ApiClient.get<any>(`/datasets/${datasetId}/provenance`);
+    const p = res.data;
+    if (!p) throw new Error(`Provenance for dataset '${datasetId}' not found.`);
+    const meta = p.provenance_metadata || p.provenance || {};
+    return {
+      datasetId: p.dataset_id || datasetId,
+      originalFileName: p.original_file_name || meta.original_filename || (p.storage_file_path ? p.storage_file_path.split('/').pop() : undefined),
+      fileHashSha256: p.file_hash_sha256 || meta.file_hash || '',
+      sourceInstitution: p.source_institution || meta.source || undefined,
+      vesselCruiseId: p.vessel_cruise_id || meta.vessel_cruise_id || undefined,
+      uploadedBy: p.uploaded_by || meta.uploaded_by || '',
+      uploadedAt: p.uploaded_at || p.created_at || meta.ingested_at || '',
+      ingestionPipelineVersion: p.ingestion_pipeline_version || meta.pipeline_version || undefined,
+      standardizationRulesApplied: p.standardization_rules_applied || meta.standardization_rules || [],
+      storagePath: p.storage_file_path || p.storage_path || meta.storage_path || ''
     };
-
-    const res = await ApiClient.get<DatasetProvenance>(`/datasets/${datasetId}/provenance`, fallback);
-    return res.data;
   },
 
   async getDatasetPreview(datasetId: string): Promise<DatasetPreviewData> {
-    const fallback = MOCK_PREVIEW_DATA[datasetId] || MOCK_PREVIEW_DATA['ds-cmlre-txt-01'];
-    const res = await ApiClient.get<DatasetPreviewData>(`/datasets/${datasetId}/preview`, fallback);
-    return res.data;
+    const res = await ApiClient.get<any>(`/datasets/${datasetId}/preview`);
+    const prev = res.data;
+    if (!prev) throw new Error(`Preview for dataset '${datasetId}' not found.`);
+    return {
+      datasetId: prev.dataset_id || datasetId,
+      columns: Array.isArray(prev.columns)
+        ? prev.columns.map((c: any) =>
+            typeof c === 'string' ? { name: c, type: 'string' } : { name: c.name || '', type: c.type || 'string', unit: c.unit }
+          )
+        : [],
+      rows: Array.isArray(prev.rows) ? prev.rows : [],
+      totalPreviewRows: prev.total_preview_rows !== undefined
+        ? Number(prev.total_preview_rows)
+        : (Array.isArray(prev.rows) ? prev.rows.length : 0)
+    };
   }
 };

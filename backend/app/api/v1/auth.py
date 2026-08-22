@@ -1,155 +1,90 @@
 """
-Authentication Router: Wraps Supabase Auth GoTrue endpoints.
+Authentication Router: Provides authenticated profile querying and updates.
+User authentication, registration, password hashing, and token issuance are handled directly by Supabase Auth.
 """
 
+import logging
 from typing import Optional
-import httpx
+from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials
-from backend.app.auth.supabase_auth import get_current_user, security
-from backend.app.config import settings
-from backend.app.db.database import execute_single
+from backend.app.auth.supabase_auth import get_current_user
+from backend.app.db.database import execute_single, execute_write
 from backend.app.db.queries import GET_PROFILE_BY_ID
-from backend.app.schemas.auth import LoginRequest, LoginResponse, UserProfile, UserRole
+from backend.app.schemas.auth import UserProfile, UserRole
 from backend.app.schemas.common import ApiResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
+
+
+class ProfileUpdateRequest(BaseModel):
+    full_name: Optional[str] = Field(None, description="Researcher full name")
+    institution: Optional[str] = Field(None, description="Research institute / affiliation")
+    department: Optional[str] = Field(None, description="Division / Department")
+    designation: Optional[str] = Field(None, description="Scientific role / designation")
 
 
 @router.get("/me", response_model=ApiResponse[UserProfile])
 async def get_my_profile(current_user: UserProfile = Depends(get_current_user)):
     """
-    Returns the currently authenticated user's profile and resolved role.
+    Returns the currently authenticated user's profile and resolved role from PostgreSQL.
+    Requires a valid Supabase access token in the Authorization Bearer header.
     """
     return ApiResponse(data=current_user)
 
 
-@router.post("/login", response_model=ApiResponse[LoginResponse])
-async def login(req: LoginRequest):
+@router.put("/profile", response_model=ApiResponse[UserProfile])
+async def update_my_profile(
+    req: ProfileUpdateRequest,
+    current_user: UserProfile = Depends(get_current_user)
+):
     """
-    Authenticates a user using Supabase Auth (email + password).
+    Updates the authenticated researcher's application profile in public.profiles.
     """
-    if not settings.SUPABASE_URL or not settings.SUPABASE_ANON_KEY:
-        if settings.ENVIRONMENT == "development":
-            # Development-only fallback
-            mock_id = "00000000-0000-0000-0000-000000000001"
-            db_profile = None
-            try:
-                db_profile = execute_single(GET_PROFILE_BY_ID, {"user_id": mock_id})
-            except Exception:
-                pass
-
-            resolved_role = UserRole.USER
-            if db_profile and db_profile.get("role") == "admin":
-                resolved_role = UserRole.ADMIN
-
-            return ApiResponse(
-                data=LoginResponse(
-                    access_token="dev-mock-jwt-token-authenticated",
-                    token_type="bearer",
-                    user=UserProfile(
-                        id=mock_id,
-                        email=req.email,
-                        full_name=db_profile.get("full_name") if db_profile else "Dev User",
-                        role=resolved_role
-                    )
-                )
-            )
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={"code": "AUTH_SERVICE_UNCONFIGURED", "message": "Supabase Auth service is not configured."}
-        )
-
-    auth_url = f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/token?grant_type=password"
-    headers = {
-        "apikey": settings.SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "email": req.email,
-        "password": req.password
-    }
-
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.post(auth_url, json=payload, headers=headers)
-    except httpx.RequestError as e:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail={"code": "AUTH_SERVICE_ERROR", "message": f"Failed to contact authentication service: {str(e)}"}
-        )
+        execute_write("""
+            INSERT INTO public.profiles (id, email, full_name, institution, department, designation, role)
+            VALUES (:id, :email, :full_name, :institution, :department, :designation, :role::public.user_role)
+            ON CONFLICT (id) DO UPDATE
+            SET full_name = COALESCE(:full_name, public.profiles.full_name),
+                institution = COALESCE(:institution, public.profiles.institution),
+                department = COALESCE(:department, public.profiles.department),
+                designation = COALESCE(:designation, public.profiles.designation),
+                updated_at = NOW();
+        """, {
+            "id": current_user.id,
+            "email": current_user.email,
+            "full_name": req.full_name or current_user.full_name,
+            "institution": req.institution or current_user.institution,
+            "department": req.department or current_user.department,
+            "designation": req.designation or current_user.designation,
+            "role": current_user.role.value if hasattr(current_user.role, 'value') else str(current_user.role)
+        })
 
-    if resp.status_code != 200:
-        try:
-            err_data = resp.json()
-        except (ValueError, Exception):
-            err_data = {}
-        error_msg = err_data.get("error_description") or err_data.get("msg") or "Invalid email or password."
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "INVALID_CREDENTIALS", "message": error_msg}
-        )
+        updated = execute_single(GET_PROFILE_BY_ID, {"user_id": current_user.id})
+        if not updated:
+            return ApiResponse(data=current_user)
 
-    try:
-        data = resp.json()
-    except (ValueError, Exception):
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail={"code": "INVALID_AUTH_RESPONSE", "message": "Non-JSON response received from upstream authentication service."}
-        )
+        db_role = str(updated.get("role", "user")).lower()
+        resolved_role = UserRole.ADMIN if db_role == "admin" else UserRole.USER
 
-    access_token = data.get("access_token")
-    user_data = data.get("user")
-    if not access_token or not user_data or "id" not in user_data:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail={"code": "INVALID_AUTH_RESPONSE", "message": "Incomplete response from upstream authentication service."}
-        )
-
-    user_id = str(user_data["id"])
-    
-    # Populate role from database profile
-    db_profile = None
-    try:
-        db_profile = execute_single(GET_PROFILE_BY_ID, {"user_id": user_id})
-    except Exception:
-        pass
-
-    resolved_role = UserRole.ADMIN if db_profile and db_profile.get("role") == "admin" else UserRole.USER
-
-    return ApiResponse(
-        data=LoginResponse(
-            access_token=access_token,
-            token_type=data.get("token_type", "bearer"),
-            user=UserProfile(
-                id=user_id,
-                email=user_data.get("email"),
-                full_name=db_profile.get("full_name") if db_profile else user_data.get("user_metadata", {}).get("full_name"),
+        return ApiResponse(
+            data=UserProfile(
+                id=str(updated["id"]),
+                email=updated.get("email") or current_user.email,
+                full_name=updated.get("full_name") or current_user.full_name,
                 role=resolved_role,
-                department=db_profile.get("department") if db_profile else None,
-                designation=db_profile.get("designation") if db_profile else None,
-                created_at=str(db_profile.get("created_at")) if db_profile and db_profile.get("created_at") else None,
-                updated_at=str(db_profile.get("updated_at")) if db_profile and db_profile.get("updated_at") else None
+                institution=updated.get("institution"),
+                department=updated.get("department"),
+                designation=updated.get("designation"),
+                created_at=str(updated.get("created_at")) if updated.get("created_at") else None,
+                updated_at=str(updated.get("updated_at")) if updated.get("updated_at") else None
             )
         )
-    )
+    except Exception as e:
+        logger.error("Failed to update researcher profile: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "PROFILE_UPDATE_FAILED", "message": "Failed to update researcher profile."}
+        )
 
-
-@router.post("/logout", response_model=ApiResponse[dict])
-async def logout(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)):
-    """
-    Revokes the active user session in Supabase Auth.
-    """
-    if credentials and credentials.credentials and settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
-        logout_url = f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/logout"
-        headers = {
-            "apikey": settings.SUPABASE_ANON_KEY,
-            "Authorization": f"Bearer {credentials.credentials}"
-        }
-        try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                await client.post(logout_url, headers=headers)
-        except Exception:
-            pass  # Session teardown is best-effort
-
-    return ApiResponse(data={"message": "Logged out successfully."})

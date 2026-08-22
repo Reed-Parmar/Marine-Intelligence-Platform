@@ -12,17 +12,21 @@ export const DatasetExplorerPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fetchDatasets = async () => {
     setIsLoading(true);
+    setErrorMessage(null);
     try {
       const data = await datasetService.getDatasets({
         domain: selectedDomain !== 'all' ? (selectedDomain as DatasetDomain) : undefined,
         search: search || undefined
       });
       setDatasets(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load datasets', err);
+      setErrorMessage(err.message || 'Failed to load datasets from server.');
+      setDatasets([]);
     } finally {
       setIsLoading(false);
     }
@@ -80,9 +84,15 @@ export const DatasetExplorerPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Dataset Table or Skeletons */}
+      {/* Dataset Table, Error, or Skeletons */}
       {isLoading ? (
         <CardSkeleton rows={5} />
+      ) : errorMessage ? (
+        <div className="p-6 rounded-xl bg-rose-950/30 border border-ocean-coral/40 text-center space-y-3">
+          <p className="text-ocean-coral text-sm font-semibold">Failed to load datasets</p>
+          <p className="text-slate-400 text-xs">{errorMessage}</p>
+          <Button size="sm" variant="outline" onClick={fetchDatasets}>Retry</Button>
+        </div>
       ) : datasets.length === 0 ? (
         <EmptyState
           title="No Datasets Found"

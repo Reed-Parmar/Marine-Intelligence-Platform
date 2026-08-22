@@ -5,7 +5,8 @@ import { Calculator, CheckCircle2, TrendingUp, HelpCircle } from 'lucide-react';
 export const StatisticalSummary: React.FC<{ statistics: AnalysisResultData['statistics'] }> = ({
   statistics
 }) => {
-  const getPValueInterpretation = (p: number) => {
+  const getPValueInterpretation = (p: number | null | undefined) => {
+    if (p === null || p === undefined) return { label: 'p-value: N/A', color: 'text-slate-400' };
     if (p < 0.001) return { label: 'p < 0.001 (Highly Significant)', color: 'text-emerald-400' };
     if (p < 0.05) return { label: 'p < 0.05 (Statistically Significant)', color: 'text-ocean-cyan' };
     return { label: 'p >= 0.05 (Non-Significant)', color: 'text-ocean-amber' };
@@ -30,36 +31,40 @@ export const StatisticalSummary: React.FC<{ statistics: AnalysisResultData['stat
         <div className="p-3 rounded-lg bg-marine-900/80 border border-marine-800">
           <span className="text-[10px] text-slate-400 block font-sans">Pearson Correlation (r):</span>
           <span className="text-base font-mono font-bold text-ocean-cyan">
-            {statistics.pearsonR > 0 ? `+${statistics.pearsonR}` : statistics.pearsonR}
+            {statistics.pearsonR !== null && statistics.pearsonR !== undefined
+              ? (statistics.pearsonR > 0 ? `+${statistics.pearsonR}` : statistics.pearsonR)
+              : '—'}
           </span>
         </div>
 
         <div className="p-3 rounded-lg bg-marine-900/80 border border-marine-800">
           <span className="text-[10px] text-slate-400 block font-sans">Coeff of Determination (R²):</span>
           <span className="text-base font-mono font-bold text-ocean-teal">
-            {(statistics.rSquared * 100).toFixed(1)}%
+            {statistics.rSquared !== null && statistics.rSquared !== undefined
+              ? `${(statistics.rSquared * 100).toFixed(1)}%`
+              : '—'}
           </span>
         </div>
 
         <div className="p-3 rounded-lg bg-marine-900/80 border border-marine-800">
           <span className="text-[10px] text-slate-400 block font-sans">Sample Count (N):</span>
           <span className="text-base font-mono font-bold text-white">
-            {statistics.sampleSize}
+            {statistics.sampleSize ?? '—'}
           </span>
         </div>
 
         <div className="p-3 rounded-lg bg-marine-900/80 border border-marine-800">
           <span className="text-[10px] text-slate-400 block font-sans">Regression Slope (m):</span>
           <span className="text-base font-mono font-bold text-ocean-amber">
-            {statistics.slope.toFixed(2)}
+            {statistics.slope !== null && statistics.slope !== undefined ? statistics.slope.toFixed(2) : '—'}
           </span>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 pt-1">
-        <span>Intercept (c): {statistics.intercept.toFixed(2)}</span>
-        <span>Std Error (SE): {statistics.standardError.toFixed(2)}</span>
-        <span>F-Statistic: {statistics.fStatistic.toFixed(1)}</span>
+        <span>Intercept (c): {statistics.intercept !== null && statistics.intercept !== undefined ? statistics.intercept.toFixed(2) : '—'}</span>
+        <span>Std Error (SE): {statistics.standardError !== null && statistics.standardError !== undefined ? statistics.standardError.toFixed(2) : '—'}</span>
+        <span>F-Statistic: {statistics.fStatistic !== null && statistics.fStatistic !== undefined ? statistics.fStatistic.toFixed(1) : '—'}</span>
       </div>
     </div>
   );

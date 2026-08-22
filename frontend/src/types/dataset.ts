@@ -12,10 +12,21 @@ export type DatasetStatus =
   | 'uploaded' 
   | 'processing' 
   | 'quality_checking' 
+  | 'standardized'
   | 'completed' 
   | 'failed';
 
-export type QualityStatus = 'excellent' | 'good' | 'warning' | 'critical' | 'unprocessed';
+export type QualityStatus = 
+  | 'pending'
+  | 'passed'
+  | 'flagged'
+  | 'suspect'
+  | 'failed'
+  | 'excellent' 
+  | 'good' 
+  | 'warning' 
+  | 'critical' 
+  | 'unprocessed';
 
 export type FileFormat = 'TXT' | 'CSV' | 'XLSX' | 'JSON' | 'CTD';
 
@@ -39,29 +50,29 @@ export interface ValidationIssue {
 
 export interface DatasetQualityReport {
   datasetId: string;
-  score: number; // 0 to 100
-  status: QualityStatus;
+  score: number | null;
+  status: string;
   totalRows: number;
   validRows: number;
   flaggedRows: number;
   duplicateCount: number;
   missingValueRatio: number;
-  spatialCompleteness: number; // 0-100%
-  temporalCompleteness: number; // 0-100%
+  spatialCompleteness: number | null;
+  temporalCompleteness: number | null;
   issues: ValidationIssue[];
   computedAt: string;
 }
 
 export interface DatasetProvenance {
   datasetId: string;
-  originalFileName: string;
+  originalFileName?: string;
   fileHashSha256: string;
-  sourceInstitution: string;
+  sourceInstitution?: string;
   vesselCruiseId?: string;
   dataCollector?: string;
   uploadedBy: string;
   uploadedAt: string;
-  ingestionPipelineVersion: string;
+  ingestionPipelineVersion?: string;
   standardizationRulesApplied: string[];
   storagePath: string;
   lineageNotes?: string;
@@ -73,9 +84,9 @@ export interface DatasetMetadata {
   description: string;
   domain: DatasetDomain;
   format: FileFormat;
-  status: DatasetStatus;
-  qualityStatus: QualityStatus;
-  qualityScore: number;
+  status: string;
+  qualityStatus: string;
+  qualityScore: number | null;
   rowCount: number;
   fileSizeBytes: number;
   source: string;

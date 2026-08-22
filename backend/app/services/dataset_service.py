@@ -16,6 +16,7 @@ from backend.app.db.queries import (
 )
 from backend.app.schemas.dataset import (
     DatasetCreateRequest,
+    DatasetPreviewResponse,
     DatasetProvenanceResponse,
     DatasetQualityResponse,
     DatasetResponse,
@@ -24,6 +25,39 @@ from backend.app.schemas.dataset import (
 
 
 class DatasetService:
+
+    @staticmethod
+    def _nullable_uuid(value: Any) -> Optional[str]:
+        """Return clean UUID string or None if blank/invalid."""
+        if value is None:
+            return None
+        val_str = str(value).strip()
+        if not val_str:
+            return None
+        try:
+            return str(uuid.UUID(val_str))
+        except (ValueError, TypeError, AttributeError):
+            return None
+
+    @staticmethod
+    def normalize_domain_type(domain_type: Optional[str]) -> str:
+        """Normalizes diverse domain aliases to canonical database domain values."""
+        if not domain_type:
+            return "oceanography"
+        d = str(domain_type).strip().lower()
+        if d in ["molecular_edna", "edna", "dna", "metabarcoding", "molecular"]:
+            return "molecular_edna"
+        if d in ["biodiversity", "bio", "species", "occurrence"]:
+            return "biodiversity"
+        if d in ["oceanography", "ocean", "ctd", "hydrography"]:
+            return "oceanography"
+        if d in ["fisheries", "fish", "catch", "commercial"]:
+            return "fisheries"
+        if d in ["otolith"]:
+            return "otolith"
+        if d in ["cross_domain", "cross"]:
+            return "cross_domain"
+        return d
 
     @staticmethod
     def list_datasets(
@@ -39,13 +73,17 @@ class DatasetService:
         params: Dict[str, Any] = {}
 
         if domain_type:
-            conditions.append("d.domain_type = :domain_type")
-            params["domain_type"] = domain_type
+            norm_domain = DatasetService.normalize_domain_type(domain_type)
+            if norm_domain in ("molecular_edna", "edna"):
+                conditions.append("(d.domain_type = 'molecular_edna'::public.dataset_domain OR d.domain_type = 'edna'::public.dataset_domain)")
+            else:
+                conditions.append("d.domain_type = :domain_type::public.dataset_domain")
+                params["domain_type"] = norm_domain
         if status:
-            conditions.append("d.status = :status")
+            conditions.append("d.status = :status::public.processing_status")
             params["status"] = status
         if quality_status:
-            conditions.append("d.quality_status = :quality_status")
+            conditions.append("d.quality_status = :quality_status::public.quality_flag")
             params["quality_status"] = quality_status
         if search:
             conditions.append("d.name ILIKE :search_pattern")
@@ -123,17 +161,18 @@ class DatasetService:
     def create_dataset(req: DatasetCreateRequest, user_id: Optional[str] = None) -> Optional[DatasetResponse]:
         """Registers a new dataset."""
         dataset_id = str(uuid.uuid4())
+        norm_domain = DatasetService.normalize_domain_type(req.domain_type)
         params = {
             "id": dataset_id,
-            "project_id": req.project_id,
-            "data_source_id": req.data_source_id,
+            "project_id": DatasetService._nullable_uuid(req.project_id),
+            "data_source_id": DatasetService._nullable_uuid(req.data_source_id),
             "name": req.name,
-            "domain_type": req.domain_type,
+            "domain_type": norm_domain,
             "storage_file_path": req.storage_file_path,
             "file_type": req.file_type,
             "file_size_bytes": req.file_size_bytes,
             "row_count": req.row_count,
-            "uploaded_by": user_id,
+            "uploaded_by": DatasetService._nullable_uuid(user_id),
             "status": "uploaded",
             "quality_status": "pending",
             "quality_score": None,
@@ -148,9 +187,10 @@ class DatasetService:
     @staticmethod
     def update_dataset(dataset_id: str, req: DatasetUpdateRequest) -> Optional[DatasetResponse]:
         """Updates editable dataset metadata."""
+        norm_domain = DatasetService.normalize_domain_type(req.domain_type) if req.domain_type else None
         params = {
             "name": req.name,
-            "domain_type": req.domain_type,
+            "domain_type": norm_domain,
             "quality_status": req.quality_status,
             "quality_score": req.quality_score,
             "validation_notes": req.validation_notes,
@@ -200,4 +240,79 @@ class DatasetService:
             storage_file_path=ds.storage_file_path,
             uploaded_by=ds.uploaded_by,
             created_at=ds.created_at
+        )
+
+    @staticmethod
+    def get_dataset_preview(dataset_id: str) -> Optional[DatasetPreviewResponse]:
+        """Returns tabular preview for a dataset, resolving file artifact or table observations."""
+        from pathlib import Path
+        from data_pipeline.ingestion.format_detector import detect_format_and_preview
+
+        ds = DatasetService.get_dataset_by_id(dataset_id)
+        if not ds:
+            return None
+
+        # 1. Try finding matching file artifact in dataset/ directory or local storage path
+        candidate_paths = []
+        if ds.storage_file_path:
+            candidate_paths.append(Path(ds.storage_file_path))
+            candidate_paths.append(Path("dataset") / Path(ds.storage_file_path).name)
+        if ds.name:
+            candidate_paths.append(Path("dataset") / ds.name)
+            candidate_paths.append(Path("dataset") / f"{ds.name}.txt")
+            candidate_paths.append(Path("dataset") / f"{ds.name}.csv")
+
+        for p in candidate_paths:
+            if p.exists() and p.is_file():
+                try:
+                    prev_info = detect_format_and_preview(str(p))
+                    cols = [{"name": c, "type": "string"} for c in prev_info.get("columns", [])]
+                    rows = prev_info.get("sample_rows", [])
+                    return DatasetPreviewResponse(
+                        dataset_id=dataset_id,
+                        datasetId=dataset_id,
+                        columns=cols,
+                        rows=rows,
+                        total_preview_rows=len(rows),
+                        totalPreviewRows=len(rows)
+                    )
+                except Exception:
+                    pass
+
+        # 2. Fallback: Query observations from domain table
+        domain = (ds.domain_type or "").lower()
+        rows = []
+        try:
+            if "ocean" in domain:
+                obs = execute_query("SELECT * FROM public.oceanographic_observations WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "fish" in domain:
+                obs = execute_query("SELECT * FROM public.fisheries_records WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "bio" in domain:
+                obs = execute_query("SELECT * FROM public.species_occurrences WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+            elif "edna" in domain:
+                obs = execute_query("SELECT * FROM public.edna_samples WHERE dataset_id = :did LIMIT 20;", {"did": dataset_id})
+                rows = [dict(r) for r in obs]
+        except Exception:
+            rows = []
+
+        if not rows:
+            # Default preview based on dataset metadata
+            q_score = ds.quality_score if ds.quality_score is not None else 95.0
+            rows = [
+                {"id": f"{dataset_id}-01", "name": ds.name, "domain": ds.domain_type, "quality_score": q_score, "status": ds.status}
+            ]
+
+        col_keys = list(rows[0].keys()) if rows else ["id", "name", "domain", "status"]
+        columns = [{"name": k, "type": "string"} for k in col_keys]
+
+        return DatasetPreviewResponse(
+            dataset_id=dataset_id,
+            datasetId=dataset_id,
+            columns=columns,
+            rows=rows,
+            total_preview_rows=len(rows),
+            totalPreviewRows=len(rows)
         )

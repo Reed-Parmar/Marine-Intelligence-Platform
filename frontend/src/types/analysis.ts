@@ -40,7 +40,7 @@ export interface AnalysisResultData {
     sampleSize: number;
     pearsonR: number;
     rSquared: number;
-    pValue: number;
+    pValue: number | null;
     standardError: number;
     fStatistic: number;
     slope: number;
@@ -57,7 +57,7 @@ export interface AnalysisResultData {
     inputDatasetIds: string[];
     recordsUsedCount: number;
     algorithmName: string;
-    computedTimestamp: string;
+    computedTimestamp?: string;
   };
   ecologicalInterpretation: string;
 }
