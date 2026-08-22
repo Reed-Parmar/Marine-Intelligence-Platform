@@ -11,6 +11,7 @@ import { AnomalyCard } from '../../components/ai/AnomalyCard';
 import { HabitatSuitabilityCard } from '../../components/ai/HabitatSuitabilityCard';
 import { CatchPredictionCard } from '../../components/ai/CatchPredictionCard';
 import { CatchPredictionSimulator } from '../../components/ai/CatchPredictionSimulator';
+import { DistributionShiftWorkspace } from '../../components/distributionShift/DistributionShiftWorkspace';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { CardSkeleton } from '../../components/ui/Skeleton';
@@ -193,6 +194,11 @@ export const AIInsightsPage: React.FC = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* 5. Seasonal Species Distribution Shift & Movement Propensity (Step 7 Workspace) */}
+      <div className="pt-6 border-t border-marine-800 space-y-4">
+        <DistributionShiftWorkspace />
       </div>
     </div>
   );

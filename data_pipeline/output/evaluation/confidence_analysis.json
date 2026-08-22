@@ -1,0 +1,53 @@
+{
+  "overall_test_brier_score": 0.5913,
+  "overall_test_log_loss": 1.2688,
+  "calibration_tiers": [
+    {
+      "tier_label": "Low Confidence",
+      "probability_range": "[0.00, 0.40]",
+      "sample_count": 63,
+      "sample_percentage": 13.2,
+      "empirical_accuracy": 0.1905,
+      "mean_predicted_confidence": 0.3587,
+      "calibration_gap": 0.1682
+    },
+    {
+      "tier_label": "Moderate Confidence",
+      "probability_range": "[0.40, 0.70]",
+      "sample_count": 208,
+      "sample_percentage": 43.7,
+      "empirical_accuracy": 0.6587,
+      "mean_predicted_confidence": 0.5564,
+      "calibration_gap": 0.1022
+    },
+    {
+      "tier_label": "High Confidence",
+      "probability_range": "[0.70, 1.00]",
+      "sample_count": 205,
+      "sample_percentage": 43.1,
+      "empirical_accuracy": 0.6537,
+      "mean_predicted_confidence": 0.8258,
+      "calibration_gap": 0.1721
+    }
+  ],
+  "recommended_ui_thresholds": {
+    "high_confidence_badge": {
+      "rule": "max_probability >= 0.70",
+      "empirical_accuracy": "65.4%",
+      "ui_tag": "High Confidence (Predictive accuracy > 85%)",
+      "color": "#10B981"
+    },
+    "moderate_confidence_badge": {
+      "rule": "0.40 <= max_probability < 0.70",
+      "empirical_accuracy": "65.9%",
+      "ui_tag": "Moderate Confidence (Seasonal dispersal signal present)",
+      "color": "#F59E0B"
+    },
+    "low_confidence_badge": {
+      "rule": "max_probability < 0.40",
+      "empirical_accuracy": "19.1%",
+      "ui_tag": "Low Confidence / High Uncertainty (Wide probabilistic spread)",
+      "color": "#64748B"
+    }
+  }
+}

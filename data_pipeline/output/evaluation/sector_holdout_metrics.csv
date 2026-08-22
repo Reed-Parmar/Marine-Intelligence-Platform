@@ -1,0 +1,7 @@
+held_out_sector,test_sample_size,train_sample_size,top_1_accuracy,top_3_accuracy,macro_f1,log_loss,brier_score,mean_displacement_error_km,median_displacement_error_km
+Malabar Upwelling Shelf,1184,1393,0.6546,0.8235,0.1836,1.283,0.5822,242.23,0.0
+Central Arabian Sea Offshore Basin,692,1885,0.4798,0.6546,0.1546,1.546,0.7411,410.58,536.64
+North Arabian Sea / Gujarat Shelf,228,2349,0.4167,0.7675,0.1272,1.7297,0.7924,423.62,536.64
+Lakshadweep Sea & Ridge,118,2459,0.3729,0.5847,0.1139,1.8117,0.8125,363.12,328.0
+Wadge Bank / Comorin Sector,186,2391,0.7688,0.9462,0.2669,0.8064,0.3829,105.72,0.0
+Konkan Coast / Central West Coast,169,2408,0.5562,0.7456,0.2323,1.3652,0.6094,281.6,0.0

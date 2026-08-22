@@ -1,0 +1,6 @@
+scientific_name,total_transitions,total_shifted_transitions,test_transitions_2024_2026,test_shifted_transitions,top_1_accuracy,top_3_accuracy,macro_f1,log_loss,mean_displacement_error_km,mvp_suitability_status
+Sardinella longiceps (Indian Oil Sardine),442,192,66,0,0.7285,0.9638,0.1204,0.7448,142.59,HIGH SUPPORT - PRODUCTION READY
+Rastrelliger kanagurta (Indian Mackerel),214,69,66,0,0.7757,0.9346,0.1248,0.6816,141.79,HIGH SUPPORT - PRODUCTION READY
+Stolephorus indicus (Indian Anchovy),165,66,0,0,0.7273,0.9091,0.1203,0.7424,131.56,HIGH SUPPORT - PRODUCTION READY
+Thunnus albacares (Yellowfin Tuna),66,0,66,0,0.7727,1.0,0.1245,0.7547,74.55,HIGH SUPPORT - PRODUCTION READY
+Katsuwonus pelamis (Skipjack Tuna),66,0,66,0,0.6364,1.0,0.1111,0.8945,119.27,HIGH SUPPORT - PRODUCTION READY

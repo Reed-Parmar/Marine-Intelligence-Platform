@@ -1,0 +1,510 @@
+{
+  "holdout_test_set_2024_2026": {
+    "sample_size": 476,
+    "models": {
+      "persistence_baseline": {
+        "top_1_accuracy": 0.979,
+        "top_3_accuracy": 0.979,
+        "macro_f1": 0.568,
+        "log_loss": 0.7256,
+        "brier_score": 0.042,
+        "mean_displacement_error_km": 14.8,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 1016.04
+      },
+      "model0_markov_baseline": {
+        "top_1_accuracy": 0.4853,
+        "top_3_accuracy": 0.8613,
+        "macro_f1": 0.1953,
+        "log_loss": 2.8072,
+        "brier_score": 0.6345,
+        "mean_displacement_error_km": 334.65,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model1_structural_xgboost": {
+        "top_1_accuracy": 0.4475,
+        "top_3_accuracy": 0.8382,
+        "macro_f1": 0.1238,
+        "log_loss": 1.5637,
+        "brier_score": 0.7697,
+        "mean_displacement_error_km": 334.54,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model2_environmental_xgboost": {
+        "top_1_accuracy": 0.4307,
+        "top_3_accuracy": 0.8403,
+        "macro_f1": 0.1186,
+        "log_loss": 1.5064,
+        "brier_score": 0.7539,
+        "mean_displacement_error_km": 355.52,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model3_full_xgboost": {
+        "top_1_accuracy": 0.6324,
+        "top_3_accuracy": 0.8193,
+        "macro_f1": 0.2361,
+        "log_loss": 1.3493,
+        "brier_score": 0.5675,
+        "mean_displacement_error_km": 273.35,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 1198.27,
+        "max_displacement_error_km": 1380.5
+      }
+    },
+    "per_sector_metrics_model3": {
+      "Malabar Upwelling Shelf": {
+        "support": 212,
+        "precision": 0.6263,
+        "recall": 0.8538,
+        "f1_score": 0.7226
+      },
+      "Central Arabian Sea Offshore Basin": {
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      },
+      "North Arabian Sea / Gujarat Shelf": {
+        "support": 66,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      },
+      "Lakshadweep Sea & Ridge": {
+        "support": 132,
+        "precision": 0.9524,
+        "recall": 0.9091,
+        "f1_score": 0.9302
+      },
+      "Wadge Bank / Comorin Sector": {
+        "support": 66,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      },
+      "Konkan Coast / Central West Coast": {
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      },
+      "South-Eastern Arabian Sea EEZ": {
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0
+      }
+    }
+  },
+  "training_set_pre_2024": {
+    "sample_size": 2577,
+    "models": {
+      "model0_markov_baseline": {
+        "top_1_accuracy": 0.7055,
+        "top_3_accuracy": 0.9744,
+        "macro_f1": 0.4403,
+        "log_loss": 0.6824,
+        "brier_score": 0.3951,
+        "mean_displacement_error_km": 196.51,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 719.79,
+        "max_displacement_error_km": 1400.22
+      },
+      "model1_structural_xgboost": {
+        "top_1_accuracy": 0.7241,
+        "top_3_accuracy": 0.9794,
+        "macro_f1": 0.4883,
+        "log_loss": 0.7286,
+        "brier_score": 0.3926,
+        "mean_displacement_error_km": 181.43,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 666.63,
+        "max_displacement_error_km": 1380.5
+      },
+      "model2_environmental_xgboost": {
+        "top_1_accuracy": 0.7233,
+        "top_3_accuracy": 0.981,
+        "macro_f1": 0.4867,
+        "log_loss": 0.7296,
+        "brier_score": 0.3932,
+        "mean_displacement_error_km": 181.78,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 666.63,
+        "max_displacement_error_km": 1380.5
+      },
+      "model3_full_xgboost": {
+        "top_1_accuracy": 0.7342,
+        "top_3_accuracy": 0.986,
+        "macro_f1": 0.522,
+        "log_loss": 0.6175,
+        "brier_score": 0.3544,
+        "mean_displacement_error_km": 176.21,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 631.62,
+        "max_displacement_error_km": 1578.95
+      }
+    }
+  },
+  "environmental_subgroup_analysis": {
+    "with_environmental_context": {
+      "sample_size": 32,
+      "persistence": {
+        "top_1_accuracy": 1.0,
+        "top_3_accuracy": 1.0,
+        "macro_f1": 0.1429,
+        "log_loss": 0.0,
+        "brier_score": 0.0,
+        "mean_displacement_error_km": 0.0,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 0.0
+      },
+      "markov_baseline": {
+        "top_1_accuracy": 0.9375,
+        "top_3_accuracy": 1.0,
+        "macro_f1": 0.1382,
+        "log_loss": 0.4104,
+        "brier_score": 0.2045,
+        "mean_displacement_error_km": 86.28,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 1380.5
+      },
+      "model1_structural": {
+        "top_1_accuracy": 1.0,
+        "top_3_accuracy": 1.0,
+        "macro_f1": 0.1429,
+        "log_loss": 0.055,
+        "brier_score": 0.0048,
+        "mean_displacement_error_km": 0.0,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 0.0
+      },
+      "model2_environmental": {
+        "top_1_accuracy": 1.0,
+        "top_3_accuracy": 1.0,
+        "macro_f1": 0.1429,
+        "log_loss": 0.0679,
+        "brier_score": 0.0076,
+        "mean_displacement_error_km": 0.0,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 0.0
+      },
+      "model3_full": {
+        "top_1_accuracy": 0.9375,
+        "top_3_accuracy": 1.0,
+        "macro_f1": 0.1382,
+        "log_loss": 0.4592,
+        "brier_score": 0.2254,
+        "mean_displacement_error_km": 86.28,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 1380.5
+      }
+    },
+    "without_environmental_context": {
+      "sample_size": 444,
+      "persistence": {
+        "top_1_accuracy": 0.9775,
+        "top_3_accuracy": 0.9775,
+        "macro_f1": 0.5673,
+        "log_loss": 0.7779,
+        "brier_score": 0.045,
+        "mean_displacement_error_km": 15.87,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 0.0,
+        "max_displacement_error_km": 1016.04
+      },
+      "markov_baseline": {
+        "top_1_accuracy": 0.4527,
+        "top_3_accuracy": 0.8514,
+        "macro_f1": 0.1902,
+        "log_loss": 2.98,
+        "brier_score": 0.6655,
+        "mean_displacement_error_km": 352.55,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model1_structural": {
+        "top_1_accuracy": 0.4077,
+        "top_3_accuracy": 0.8266,
+        "macro_f1": 0.1179,
+        "log_loss": 1.6724,
+        "brier_score": 0.8248,
+        "mean_displacement_error_km": 358.65,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model2_environmental": {
+        "top_1_accuracy": 0.3896,
+        "top_3_accuracy": 0.8288,
+        "macro_f1": 0.1124,
+        "log_loss": 1.6101,
+        "brier_score": 0.8077,
+        "mean_displacement_error_km": 381.14,
+        "median_displacement_error_km": 328.0,
+        "p90_displacement_error_km": 1264.32,
+        "max_displacement_error_km": 1380.5
+      },
+      "model3_full": {
+        "top_1_accuracy": 0.6104,
+        "top_3_accuracy": 0.8063,
+        "macro_f1": 0.2312,
+        "log_loss": 1.4135,
+        "brier_score": 0.5922,
+        "mean_displacement_error_km": 286.83,
+        "median_displacement_error_km": 0.0,
+        "p90_displacement_error_km": 1380.5,
+        "max_displacement_error_km": 1380.5
+      }
+    }
+  },
+  "spatial_block_diagnostic_gujarat": {
+    "top_1_accuracy": 0.4167,
+    "top_3_accuracy": 0.7675,
+    "macro_f1": 0.1272,
+    "log_loss": 1.7297,
+    "brier_score": 0.7924,
+    "mean_displacement_error_km": 423.62,
+    "median_displacement_error_km": 536.64,
+    "p90_displacement_error_km": 1016.04,
+    "max_displacement_error_km": 1400.22
+  },
+  "feature_importance_model2": [
+    {
+      "feature": "month_cos",
+      "gain": 13.581722259521484,
+      "weight": 628.0,
+      "gain_pct": 22.26
+    },
+    {
+      "feature": "current_lon",
+      "gain": 12.06838321685791,
+      "weight": 956.0,
+      "gain_pct": 19.78
+    },
+    {
+      "feature": "season_code",
+      "gain": 7.423643589019775,
+      "weight": 182.0,
+      "gain_pct": 12.17
+    },
+    {
+      "feature": "sector_code",
+      "gain": 4.760412216186523,
+      "weight": 147.0,
+      "gain_pct": 7.8
+    },
+    {
+      "feature": "mean_depth_meters",
+      "gain": 3.817993640899658,
+      "weight": 1067.0,
+      "gain_pct": 6.26
+    },
+    {
+      "feature": "month_sin",
+      "gain": 3.476372241973877,
+      "weight": 380.0,
+      "gain_pct": 5.7
+    },
+    {
+      "feature": "delta_t",
+      "gain": 3.3460772037506104,
+      "weight": 859.0,
+      "gain_pct": 5.48
+    },
+    {
+      "feature": "current_lat",
+      "gain": 2.9779648780822754,
+      "weight": 810.0,
+      "gain_pct": 4.88
+    },
+    {
+      "feature": "salinity_psu",
+      "gain": 2.419235944747925,
+      "weight": 5.0,
+      "gain_pct": 3.96
+    },
+    {
+      "feature": "historical_occurrence_rate",
+      "gain": 2.4072954654693604,
+      "weight": 987.0,
+      "gain_pct": 3.94
+    },
+    {
+      "feature": "species_code",
+      "gain": 2.231572389602661,
+      "weight": 1725.0,
+      "gain_pct": 3.66
+    },
+    {
+      "feature": "sst_celsius",
+      "gain": 2.1364474296569824,
+      "weight": 40.0,
+      "gain_pct": 3.5
+    },
+    {
+      "feature": "dissolved_oxygen_mgl",
+      "gain": 0.37500905990600586,
+      "weight": 1.0,
+      "gain_pct": 0.61
+    },
+    {
+      "feature": "chlorophyll_mg_m3",
+      "gain": 0.0,
+      "weight": 0.0,
+      "gain_pct": 0.0
+    },
+    {
+      "feature": "has_environmental_context",
+      "gain": 0.0,
+      "weight": 0.0,
+      "gain_pct": 0.0
+    }
+  ],
+  "feature_importance_model3": [
+    {
+      "feature": "markov_prior_0",
+      "gain": 17.299808502197266,
+      "weight": 671.0,
+      "gain_pct": 16.63
+    },
+    {
+      "feature": "markov_prior_1",
+      "gain": 16.499319076538086,
+      "weight": 560.0,
+      "gain_pct": 15.86
+    },
+    {
+      "feature": "markov_prior_2",
+      "gain": 10.998825073242188,
+      "weight": 407.0,
+      "gain_pct": 10.57
+    },
+    {
+      "feature": "markov_prior_4",
+      "gain": 9.706551551818848,
+      "weight": 379.0,
+      "gain_pct": 9.33
+    },
+    {
+      "feature": "markov_prior_5",
+      "gain": 9.595330238342285,
+      "weight": 367.0,
+      "gain_pct": 9.22
+    },
+    {
+      "feature": "markov_prior_3",
+      "gain": 9.528135299682617,
+      "weight": 315.0,
+      "gain_pct": 9.16
+    },
+    {
+      "feature": "markov_prior_6",
+      "gain": 8.18701457977295,
+      "weight": 270.0,
+      "gain_pct": 7.87
+    },
+    {
+      "feature": "month_cos",
+      "gain": 3.469499111175537,
+      "weight": 202.0,
+      "gain_pct": 3.33
+    },
+    {
+      "feature": "sector_code",
+      "gain": 3.2381160259246826,
+      "weight": 73.0,
+      "gain_pct": 3.11
+    },
+    {
+      "feature": "current_lon",
+      "gain": 2.4129302501678467,
+      "weight": 538.0,
+      "gain_pct": 2.32
+    },
+    {
+      "feature": "season_code",
+      "gain": 2.395289182662964,
+      "weight": 45.0,
+      "gain_pct": 2.3
+    },
+    {
+      "feature": "month_sin",
+      "gain": 1.8325588703155518,
+      "weight": 242.0,
+      "gain_pct": 1.76
+    },
+    {
+      "feature": "historical_occurrence_rate",
+      "gain": 1.7070926427841187,
+      "weight": 582.0,
+      "gain_pct": 1.64
+    },
+    {
+      "feature": "mean_depth_meters",
+      "gain": 1.6303434371948242,
+      "weight": 732.0,
+      "gain_pct": 1.57
+    },
+    {
+      "feature": "delta_t",
+      "gain": 1.4244145154953003,
+      "weight": 183.0,
+      "gain_pct": 1.37
+    },
+    {
+      "feature": "current_lat",
+      "gain": 1.0786936283111572,
+      "weight": 520.0,
+      "gain_pct": 1.04
+    },
+    {
+      "feature": "species_code",
+      "gain": 1.0516029596328735,
+      "weight": 535.0,
+      "gain_pct": 1.01
+    },
+    {
+      "feature": "salinity_psu",
+      "gain": 0.8568853735923767,
+      "weight": 7.0,
+      "gain_pct": 0.82
+    },
+    {
+      "feature": "sst_celsius",
+      "gain": 0.7696390151977539,
+      "weight": 33.0,
+      "gain_pct": 0.74
+    },
+    {
+      "feature": "chlorophyll_mg_m3",
+      "gain": 0.36536866426467896,
+      "weight": 1.0,
+      "gain_pct": 0.35
+    },
+    {
+      "feature": "dissolved_oxygen_mgl",
+      "gain": 0.0,
+      "weight": 0.0,
+      "gain_pct": 0.0
+    },
+    {
+      "feature": "has_environmental_context",
+      "gain": 0.0,
+      "weight": 0.0,
+      "gain_pct": 0.0
+    }
+  ]
+}

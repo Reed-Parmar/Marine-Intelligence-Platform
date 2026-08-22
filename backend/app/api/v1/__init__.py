@@ -8,6 +8,7 @@ from backend.app.api.v1 import (
     analysis,
     auth,
     datasets,
+    distribution_shift,
     edna,
     fisheries,
     marine,
@@ -34,3 +35,4 @@ api_v1_router.include_router(otolith.router, prefix="/otolith", tags=["Otolith"]
 api_v1_router.include_router(analysis.router, prefix="/analysis", tags=["Analysis"])
 api_v1_router.include_router(ml.router, prefix="/ml", tags=["Machine Learning"])
 api_v1_router.include_router(alerts.router, prefix="/alerts", tags=["Alerts"])
+api_v1_router.include_router(distribution_shift.router, prefix="/distribution-shift", tags=["Seasonal Distribution Shift"])
