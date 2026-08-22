@@ -1,0 +1,277 @@
+/* ==========================================================================
+   OceaNix Cinematic 3-Second Full-Screen Startup Intro Overlay
+   Total Duration: Exactly 3.0 seconds (3000ms)
+   Timeline:
+   • 0.0s – 1.0s: “Introducing” (smooth fade-in, upward drift, dissolve)
+   • 1.0s – 3.0s: “OceaNix” (hero typography, cyan/teal gradient, subtle glow)
+   • 2.65s – 3.0s: Seamless dissolve overlay reveal into CMLRE dashboard
+   ========================================================================== */
+
+/* Fullscreen Overlay Container */
+.oceanix-startup-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #050b14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: all;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background Gradients matching CMLRE Frontend */
+.oceanix-bg-ambient {
+  background: 
+    radial-gradient(circle 900px at 50% 50%, rgba(15, 26, 52, 0.85) 0%, rgba(5, 11, 20, 0.96) 65%, #050b14 100%),
+    radial-gradient(circle 500px at 15% 25%, rgba(0, 240, 255, 0.08) 0%, transparent 70%),
+    radial-gradient(circle 500px at 85% 75%, rgba(6, 214, 160, 0.06) 0%, transparent 70%);
+}
+
+/* Deep Ocean Vignette */
+.oceanix-vignette {
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(5, 11, 20, 0.65) 75%, rgba(5, 11, 20, 0.98) 100%);
+}
+
+/* Subtle Scientific Grid Matrix */
+.oceanix-subtle-grid {
+  background-size: 44px 44px;
+  background-image: 
+    linear-gradient(to right, rgba(49, 82, 158, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(49, 82, 158, 0.07) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+}
+
+/* Phase 1: "Introducing" Animation (0.0s – 1.0s) */
+.oceanix-anim-introducing {
+  animation: oceanixIntroducing 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter, letter-spacing;
+}
+
+@keyframes oceanixIntroducing {
+  0% {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+    letter-spacing: 0.28em;
+    filter: blur(4px);
+  }
+  8% {
+    opacity: 0.85;
+    transform: scale(0.985) translateY(4px);
+    filter: blur(1px);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(0.995) translateY(1px);
+    letter-spacing: 0.33em;
+    filter: blur(0px);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1.00) translateY(0px);
+    letter-spacing: 0.35em;
+    filter: blur(0px);
+  }
+  27% {
+    opacity: 0.75;
+    transform: scale(1.003) translateY(-3px);
+    filter: blur(1px);
+  }
+  31% {
+    opacity: 0.15;
+    transform: scale(1.008) translateY(-7px);
+    letter-spacing: 0.38em;
+    filter: blur(3.5px);
+  }
+  33.33% {
+    opacity: 0;
+    transform: scale(1.012) translateY(-10px);
+    letter-spacing: 0.40em;
+    filter: blur(6px);
+    visibility: hidden;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.012) translateY(-10px);
+    visibility: hidden;
+  }
+}
+
+/* Phase 2: "OceaNix" Hero Brand Animation (1.0s – 3.0s) */
+.oceanix-anim-brand {
+  animation: oceanixBrandReveal 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes oceanixBrandReveal {
+  0%, 32.5% {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: blur(10px);
+    visibility: hidden;
+  }
+  33.33% {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(8px);
+    visibility: visible;
+  }
+  42% {
+    opacity: 0.9;
+    transform: scale(0.988);
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(0.998);
+    filter: blur(0px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.00);
+    filter: blur(0px);
+  }
+  88% {
+    /* 2.64s mark: rock solid hold */
+    opacity: 1;
+    transform: scale(1.00);
+    filter: blur(0px);
+  }
+  100% {
+    /* 3.00s mark: rock solid hold */
+    opacity: 1;
+    transform: scale(1.00);
+    filter: blur(0px);
+  }
+}
+
+/* High-Contrast Oceanic Gradient Typography */
+.oceanix-text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E0F2FE 20%, #7DD3FC 45%, #00F0FF 75%, #06D6A0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Radial Glow Bloom */
+.oceanix-glow-bloom {
+  animation: oceanixGlowBloom 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes oceanixGlowBloom {
+  0%, 33.33% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  45% {
+    opacity: 0.65;
+    transform: scale(1.03);
+  }
+  60% {
+    opacity: 0.45;
+    transform: scale(1.00);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scale(1.00);
+  }
+}
+
+/* Horizontal Light Sweep Sheen (1.15s – 2.15s) */
+.oceanix-light-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.65) 48%,
+    rgba(0, 240, 255, 0.9) 52%,
+    rgba(6, 214, 160, 0.75) 55%,
+    transparent 68%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+  animation: oceanixSweep 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: background-position, opacity;
+}
+
+@keyframes oceanixSweep {
+  0%, 36% {
+    background-position: 150% 0;
+    opacity: 0;
+  }
+  38% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  70% {
+    background-position: -80% 0;
+    opacity: 0.75;
+  }
+  75% {
+    background-position: -120% 0;
+    opacity: 0;
+  }
+  100% {
+    background-position: -120% 0;
+    opacity: 0;
+  }
+}
+
+/* Subtle Horizon Reflection Line */
+.oceanix-horizon-line {
+  animation: oceanixHorizon 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes oceanixHorizon {
+  0%, 36% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  48% {
+    opacity: 0.75;
+    transform: scaleX(0.7);
+  }
+  60% {
+    opacity: 0.45;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scaleX(1);
+  }
+}
+
+/* Seamless Dissolve into Dashboard (triggered during last 350ms of 3.0s) */
+.oceanix-overlay-fade-out {
+  animation: oceanixOverlayFadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes oceanixOverlayFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1.00);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.015);
+    visibility: hidden;
+  }
+}

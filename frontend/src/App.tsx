@@ -5,6 +5,9 @@ import { ToastProvider } from './context/ToastContext';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { AppShell } from './components/layout/AppShell';
 
+// Intro Startup Animation (Temporary 3s Fullscreen Overlay)
+import { OceaNixIntroOverlay } from './components/intro/OceaNixIntroOverlay';
+
 // Pages
 import { LoginPage } from './pages/Login/LoginPage';
 import { RegisterPage } from './pages/Register/RegisterPage';
@@ -22,13 +25,17 @@ import { AlertsPage } from './pages/Alerts/AlertsPage';
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Auth Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+    <>
+      {/* 3-Second Full-Screen Cinematic Startup Overlay (0-1s Introducing → 1-3s OceaNix → Smooth Reveal) */}
+      <OceaNixIntroOverlay />
+
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Auth Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
             {/* Authenticated Application Shell */}
             <Route element={<ProtectedRoute />}>
@@ -68,6 +75,7 @@ export const App: React.FC = () => {
         </BrowserRouter>
       </ToastProvider>
     </AuthProvider>
+    </>
   );
 };
 

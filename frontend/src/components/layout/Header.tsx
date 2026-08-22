@@ -11,7 +11,7 @@ import {
 import { Badge } from '../ui/Badge';
 
 export const Header: React.FC = () => {
-  const { user, logout, switchDemoRole } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="h-16 border-b border-marine-800 bg-marine-950/80 backdrop-blur-xl px-6 flex items-center justify-between z-20">
@@ -29,31 +29,14 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* User Controls & Demo Switcher */}
+      {/* User Controls & Role Indicator */}
       <div className="flex items-center gap-4">
-        {/* Quick Demo Role Switcher for Hackathon Demo */}
+        {/* Demo Role Pill */}
         <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-lg bg-marine-900 border border-marine-800 text-xs">
           <span className="text-[11px] text-slate-400 px-2">Demo Role:</span>
-          <button
-            onClick={() => switchDemoRole('user')}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
-              user?.role === 'user'
-                ? 'bg-ocean-cyan text-marine-950 font-semibold shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
+          <span className="px-2.5 py-1 rounded text-xs font-semibold bg-ocean-cyan text-marine-950 shadow-sm">
             Scientist
-          </button>
-          <button
-            onClick={() => switchDemoRole('admin')}
-            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
-              user?.role === 'admin'
-                ? 'bg-ocean-amber text-marine-950 font-semibold shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Admin (MoES)
-          </button>
+          </span>
         </div>
 
         {/* User Profile Pill */}
@@ -68,8 +51,8 @@ export const Header: React.FC = () => {
               {user?.fullName || 'Dr. Ananya Nair'}
             </p>
             <div className="flex items-center gap-1.5 mt-1">
-              <Badge variant={user?.role === 'admin' ? 'amber' : 'cyan'} size="sm">
-                {user?.role === 'admin' ? 'MoES Admin' : 'Marine Scientist'}
+              <Badge variant="cyan" size="sm">
+                Marine Scientist
               </Badge>
             </div>
           </div>
@@ -77,7 +60,7 @@ export const Header: React.FC = () => {
           <button
             onClick={() => logout()}
             className="p-2 rounded-lg text-slate-400 hover:text-ocean-coral hover:bg-marine-900 transition-colors"
-            title="Logout from CMLRE session"
+            title="Logout from OceaNix session"
           >
             <LogOut className="w-4 h-4" />
           </button>

@@ -50,10 +50,10 @@ export const Sidebar: React.FC = () => {
           </div>
           {!isCollapsed && (
             <div className="min-w-0">
-              <h1 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-1.5 truncate">
-                CMLRE
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-ocean-cyan/20 text-ocean-cyan border border-ocean-cyan/30">
-                  v2.4
+              <h1 className="text-sm font-bold tracking-wide text-white flex items-center gap-1.5 truncate">
+                OceaNix
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-ocean-cyan/20 text-ocean-cyan border border-ocean-cyan/30 uppercase">
+                  V2.4
                 </span>
               </h1>
               <p className="text-[10px] text-slate-400 truncate">Marine Intelligence Platform</p>
