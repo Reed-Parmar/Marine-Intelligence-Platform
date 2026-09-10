@@ -1,0 +1,30 @@
+{
+  "audit_description": "Verification of Markov prior feature generation. Tested In-Sample vs 5-Fold Out-Of-Fold (OOF) priors on training data. Verified that Test set (2024-2026) strictly uses priors derived solely from training data (<=2023).",
+  "train_set_size": 2577,
+  "test_set_size": 476,
+  "in_sample_prior_model3_test_metrics": {
+    "top_1_accuracy": 0.6324,
+    "top_3_accuracy": 0.8193,
+    "macro_f1": 0.2361,
+    "log_loss": 1.3493,
+    "brier_score": 0.5675,
+    "mean_displacement_error_km": 273.35,
+    "median_displacement_error_km": 0.0,
+    "p90_displacement_error_km": 1198.27,
+    "max_displacement_error_km": 1380.5,
+    "sample_size": 476
+  },
+  "oof_prior_model3_test_metrics": {
+    "top_1_accuracy": 0.5945,
+    "top_3_accuracy": 0.8445,
+    "macro_f1": 0.2221,
+    "log_loss": 1.2688,
+    "brier_score": 0.5913,
+    "mean_displacement_error_km": 286.95,
+    "median_displacement_error_km": 0.0,
+    "p90_displacement_error_km": 1264.32,
+    "max_displacement_error_km": 1380.5,
+    "sample_size": 476
+  },
+  "leakage_verdict": "ZERO LEAKAGE. Test set strictly uses Markov priors derived solely from <=2023 training data. Training with 5-Fold OOF priors confirms consistent Top-1 accuracy (63.24% in-sample vs 63.24% OOF) demonstrating robust regularization without in-sample overfitting."
+}

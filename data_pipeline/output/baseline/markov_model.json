@@ -1,0 +1,4899 @@
+{
+  "sectors": [
+    "Malabar Upwelling Shelf",
+    "Central Arabian Sea Offshore Basin",
+    "North Arabian Sea / Gujarat Shelf",
+    "Lakshadweep Sea & Ridge",
+    "Wadge Bank / Comorin Sector",
+    "Konkan Coast / Central West Coast",
+    "South-Eastern Arabian Sea EEZ"
+  ],
+  "min_support": 3,
+  "is_fitted": true,
+  "total_training_transitions": 3053,
+  "lvl1_counts": {
+    "Penaeus monodon|||North Arabian Sea / Gujarat Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 12,
+      "Central Arabian Sea Offshore Basin": 9,
+      "South-Eastern Arabian Sea EEZ": 6
+    },
+    "Chauliodus sloani|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Chauliodus sloani|||Konkan Coast / Central West Coast|||1|||5": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Chauliodus sloani|||Central Arabian Sea Offshore Basin|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Chauliodus sloani|||South-Eastern Arabian Sea EEZ|||1|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Trichodesmium erythraeum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Malabar Upwelling Shelf": 4,
+      "Central Arabian Sea Offshore Basin": 16,
+      "Konkan Coast / Central West Coast": 6,
+      "South-Eastern Arabian Sea EEZ": 4
+    },
+    "Asterionella japonica|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Asterionella japonica|||Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Asterionella japonica|||Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Bacteriastrum hyalinum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros convolutus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros curvisetus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros decipiens|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Chaetoceros laciniosus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros lorenzianus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Chaetoceros lorenzianus|||Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros lorenzianus|||Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Climacodium frauenfeldianum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Climacodium frauenfeldianum|||Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Climacodium frauenfeldianum|||Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Coscinodiscus centralis|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Dactyliosolen fragilissimus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Eucampia zodiacus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Fragilaria oceanica|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Fragilaria oceanica|||Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Fragilaria oceanica|||Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Guinardia flaccida|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Haslea wawrikae|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Hemiaulus hauckii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Hemiaulus sinensis|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Navicula directa|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Nitzschia longissima|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Nitzschia pungens|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Planktoniella sol|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Pleurosigma normanii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Proboscia alata|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Pseudo-nitzschia pseudodelicatissima|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Pseudo-nitzschia seriata|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Rhizosolenia hebetata|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Rhizosolenia hyalina|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Skeletonema costatum|||Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Thalassionema frauenfeldii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Thalassionema nitzschioides|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Thalassiosira subtilis|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Thalassiothrix longissima|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium declinatum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium extensum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium furca|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium fusus|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium kofoidii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium macroceros|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium pentagonum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium trichoceros|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium tripos|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Dinophysis miles|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Dissodinium pseudolunula|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Gonyaulax polygramma|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Noctiluca scintillans|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Prorocentrum lima|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Protoperidinium oceanicum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Pyrophacus steinii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Octactis octonaria|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Biddulphia sinensis|||Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ditylum brightwellii|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Amphisolenia bidentata|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 19,
+      "Lakshadweep Sea & Ridge": 6,
+      "Konkan Coast / Central West Coast": 9
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1|||3": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 23,
+      "Konkan Coast / Central West Coast": 3,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1|||4": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1|||5": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 5,
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||1|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||1|||2": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 5,
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||1|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 7,
+      "Konkan Coast / Central West Coast": 3,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||2|||1": {
+      "Lakshadweep Sea & Ridge": 8,
+      "Malabar Upwelling Shelf": 62,
+      "Konkan Coast / Central West Coast": 12,
+      "Wadge Bank / Comorin Sector": 11
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 9,
+      "Malabar Upwelling Shelf": 34
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 8
+    },
+    "Sardinella longiceps|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Sardinella longiceps|||Lakshadweep Sea & Ridge|||2|||2": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||2|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 18
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||2|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 42
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||1|||2": {
+      "Wadge Bank / Comorin Sector": 7,
+      "Malabar Upwelling Shelf": 21,
+      "Lakshadweep Sea & Ridge": 7,
+      "Konkan Coast / Central West Coast": 7
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 7
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||1|||1": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||2|||1": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 21,
+      "Lakshadweep Sea & Ridge": 6,
+      "Konkan Coast / Central West Coast": 6
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Konkan Coast / Central West Coast|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 16,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||1|||2": {
+      "Malabar Upwelling Shelf": 15,
+      "Wadge Bank / Comorin Sector": 4,
+      "Lakshadweep Sea & Ridge": 4,
+      "Konkan Coast / Central West Coast": 8
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 15,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||1|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||2|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 18,
+      "Lakshadweep Sea & Ridge": 3,
+      "Konkan Coast / Central West Coast": 6
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 9
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||2|||1": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 9,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||1|||3": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||1|||4": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Auxis sp|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Auxis sp|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Auxis sp|||Lakshadweep Sea & Ridge|||2|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Auxis sp|||Lakshadweep Sea & Ridge|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Auxis sp|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||2|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Trichiurus lepturus|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trichiurus lepturus|||Konkan Coast / Central West Coast|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trichiurus lepturus|||Malabar Upwelling Shelf|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Trichiurus lepturus|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mugil cephalus|||Konkan Coast / Central West Coast|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Mugil cephalus|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mugil cephalus|||Konkan Coast / Central West Coast|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mugil cephalus|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mugil cephalus|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mugil cephalus|||Wadge Bank / Comorin Sector|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 15
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 5
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Mugil cephalus|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Alepes kleinii|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Alepes kleinii|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Alepes kleinii|||Wadge Bank / Comorin Sector|||1|||4": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 10
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 10
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 25
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 10
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 10
+    },
+    "Bregmaceros macclelandi|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 9,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Saurida tumbil|||Konkan Coast / Central West Coast|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Saurida tumbil|||Konkan Coast / Central West Coast|||1|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Saurida tumbil|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cirrhitichthys sp|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sphyraena jello|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sphyraena jello|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mene maculata|||Konkan Coast / Central West Coast|||1|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Epiplocylis reticulata|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Epiplocylis reticulata|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Ascampbelliella armilla|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Ascampbelliella armilla|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella hyalina|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 5,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella hyalina|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 25,
+      "North Arabian Sea / Gujarat Shelf": 5
+    },
+    "Codonellopsis orthoceros|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 3,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Codonellopsis orthoceros|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 12,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Dictyocysta lepida|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Dictyocysta lepida|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dictyocysta magna|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dictyocysta magna|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Eutintinnus lususundae|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Eutintinnus lususundae|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 15
+    },
+    "Rhabdonella spiralis|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Rhabdonella spiralis|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 12
+    },
+    "Tintinnopsis radix|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis radix|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis incertum|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis incertum|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Tintinnopsis directa|||Central Arabian Sea Offshore Basin|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Tintinnopsis beroidea|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella globosa|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Codonellopsis tessellata|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Tintinnopsis cylindrica|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 4,
+      "North Arabian Sea / Gujarat Shelf": 12
+    },
+    "Codonella acera|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 3,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Codonella nationalis|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Strombidium sulcatum|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Tintinnopsis mortensenii|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dadayiella ganymedes|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella dialata|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Petalotricha ampulla|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Sagitta robusta|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 8,
+      "Central Arabian Sea Offshore Basin": 32,
+      "North Arabian Sea / Gujarat Shelf": 8
+    },
+    "Sagitta robusta|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Aplysia oculifera|||Konkan Coast / Central West Coast|||3|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Charybdis (Charybdis) goaensis|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Hydatina velum|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Scylla olivacea|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Charybdis (Charybdis) variegata|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Caesio cuning|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Pseudoceros indicus|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Babylonia spirata|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Thais lacera|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Neotrygon kuhlii|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Drepane punctata|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus coioides|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus diacanthus|||Malabar Upwelling Shelf|||3|||7": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus erythrurus|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Acanthopagrus berda|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Terapon jarbua|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Plotosus lineatus|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Pisodonophis cancrivorus|||Malabar Upwelling Shelf|||3|||7": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Muraenesox cinereus|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Temnopleurus toreumaticus|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bornella stellifer|||Konkan Coast / Central West Coast|||3|||5": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Krohnitta pacifica|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 7,
+      "Central Arabian Sea Offshore Basin": 7
+    },
+    "Krohnitta pacifica|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Krohnitta subtilis|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 4,
+      "Central Arabian Sea Offshore Basin": 12,
+      "North Arabian Sea / Gujarat Shelf": 8
+    },
+    "Krohnitta subtilis|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 3,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Pterosagitta draco|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 9
+    },
+    "Pterosagitta draco|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta bedoti|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 18,
+      "North Arabian Sea / Gujarat Shelf": 9
+    },
+    "Sagitta bedoti|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta bipunctata|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 18
+    },
+    "Sagitta bipunctata|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta enflata|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 18
+    },
+    "Sagitta enflata|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta neglecta|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 7,
+      "Central Arabian Sea Offshore Basin": 14,
+      "North Arabian Sea / Gujarat Shelf": 14
+    },
+    "Sagitta neglecta|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta pacifica|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 8,
+      "Central Arabian Sea Offshore Basin": 40,
+      "North Arabian Sea / Gujarat Shelf": 16
+    },
+    "Sagitta pacifica|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 10,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta pulchra|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 18,
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Sagitta pulchra|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 6,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta regularis|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 30
+    },
+    "Sagitta regularis|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 5
+    },
+    "Sagitta ferox|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 6,
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Sagitta ferox|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta hexaptera|||Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 5,
+      "Central Arabian Sea Offshore Basin": 20,
+      "North Arabian Sea / Gujarat Shelf": 5
+    },
+    "Sagitta hexaptera|||Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||3|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||3|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||3|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||3|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Paramicrolaimus damodarani|||Malabar Upwelling Shelf|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Paramicrolaimus damodarani|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Paramicrolaimus damodarani|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||4": {
+      "Malabar Upwelling Shelf": 3,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 12
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 14
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||3|||7": {
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 5,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||3|||5": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphipholis misera|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphipholis misera|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphiura (Amphiura) ambigua|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astropecten vappa|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astropecten vappa|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Astropecten vappa|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 12,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Clypeaster rarispinus|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Clypeaster rarispinus|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Goniodiscaster forficulatus|||Malabar Upwelling Shelf|||3|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Goniodiscaster forficulatus|||Malabar Upwelling Shelf|||3|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Goniodiscaster forficulatus|||Wadge Bank / Comorin Sector|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Goniodiscaster forficulatus|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Leptopentacta imbricata|||Wadge Bank / Comorin Sector|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lovenia elongata|||Malabar Upwelling Shelf|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Luidia hardwicki|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Luidia hardwicki|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||3|||7": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Ophiopsila pantherina|||Wadge Bank / Comorin Sector|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||1|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||1|||6": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 12
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||2|||4": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||3|||2": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 8
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||3|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sculpsitechinus auritus|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sculpsitechinus auritus|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sculpsitechinus auritus|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolus buccalis|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Thyone dura|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Dolabrifera dolabrifera|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Stylocheilus striatus|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Peltodoris murrea|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Peltodoris murrea|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Halgerda tessellata|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Malabar Upwelling Shelf|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Konkan Coast / Central West Coast|||3|||5": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Konkan Coast / Central West Coast|||3|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia marindica|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidiopsis phiphiensis|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phestilla lugubris|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Bleekeria murtii|||Malabar Upwelling Shelf|||2|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Phyllidiella rosans|||Malabar Upwelling Shelf|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidiella zeylanica|||Malabar Upwelling Shelf|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Scolopsis igcarensis|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Glycera lancadivae|||Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Glycera tesselata|||Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Syllis cornuta|||Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Dendrodoris nigra|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Dendrodoris nigra|||Lakshadweep Sea & Ridge|||3|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Dendrodoris nigra|||North Arabian Sea / Gujarat Shelf|||3|||5": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes coccineus|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes lamarckii|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Petrolisthes moluccensis|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes tomentosus|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Diaphus garmani|||Central Arabian Sea Offshore Basin|||1|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Diaphus garmani|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Diaphus garmani|||North Arabian Sea / Gujarat Shelf|||3|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pleurobranchus forskalii|||Lakshadweep Sea & Ridge|||1|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pempheris mangula|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Petrolisthes militaris|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ophiomastix elegans|||Malabar Upwelling Shelf|||1|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Ophiomastix elegans|||Lakshadweep Sea & Ridge|||3|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiomastix elegans|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Ophiothrix (Acanthophiothrix) purpurea|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Himerometra robustipinna|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Himerometra robustipinna|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||3|||5": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Dichrometra palmata|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Comanthus wahlbergii|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Comaster schlegelii|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Fromia milleporella|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Aquilonastra burtoni|||Konkan Coast / Central West Coast|||3|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Alpheus sp.|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Echinothrix calamaris|||Lakshadweep Sea & Ridge|||1|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Diadema savignyi|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Breviturma dentata|||Lakshadweep Sea & Ridge|||3|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Iphione muricata|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pseudoceros bolool|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros paralaticlavus|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros paralaticlavus|||Lakshadweep Sea & Ridge|||3|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros paralaticlavus|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudobiceros hancockanus|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros duplicinctus|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Pseudobiceros stellae|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros galatheensis|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Bulaceros newcannorum|||Lakshadweep Sea & Ridge|||1|||5": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Puerulus sewelli|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Uroptychus sampadae|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis levis|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis trifida|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis wardeni|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis wardeni|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis wardeni|||Konkan Coast / Central West Coast|||3|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Paralomis indica|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Paralomis indica|||Malabar Upwelling Shelf|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Paralomis indica|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Munidopsis scobina|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Munidopsis stylirostris|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Neolithodes indicus|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Nephropsis carpenteri|||Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Nephropsis carpenteri|||Malabar Upwelling Shelf|||2|||5": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Nephropsis carpenteri|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Nephropsis sulcata|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||2|||5": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||2|||4": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||3|||5": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||3|||5": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Calappa guerini|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Arcania cornuta|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Parilia alcocki|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Parilia alcocki|||Lakshadweep Sea & Ridge|||1|||4": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Parilia alcocki|||Malabar Upwelling Shelf|||2|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Parilia alcocki|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Parilia alcocki|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Parilia alcocki|||Malabar Upwelling Shelf|||3|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Lyphira perplexa|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Tokoyo eburnea|||Konkan Coast / Central West Coast|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Tokoyo eburnea|||Malabar Upwelling Shelf|||3|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Tokoyo eburnea|||Malabar Upwelling Shelf|||3|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Kasagia sudhakari|||Wadge Bank / Comorin Sector|||3|||5": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Paromolopsis boasi|||Konkan Coast / Central West Coast|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mursia bicristimana|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mursia bicristimana|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mursia bicristimana|||Konkan Coast / Central West Coast|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mursia bicristimana|||Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Mursia bicristimana|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolodromia rajeevani|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Homolodromia rajeevani|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Homolodromia rajeevani|||Konkan Coast / Central West Coast|||3|||6": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Crocydocinus saravananei|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiomoeris tenera|||Malabar Upwelling Shelf|||3|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Calappa exanthematosa|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Doclea muricata|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Samadinia riversandersoni|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Carcinoplax indica|||Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lauridromia dehaani|||North Arabian Sea / Gujarat Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lysirude channeri|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Notosceles serratifrons|||Wadge Bank / Comorin Sector|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ethusina gracilipes|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Portunus sanguinolentus|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Monomia|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Monomia|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) hoplites|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Ophiochiton ambulator|||Malabar Upwelling Shelf|||3|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiochiton ambulator|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiochiton ambulator|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||2|||5": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||3|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||3|||6": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||3|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Ophioconis cupida|||Wadge Bank / Comorin Sector|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Psalidopus huxleyi|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Sthenoteuthis oualaniensis|||Central Arabian Sea Offshore Basin|||1|||7": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Sthenoteuthis oualaniensis|||Central Arabian Sea Offshore Basin|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Sthenoteuthis oualaniensis|||Central Arabian Sea Offshore Basin|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sthenoteuthis oualaniensis|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Sthenoteuthis oualaniensis|||Malabar Upwelling Shelf|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Sthenoteuthis oualaniensis|||Malabar Upwelling Shelf|||3|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Histioteuthis miranda|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Histioteuthis reversa|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ornithoteuthis volatilis|||Central Arabian Sea Offshore Basin|||1|||7": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Cistopus sp.|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||1|||7": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||2|||4": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Abralia (Heterabralia) andamanica|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ancistrocheirus lesueurii|||Central Arabian Sea Offshore Basin|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Onychoteuthis banksii|||Central Arabian Sea Offshore Basin|||1|||7": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Octopus sp.|||Central Arabian Sea Offshore Basin|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Solenocera hextii|||North Arabian Sea / Gujarat Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Metapenaeopsis coniger|||Wadge Bank / Comorin Sector|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Johannaster superbus|||Konkan Coast / Central West Coast|||1|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Johannaster superbus|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Johannaster superbus|||Malabar Upwelling Shelf|||3|||6": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Astropecten polyacanthus|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astropecten polyacanthus|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astropecten polyacanthus|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ceramaster cuenoti|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ceramaster cuenoti|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ceramaster cuenoti|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Brisinga insularum|||Wadge Bank / Comorin Sector|||2|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereocidaris alcocki|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Molpadia musculus|||Konkan Coast / Central West Coast|||2|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiacantha dallasii|||Malabar Upwelling Shelf|||3|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sidonaster vaneyi|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Histampica duplicata|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Amphiodia frigida|||Konkan Coast / Central West Coast|||3|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Teliocrinus springeri|||Konkan Coast / Central West Coast|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Maretia planulata|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Phyllacanthus forcipulatus|||Malabar Upwelling Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Brissopsis luzonica|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ochetostoma septemyotum|||Malabar Upwelling Shelf|||2|||5": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Erythrocles schlegelii|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Chelidoperca investigatoris|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Satyrichthys laticeps|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Halicmetus ruber|||Konkan Coast / Central West Coast|||3|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Chaunax apus|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Vinciguerria nimbaria|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ichthyococcus parini|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Argyropelecus affinis|||Central Arabian Sea Offshore Basin|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Argyropelecus affinis|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Sternoptyx obscura|||Central Arabian Sea Offshore Basin|||2|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Polyipnus limatulus|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sigmops elongatus|||Central Arabian Sea Offshore Basin|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Sigmops elongatus|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Halieutaea coccinea|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lophiomus setigerus|||Malabar Upwelling Shelf|||2|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Lophoides lugubris|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lophiodes mutilus|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astronesthes indopacificus|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Astronesthes indopacificus|||Malabar Upwelling Shelf|||3|||4": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Astronesthes indopacificus|||Malabar Upwelling Shelf|||3|||3": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Astronesthes indopacificus|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Central Arabian Sea Offshore Basin": 6
+    },
+    "Astronesthes indopacificus|||Lakshadweep Sea & Ridge|||3|||3": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Chaunax multilepis|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathysphyraenops sp.|||Malabar Upwelling Shelf|||2|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Bathophilus novicki|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Bathophilus proximus|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chauliodus pammelas|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Malabar Upwelling Shelf": 2,
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Astronesthes martensii|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Polycheles typhlops|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Malabar Upwelling Shelf|||1|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stereomastis phosphorus|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Malabar Upwelling Shelf|||2|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stereomastis phosphorus|||Konkan Coast / Central West Coast|||3|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Konkan Coast / Central West Coast|||3|||6": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stereomastis sculpta|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis sculpta|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis sculpta|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Hyalinoecia tubicola|||Konkan Coast / Central West Coast|||1|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Polyodontes maxillosus|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Polyodontes maxillosus|||North Arabian Sea / Gujarat Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Polyodontes maxillosus|||Konkan Coast / Central West Coast|||1|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pholoe glabra|||Malabar Upwelling Shelf|||3|||2": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Gaudichaudius cimex|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Onchnesoma steenstrupii steenstrupii|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Quollastria gonypetes|||Malabar Upwelling Shelf|||3|||3": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Quollastria gonypetes|||Konkan Coast / Central West Coast|||3|||3": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Squilloides leptosquilla|||Malabar Upwelling Shelf|||1|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trapezionida latior|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathynomus keablei|||Konkan Coast / Central West Coast|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathynomus keablei|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Malabar Upwelling Shelf|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||3": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||4": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||5": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||6": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3|||7": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||4": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||6": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||3": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2|||6": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||3": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||6": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||1": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||2": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||3": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||4": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||5": {
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||6": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||1": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||2": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||3": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||7": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||4": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||5": {
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2|||6": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||1": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||2": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||3": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||4": {
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||5": {
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||6": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3|||7": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||7": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||3": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||4": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3|||7": {
+      "Malabar Upwelling Shelf": 1
+    }
+  },
+  "lvl2_counts": {
+    "Penaeus monodon|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 12,
+      "Central Arabian Sea Offshore Basin": 9,
+      "South-Eastern Arabian Sea EEZ": 6
+    },
+    "Chauliodus sloani|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Chauliodus sloani|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Chauliodus sloani|||Central Arabian Sea Offshore Basin|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Chauliodus sloani|||South-Eastern Arabian Sea EEZ|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Trichodesmium erythraeum|||Central Arabian Sea Offshore Basin|||1": {
+      "Malabar Upwelling Shelf": 4,
+      "Central Arabian Sea Offshore Basin": 16,
+      "Konkan Coast / Central West Coast": 6,
+      "South-Eastern Arabian Sea EEZ": 4
+    },
+    "Asterionella japonica|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Asterionella japonica|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Bacteriastrum hyalinum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros convolutus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros curvisetus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros decipiens|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Chaetoceros laciniosus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chaetoceros lorenzianus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Chaetoceros lorenzianus|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 3
+    },
+    "Climacodium frauenfeldianum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Climacodium frauenfeldianum|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 3
+    },
+    "Coscinodiscus centralis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Dactyliosolen fragilissimus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Eucampia zodiacus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Fragilaria oceanica|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Fragilaria oceanica|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Guinardia flaccida|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Haslea wawrikae|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Hemiaulus hauckii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Hemiaulus sinensis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Navicula directa|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Nitzschia longissima|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Nitzschia pungens|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Planktoniella sol|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Pleurosigma normanii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Proboscia alata|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Pseudo-nitzschia pseudodelicatissima|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Pseudo-nitzschia seriata|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Rhizosolenia hebetata|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Rhizosolenia hyalina|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Skeletonema costatum|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Thalassionema frauenfeldii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Thalassionema nitzschioides|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Thalassiosira subtilis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Thalassiothrix longissima|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium declinatum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium extensum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium furca|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium fusus|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Ceratium kofoidii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium macroceros|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium pentagonum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium trichoceros|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ceratium tripos|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Dinophysis miles|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Dissodinium pseudolunula|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Gonyaulax polygramma|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Noctiluca scintillans|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Prorocentrum lima|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Protoperidinium oceanicum|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Pyrophacus steinii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Octactis octonaria|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Biddulphia sinensis|||Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ditylum brightwellii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Amphisolenia bidentata|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 13,
+      "Malabar Upwelling Shelf": 71,
+      "Konkan Coast / Central West Coast": 13,
+      "Lakshadweep Sea & Ridge": 8
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 17,
+      "Lakshadweep Sea & Ridge": 2,
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 17,
+      "Lakshadweep Sea & Ridge": 2,
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Sardinella longiceps|||Wadge Bank / Comorin Sector|||2": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 3,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Sardinella longiceps|||Malabar Upwelling Shelf|||2": {
+      "Lakshadweep Sea & Ridge": 8,
+      "Malabar Upwelling Shelf": 104,
+      "Konkan Coast / Central West Coast": 12,
+      "Wadge Bank / Comorin Sector": 24
+    },
+    "Sardinella longiceps|||Lakshadweep Sea & Ridge|||2": {
+      "Wadge Bank / Comorin Sector": 4,
+      "Malabar Upwelling Shelf": 16
+    },
+    "Sardinella longiceps|||Konkan Coast / Central West Coast|||2": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 24
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 10,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 70,
+      "Wadge Bank / Comorin Sector": 7,
+      "Lakshadweep Sea & Ridge": 7,
+      "Konkan Coast / Central West Coast": 7
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||1": {
+      "Malabar Upwelling Shelf": 10,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stolephorus indicus|||Malabar Upwelling Shelf|||2": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 27,
+      "Lakshadweep Sea & Ridge": 6,
+      "Konkan Coast / Central West Coast": 6
+    },
+    "Stolephorus indicus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolephorus indicus|||Konkan Coast / Central West Coast|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 49,
+      "Konkan Coast / Central West Coast": 11,
+      "Lakshadweep Sea & Ridge": 5
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 9,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 9,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Rastrelliger kanagurta|||Malabar Upwelling Shelf|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 27,
+      "Lakshadweep Sea & Ridge": 3,
+      "Konkan Coast / Central West Coast": 6
+    },
+    "Rastrelliger kanagurta|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Rastrelliger kanagurta|||Konkan Coast / Central West Coast|||2": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 9,
+      "Malabar Upwelling Shelf": 15,
+      "Lakshadweep Sea & Ridge": 6
+    },
+    "Auxis sp|||Wadge Bank / Comorin Sector|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Auxis sp|||Malabar Upwelling Shelf|||2": {
+      "Wadge Bank / Comorin Sector": 7,
+      "Malabar Upwelling Shelf": 7,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Auxis sp|||Lakshadweep Sea & Ridge|||2": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 2,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Trichiurus lepturus|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trichiurus lepturus|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trichiurus lepturus|||Malabar Upwelling Shelf|||2": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Trichiurus lepturus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 9
+    },
+    "Mugil cephalus|||Konkan Coast / Central West Coast|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 9
+    },
+    "Mugil cephalus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 4,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Mugil cephalus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 23,
+      "North Arabian Sea / Gujarat Shelf": 9
+    },
+    "Mugil cephalus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Alepes kleinii|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 12
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 24
+    },
+    "Alepes kleinii|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 45
+    },
+    "Bregmaceros macclelandi|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 9,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Saurida tumbil|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Saurida tumbil|||Malabar Upwelling Shelf|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cirrhitichthys sp|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sphyraena jello|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sphyraena jello|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mene maculata|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Epiplocylis reticulata|||Central Arabian Sea Offshore Basin|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Epiplocylis reticulata|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Ascampbelliella armilla|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Ascampbelliella armilla|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella hyalina|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 5,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella hyalina|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Central Arabian Sea Offshore Basin": 25,
+      "North Arabian Sea / Gujarat Shelf": 5
+    },
+    "Codonellopsis orthoceros|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 3,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Codonellopsis orthoceros|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Central Arabian Sea Offshore Basin": 12,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Dictyocysta lepida|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Dictyocysta lepida|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dictyocysta magna|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dictyocysta magna|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Eutintinnus lususundae|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Eutintinnus lususundae|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 15
+    },
+    "Rhabdonella spiralis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Rhabdonella spiralis|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 12
+    },
+    "Tintinnopsis radix|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis radix|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis incertum|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Tintinnopsis incertum|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Tintinnopsis directa|||Central Arabian Sea Offshore Basin|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Tintinnopsis beroidea|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella globosa|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Codonellopsis tessellata|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Tintinnopsis cylindrica|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 4,
+      "North Arabian Sea / Gujarat Shelf": 12
+    },
+    "Codonella acera|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 3,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Codonella nationalis|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Strombidium sulcatum|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Tintinnopsis mortensenii|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Dadayiella ganymedes|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Undella dialata|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Petalotricha ampulla|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Sagitta robusta|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 8,
+      "Central Arabian Sea Offshore Basin": 32,
+      "North Arabian Sea / Gujarat Shelf": 8
+    },
+    "Sagitta robusta|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Aplysia oculifera|||Konkan Coast / Central West Coast|||3": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Charybdis (Charybdis) goaensis|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Hydatina velum|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Scylla olivacea|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Charybdis (Charybdis) variegata|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Caesio cuning|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Pseudoceros indicus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Babylonia spirata|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Thais lacera|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Neotrygon kuhlii|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Drepane punctata|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus coioides|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus diacanthus|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Epinephelus erythrurus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Acanthopagrus berda|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Terapon jarbua|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Plotosus lineatus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Pisodonophis cancrivorus|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Muraenesox cinereus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Temnopleurus toreumaticus|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bornella stellifer|||Konkan Coast / Central West Coast|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Krohnitta pacifica|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 7,
+      "Central Arabian Sea Offshore Basin": 7
+    },
+    "Krohnitta pacifica|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Krohnitta subtilis|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 4,
+      "Central Arabian Sea Offshore Basin": 12,
+      "North Arabian Sea / Gujarat Shelf": 8
+    },
+    "Krohnitta subtilis|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 3,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Pterosagitta draco|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 9
+    },
+    "Pterosagitta draco|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta bedoti|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 18,
+      "North Arabian Sea / Gujarat Shelf": 9
+    },
+    "Sagitta bedoti|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta bipunctata|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 18
+    },
+    "Sagitta bipunctata|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta enflata|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 9,
+      "Central Arabian Sea Offshore Basin": 36,
+      "North Arabian Sea / Gujarat Shelf": 18
+    },
+    "Sagitta enflata|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 8,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta neglecta|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 7,
+      "Central Arabian Sea Offshore Basin": 14,
+      "North Arabian Sea / Gujarat Shelf": 14
+    },
+    "Sagitta neglecta|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta pacifica|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 8,
+      "Central Arabian Sea Offshore Basin": 40,
+      "North Arabian Sea / Gujarat Shelf": 16
+    },
+    "Sagitta pacifica|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 10,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Sagitta pulchra|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 18,
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Sagitta pulchra|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 6,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta regularis|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 30
+    },
+    "Sagitta regularis|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 5
+    },
+    "Sagitta ferox|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Central Arabian Sea Offshore Basin": 6,
+      "North Arabian Sea / Gujarat Shelf": 6
+    },
+    "Sagitta ferox|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 2,
+      "Central Arabian Sea Offshore Basin": 2,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Sagitta hexaptera|||Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 5,
+      "Central Arabian Sea Offshore Basin": 20,
+      "North Arabian Sea / Gujarat Shelf": 5
+    },
+    "Sagitta hexaptera|||Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 1,
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 3,
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Ophiodaphne scripta|||Wadge Bank / Comorin Sector|||3": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiodaphne scripta|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Paramicrolaimus damodarani|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Paramicrolaimus damodarani|||Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 10
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 38,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Amphioplus (Lymanella) depressus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Amphioplus (Lymanella) depressus|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 12,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Amphipholis misera|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphipholis misera|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Amphiura (Amphiura) ambigua|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astropecten vappa|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Astropecten vappa|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 23,
+      "Wadge Bank / Comorin Sector": 8
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||2": {
+      "Wadge Bank / Comorin Sector": 5,
+      "Malabar Upwelling Shelf": 17
+    },
+    "Clypeaster rarispinus|||Wadge Bank / Comorin Sector|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Clypeaster rarispinus|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 8
+    },
+    "Goniodiscaster forficulatus|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 3,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Goniodiscaster forficulatus|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Leptopentacta imbricata|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 9,
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Leptopentacta imbricata|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lovenia elongata|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Luidia hardwicki|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 4
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 11
+    },
+    "Luidia hardwicki|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Ophiopsila pantherina|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 4,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 24,
+      "Wadge Bank / Comorin Sector": 6
+    },
+    "Ophiuroglypha kinbergi|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Ophiuroglypha kinbergi|||Wadge Bank / Comorin Sector|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sculpsitechinus auritus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Sculpsitechinus auritus|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stellaster childreni|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Stellaster childreni|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Stellaster childreni|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stolus buccalis|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Thyone dura|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Dolabrifera dolabrifera|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Stylocheilus striatus|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Peltodoris murrea|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Peltodoris murrea|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Halgerda tessellata|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Malabar Upwelling Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidia alyta|||Konkan Coast / Central West Coast|||3": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Phyllidia marindica|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidiopsis phiphiensis|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phestilla lugubris|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Bleekeria murtii|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Phyllidiella rosans|||Malabar Upwelling Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Phyllidiella zeylanica|||Malabar Upwelling Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Scolopsis igcarensis|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Glycera lancadivae|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Glycera tesselata|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Syllis cornuta|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Dendrodoris nigra|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Dendrodoris nigra|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes coccineus|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes lamarckii|||Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Petrolisthes moluccensis|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Petrolisthes tomentosus|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Diaphus garmani|||Central Arabian Sea Offshore Basin|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Diaphus garmani|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pleurobranchus forskalii|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pempheris mangula|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Petrolisthes militaris|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Cistopus platinoidus|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Ophiomastix elegans|||Malabar Upwelling Shelf|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Ophiomastix elegans|||Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Ophiothrix (Acanthophiothrix) purpurea|||Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||1": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Himerometra robustipinna|||Wadge Bank / Comorin Sector|||2": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Himerometra robustipinna|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Dichrometra palmata|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Comanthus wahlbergii|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Comaster schlegelii|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Fromia milleporella|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Aquilonastra burtoni|||Konkan Coast / Central West Coast|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Alpheus sp.|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Echinothrix calamaris|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Diadema savignyi|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Breviturma dentata|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Iphione muricata|||Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pseudoceros bolool|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros paralaticlavus|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros paralaticlavus|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Pseudobiceros hancockanus|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros duplicinctus|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Pseudobiceros stellae|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Pseudoceros galatheensis|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Bulaceros newcannorum|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Puerulus sewelli|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Uroptychus sampadae|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis levis|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis trifida|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Munidopsis wardeni|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Munida andamanica|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 8
+    },
+    "Paralomis indica|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Paralomis indica|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Munidopsis scobina|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Munidopsis stylirostris|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Neolithodes indicus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Nephropsis carpenteri|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Nephropsis carpenteri|||Malabar Upwelling Shelf|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Nephropsis carpenteri|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Nephropsis sulcata|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||1": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 9,
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Charybdis (Archias) smithii|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Charybdis (Archias) smithii|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Calappa guerini|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Arcania cornuta|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Parilia alcocki|||Lakshadweep Sea & Ridge|||1": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Parilia alcocki|||Malabar Upwelling Shelf|||2": {
+      "Lakshadweep Sea & Ridge": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Parilia alcocki|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Parilia alcocki|||Malabar Upwelling Shelf|||3": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Lyphira perplexa|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Tokoyo eburnea|||Konkan Coast / Central West Coast|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Tokoyo eburnea|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 2,
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Kasagia sudhakari|||Wadge Bank / Comorin Sector|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Paromolopsis boasi|||Konkan Coast / Central West Coast|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Homolax megalops|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Mursia bicristimana|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Mursia bicristimana|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Homolodromia rajeevani|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Homolodromia rajeevani|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Crocydocinus saravananei|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiomoeris tenera|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Calappa exanthematosa|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Doclea muricata|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Samadinia riversandersoni|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Carcinoplax indica|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lauridromia dehaani|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lysirude channeri|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Notosceles serratifrons|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ethusina gracilipes|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Portunus sanguinolentus|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Monomia|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Monomia|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Charybdis (Archias) hoplites|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Ophiochiton ambulator|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||2": {
+      "Konkan Coast / Central West Coast": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathypectinura heros|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Bathypectinura heros|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Ophioconis cupida|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Psalidopus huxleyi|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Sthenoteuthis oualaniensis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Sthenoteuthis oualaniensis|||Central Arabian Sea Offshore Basin|||2": {
+      "North Arabian Sea / Gujarat Shelf": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sthenoteuthis oualaniensis|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Sthenoteuthis oualaniensis|||Malabar Upwelling Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Histioteuthis miranda|||Lakshadweep Sea & Ridge|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Histioteuthis reversa|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ornithoteuthis volatilis|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Cistopus sp.|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||2": {
+      "Central Arabian Sea Offshore Basin": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Abralia (Heterabralia) andamanica|||Central Arabian Sea Offshore Basin|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Abralia (Heterabralia) andamanica|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Ancistrocheirus lesueurii|||Central Arabian Sea Offshore Basin|||2": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Onychoteuthis banksii|||Central Arabian Sea Offshore Basin|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Octopus sp.|||Central Arabian Sea Offshore Basin|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Solenocera hextii|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Aristaeopsis edwardsiana|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Aristaeopsis edwardsiana|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Metapenaeopsis coniger|||Wadge Bank / Comorin Sector|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Johannaster superbus|||Konkan Coast / Central West Coast|||1": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Johannaster superbus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Johannaster superbus|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Astropecten polyacanthus|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Astropecten polyacanthus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ceramaster cuenoti|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "Ceramaster cuenoti|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Brisinga insularum|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereocidaris alcocki|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Molpadia musculus|||Konkan Coast / Central West Coast|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ophiacantha dallasii|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sidonaster vaneyi|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Histampica duplicata|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Amphiodia frigida|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Teliocrinus springeri|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Maretia planulata|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Phyllacanthus forcipulatus|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Brissopsis luzonica|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ochetostoma septemyotum|||Malabar Upwelling Shelf|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Erythrocles schlegelii|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Chelidoperca investigatoris|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Satyrichthys laticeps|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Halicmetus ruber|||Konkan Coast / Central West Coast|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Chaunax apus|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Vinciguerria nimbaria|||Lakshadweep Sea & Ridge|||2": {
+      "Lakshadweep Sea & Ridge": 2,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Ichthyococcus parini|||Lakshadweep Sea & Ridge|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Argyropelecus affinis|||Central Arabian Sea Offshore Basin|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Argyropelecus affinis|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Sternoptyx obscura|||Central Arabian Sea Offshore Basin|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Polyipnus limatulus|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Sigmops elongatus|||Central Arabian Sea Offshore Basin|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Sigmops elongatus|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Halieutaea coccinea|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lophiomus setigerus|||Malabar Upwelling Shelf|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Lophoides lugubris|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lophiodes mutilus|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Astronesthes indopacificus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 2
+    },
+    "Astronesthes indopacificus|||Malabar Upwelling Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 4,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Astronesthes indopacificus|||Lakshadweep Sea & Ridge|||3": {
+      "Central Arabian Sea Offshore Basin": 6,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Chaunax multilepis|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathysphyraenops sp.|||Malabar Upwelling Shelf|||2": {
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Bathophilus novicki|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Bathophilus proximus|||North Arabian Sea / Gujarat Shelf|||3": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Chauliodus pammelas|||Lakshadweep Sea & Ridge|||2": {
+      "Malabar Upwelling Shelf": 2,
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Astronesthes martensii|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Polycheles typhlops|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Malabar Upwelling Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Stereomastis phosphorus|||Malabar Upwelling Shelf|||2": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stereomastis phosphorus|||Konkan Coast / Central West Coast|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Stereomastis sculpta|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Stereomastis sculpta|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Hyalinoecia tubicola|||Konkan Coast / Central West Coast|||1": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Polyodontes maxillosus|||North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Polyodontes maxillosus|||Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Pholoe glabra|||Malabar Upwelling Shelf|||3": {
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Gaudichaudius cimex|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Onchnesoma steenstrupii steenstrupii|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Quollastria gonypetes|||Malabar Upwelling Shelf|||3": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Quollastria gonypetes|||Konkan Coast / Central West Coast|||3": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Squilloides leptosquilla|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Trapezionida latior|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathynomus keablei|||Konkan Coast / Central West Coast|||1": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Bathynomus keablei|||Wadge Bank / Comorin Sector|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 1,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Malabar Upwelling Shelf|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Bathynomus keablei|||Konkan Coast / Central West Coast|||3": {
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Indian Mackerel|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Indian Oil Sardine|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||2": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Yellowfin Tuna|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||1": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||2": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Skipjack Tuna|||Lakshadweep Sea & Ridge|||3": {
+      "Lakshadweep Sea & Ridge": 22
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||1": {
+      "North Arabian Sea / Gujarat Shelf": 22
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||2": {
+      "North Arabian Sea / Gujarat Shelf": 22
+    },
+    "Silver Pomfret|||North Arabian Sea / Gujarat Shelf|||3": {
+      "North Arabian Sea / Gujarat Shelf": 22
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 22
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||2": {
+      "Wadge Bank / Comorin Sector": 22
+    },
+    "Narrow-barred King Mackerel|||Wadge Bank / Comorin Sector|||3": {
+      "Wadge Bank / Comorin Sector": 22
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||2": {
+      "Malabar Upwelling Shelf": 22
+    },
+    "Japanese Threadfin Bream|||Malabar Upwelling Shelf|||3": {
+      "Malabar Upwelling Shelf": 22
+    }
+  },
+  "lvl3_counts": {
+    "North Arabian Sea / Gujarat Shelf|||3|||2": {
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 12,
+      "Central Arabian Sea Offshore Basin": 9,
+      "South-Eastern Arabian Sea EEZ": 6,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Malabar Upwelling Shelf|||1|||5": {
+      "Malabar Upwelling Shelf": 22,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Konkan Coast / Central West Coast|||1|||5": {
+      "Malabar Upwelling Shelf": 6
+    },
+    "Central Arabian Sea Offshore Basin|||1|||5": {
+      "Malabar Upwelling Shelf": 3
+    },
+    "South-Eastern Arabian Sea EEZ|||1|||5": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Central Arabian Sea Offshore Basin|||1|||1": {
+      "Malabar Upwelling Shelf": 4,
+      "Central Arabian Sea Offshore Basin": 122,
+      "Konkan Coast / Central West Coast": 7,
+      "South-Eastern Arabian Sea EEZ": 4,
+      "North Arabian Sea / Gujarat Shelf": 19
+    },
+    "Konkan Coast / Central West Coast|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 6,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "Konkan Coast / Central West Coast": 6,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Konkan Coast / Central West Coast|||3|||2": {
+      "Central Arabian Sea Offshore Basin": 7,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Malabar Upwelling Shelf|||1|||1": {
+      "Wadge Bank / Comorin Sector": 10,
+      "Malabar Upwelling Shelf": 120,
+      "Konkan Coast / Central West Coast": 2,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Malabar Upwelling Shelf|||1|||2": {
+      "Wadge Bank / Comorin Sector": 13,
+      "Malabar Upwelling Shelf": 68,
+      "Lakshadweep Sea & Ridge": 17,
+      "Konkan Coast / Central West Coast": 25
+    },
+    "Malabar Upwelling Shelf|||1|||3": {
+      "Lakshadweep Sea & Ridge": 5,
+      "Malabar Upwelling Shelf": 88,
+      "Konkan Coast / Central West Coast": 6,
+      "Wadge Bank / Comorin Sector": 12
+    },
+    "Malabar Upwelling Shelf|||1|||4": {
+      "Wadge Bank / Comorin Sector": 10,
+      "Malabar Upwelling Shelf": 44,
+      "Lakshadweep Sea & Ridge": 3
+    },
+    "Wadge Bank / Comorin Sector|||1|||1": {
+      "Wadge Bank / Comorin Sector": 5,
+      "Malabar Upwelling Shelf": 20
+    },
+    "Wadge Bank / Comorin Sector|||1|||2": {
+      "Lakshadweep Sea & Ridge": 4,
+      "Malabar Upwelling Shelf": 15,
+      "Konkan Coast / Central West Coast": 6,
+      "Wadge Bank / Comorin Sector": 6
+    },
+    "Wadge Bank / Comorin Sector|||1|||3": {
+      "Wadge Bank / Comorin Sector": 7,
+      "Malabar Upwelling Shelf": 25
+    },
+    "Wadge Bank / Comorin Sector|||1|||4": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 8
+    },
+    "Konkan Coast / Central West Coast|||1|||1": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 17
+    },
+    "Konkan Coast / Central West Coast|||1|||2": {
+      "Lakshadweep Sea & Ridge": 3,
+      "Malabar Upwelling Shelf": 8,
+      "Konkan Coast / Central West Coast": 14,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Konkan Coast / Central West Coast|||1|||3": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 17,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Konkan Coast / Central West Coast|||1|||4": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 6,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Wadge Bank / Comorin Sector|||2|||1": {
+      "Lakshadweep Sea & Ridge": 3,
+      "Malabar Upwelling Shelf": 20,
+      "Konkan Coast / Central West Coast": 4,
+      "Wadge Bank / Comorin Sector": 7
+    },
+    "Wadge Bank / Comorin Sector|||2|||2": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 16
+    },
+    "Wadge Bank / Comorin Sector|||2|||3": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 9,
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Malabar Upwelling Shelf|||2|||1": {
+      "Lakshadweep Sea & Ridge": 19,
+      "Malabar Upwelling Shelf": 162,
+      "Konkan Coast / Central West Coast": 25,
+      "Wadge Bank / Comorin Sector": 24
+    },
+    "Malabar Upwelling Shelf|||2|||2": {
+      "Wadge Bank / Comorin Sector": 17,
+      "Malabar Upwelling Shelf": 148,
+      "Konkan Coast / Central West Coast": 1,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Malabar Upwelling Shelf|||2|||3": {
+      "Wadge Bank / Comorin Sector": 13,
+      "Malabar Upwelling Shelf": 72,
+      "Lakshadweep Sea & Ridge": 6,
+      "Konkan Coast / Central West Coast": 2
+    },
+    "Lakshadweep Sea & Ridge|||2|||1": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 23,
+      "Lakshadweep Sea & Ridge": 19
+    },
+    "Lakshadweep Sea & Ridge|||2|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 5,
+      "Lakshadweep Sea & Ridge": 8
+    },
+    "Konkan Coast / Central West Coast|||2|||1": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 25
+    },
+    "Konkan Coast / Central West Coast|||2|||2": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Lakshadweep Sea & Ridge|||1|||1": {
+      "Malabar Upwelling Shelf": 6,
+      "Lakshadweep Sea & Ridge": 10
+    },
+    "Lakshadweep Sea & Ridge|||1|||2": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 3,
+      "Lakshadweep Sea & Ridge": 9,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Lakshadweep Sea & Ridge|||1|||3": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 14
+    },
+    "Lakshadweep Sea & Ridge|||2|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 9
+    },
+    "Malabar Upwelling Shelf|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 6,
+      "Malabar Upwelling Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Konkan Coast / Central West Coast": 13,
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 1,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Wadge Bank / Comorin Sector|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Malabar Upwelling Shelf|||2|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3,
+      "Malabar Upwelling Shelf": 17,
+      "Konkan Coast / Central West Coast": 3,
+      "Wadge Bank / Comorin Sector": 1
+    },
+    "Malabar Upwelling Shelf|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 1,
+      "Malabar Upwelling Shelf": 54,
+      "Wadge Bank / Comorin Sector": 11
+    },
+    "Wadge Bank / Comorin Sector|||2|||4": {
+      "Malabar Upwelling Shelf": 6,
+      "Wadge Bank / Comorin Sector": 5,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||1": {
+      "Konkan Coast / Central West Coast": 15,
+      "Central Arabian Sea Offshore Basin": 50,
+      "North Arabian Sea / Gujarat Shelf": 91
+    },
+    "Central Arabian Sea Offshore Basin|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 93,
+      "Central Arabian Sea Offshore Basin": 305,
+      "North Arabian Sea / Gujarat Shelf": 117
+    },
+    "Malabar Upwelling Shelf|||3|||2": {
+      "South-Eastern Arabian Sea EEZ": 21,
+      "Central Arabian Sea Offshore Basin": 67,
+      "North Arabian Sea / Gujarat Shelf": 26,
+      "Malabar Upwelling Shelf": 46,
+      "Wadge Bank / Comorin Sector": 8,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "Konkan Coast / Central West Coast|||3|||4": {
+      "Konkan Coast / Central West Coast": 10,
+      "Lakshadweep Sea & Ridge": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||1": {
+      "Lakshadweep Sea & Ridge": 1,
+      "Central Arabian Sea Offshore Basin": 7,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Malabar Upwelling Shelf|||3|||7": {
+      "Konkan Coast / Central West Coast": 2,
+      "Wadge Bank / Comorin Sector": 7,
+      "Malabar Upwelling Shelf": 4,
+      "Lakshadweep Sea & Ridge": 1
+    },
+    "Konkan Coast / Central West Coast|||3|||5": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Wadge Bank / Comorin Sector|||1|||6": {
+      "Malabar Upwelling Shelf": 7,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Wadge Bank / Comorin Sector|||1|||7": {
+      "Malabar Upwelling Shelf": 3,
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Wadge Bank / Comorin Sector|||3|||3": {
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Wadge Bank / Comorin Sector|||3|||6": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Malabar Upwelling Shelf|||3|||3": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Konkan Coast / Central West Coast": 2,
+      "North Arabian Sea / Gujarat Shelf": 3,
+      "Malabar Upwelling Shelf": 12
+    },
+    "Malabar Upwelling Shelf|||3|||6": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 9,
+      "Konkan Coast / Central West Coast": 3
+    },
+    "Lakshadweep Sea & Ridge|||3|||4": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 14,
+      "Central Arabian Sea Offshore Basin": 6
+    },
+    "Lakshadweep Sea & Ridge|||3|||6": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 15,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Wadge Bank / Comorin Sector|||1|||5": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Malabar Upwelling Shelf|||2|||6": {
+      "Malabar Upwelling Shelf": 10
+    },
+    "Malabar Upwelling Shelf|||3|||4": {
+      "Wadge Bank / Comorin Sector": 9,
+      "Malabar Upwelling Shelf": 26,
+      "Lakshadweep Sea & Ridge": 3,
+      "Konkan Coast / Central West Coast": 2,
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Malabar Upwelling Shelf|||3|||5": {
+      "Wadge Bank / Comorin Sector": 2,
+      "Malabar Upwelling Shelf": 19
+    },
+    "Malabar Upwelling Shelf|||1|||6": {
+      "Wadge Bank / Comorin Sector": 3,
+      "Malabar Upwelling Shelf": 31
+    },
+    "Malabar Upwelling Shelf|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 6
+    },
+    "Wadge Bank / Comorin Sector|||3|||5": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Wadge Bank / Comorin Sector|||3|||1": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "Wadge Bank / Comorin Sector|||3|||2": {
+      "Malabar Upwelling Shelf": 3,
+      "Wadge Bank / Comorin Sector": 5
+    },
+    "Lakshadweep Sea & Ridge|||3|||1": {
+      "Lakshadweep Sea & Ridge": 15,
+      "North Arabian Sea / Gujarat Shelf": 1,
+      "Malabar Upwelling Shelf": 2
+    },
+    "Lakshadweep Sea & Ridge|||3|||2": {
+      "Lakshadweep Sea & Ridge": 11
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||5": {
+      "Lakshadweep Sea & Ridge": 1,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Central Arabian Sea Offshore Basin|||1|||2": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Malabar Upwelling Shelf|||3|||1": {
+      "Malabar Upwelling Shelf": 15,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Lakshadweep Sea & Ridge|||3|||3": {
+      "Malabar Upwelling Shelf": 1,
+      "Lakshadweep Sea & Ridge": 10,
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "Lakshadweep Sea & Ridge|||3|||5": {
+      "Lakshadweep Sea & Ridge": 7
+    },
+    "Lakshadweep Sea & Ridge|||1|||5": {
+      "Lakshadweep Sea & Ridge": 7
+    },
+    "Konkan Coast / Central West Coast|||3|||3": {
+      "Konkan Coast / Central West Coast": 2,
+      "Malabar Upwelling Shelf": 1,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Konkan Coast / Central West Coast|||1|||6": {
+      "Malabar Upwelling Shelf": 5
+    },
+    "Wadge Bank / Comorin Sector|||3|||4": {
+      "Malabar Upwelling Shelf": 2,
+      "Wadge Bank / Comorin Sector": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||3": {
+      "Konkan Coast / Central West Coast": 3,
+      "Malabar Upwelling Shelf": 2,
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "Lakshadweep Sea & Ridge|||1|||4": {
+      "Lakshadweep Sea & Ridge": 9
+    },
+    "Konkan Coast / Central West Coast|||3|||6": {
+      "Konkan Coast / Central West Coast": 2
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||6": {
+      "Malabar Upwelling Shelf": 3,
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "Central Arabian Sea Offshore Basin|||1|||7": {
+      "Central Arabian Sea Offshore Basin": 4
+    },
+    "Central Arabian Sea Offshore Basin|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 3,
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Central Arabian Sea Offshore Basin|||2|||3": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Central Arabian Sea Offshore Basin|||3|||1": {
+      "Central Arabian Sea Offshore Basin": 1
+    },
+    "Central Arabian Sea Offshore Basin|||1|||6": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Wadge Bank / Comorin Sector|||2|||5": {
+      "Malabar Upwelling Shelf": 1,
+      "Wadge Bank / Comorin Sector": 3
+    },
+    "Konkan Coast / Central West Coast|||2|||6": {
+      "Malabar Upwelling Shelf": 1
+    },
+    "Central Arabian Sea Offshore Basin|||2|||1": {
+      "Malabar Upwelling Shelf": 2,
+      "Lakshadweep Sea & Ridge": 6
+    },
+    "Konkan Coast / Central West Coast|||1|||7": {
+      "Wadge Bank / Comorin Sector": 1,
+      "Malabar Upwelling Shelf": 1
+    },
+    "Lakshadweep Sea & Ridge|||1|||6": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Lakshadweep Sea & Ridge|||1|||7": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Lakshadweep Sea & Ridge|||2|||7": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "Lakshadweep Sea & Ridge|||2|||4": {
+      "Lakshadweep Sea & Ridge": 8
+    },
+    "Lakshadweep Sea & Ridge|||2|||5": {
+      "Lakshadweep Sea & Ridge": 6
+    },
+    "Lakshadweep Sea & Ridge|||2|||6": {
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Lakshadweep Sea & Ridge|||3|||7": {
+      "Lakshadweep Sea & Ridge": 2
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||4": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "North Arabian Sea / Gujarat Shelf|||1|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||1": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||2": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||3": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||4": {
+      "North Arabian Sea / Gujarat Shelf": 4
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||5": {
+      "North Arabian Sea / Gujarat Shelf": 3
+    },
+    "North Arabian Sea / Gujarat Shelf|||2|||6": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||6": {
+      "North Arabian Sea / Gujarat Shelf": 2
+    },
+    "North Arabian Sea / Gujarat Shelf|||3|||7": {
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Wadge Bank / Comorin Sector|||2|||6": {
+      "Wadge Bank / Comorin Sector": 2
+    },
+    "Wadge Bank / Comorin Sector|||3|||7": {
+      "Wadge Bank / Comorin Sector": 1
+    }
+  },
+  "lvl4_counts": {
+    "North Arabian Sea / Gujarat Shelf|||3": {
+      "Malabar Upwelling Shelf": 17,
+      "Konkan Coast / Central West Coast": 25,
+      "Central Arabian Sea Offshore Basin": 16,
+      "South-Eastern Arabian Sea EEZ": 6,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 3,
+      "North Arabian Sea / Gujarat Shelf": 22
+    },
+    "Malabar Upwelling Shelf|||1": {
+      "Malabar Upwelling Shelf": 379,
+      "Wadge Bank / Comorin Sector": 50,
+      "Konkan Coast / Central West Coast": 33,
+      "Lakshadweep Sea & Ridge": 28
+    },
+    "Konkan Coast / Central West Coast|||1": {
+      "Malabar Upwelling Shelf": 60,
+      "Wadge Bank / Comorin Sector": 9,
+      "Lakshadweep Sea & Ridge": 3,
+      "Konkan Coast / Central West Coast": 16
+    },
+    "Central Arabian Sea Offshore Basin|||1": {
+      "Malabar Upwelling Shelf": 10,
+      "Central Arabian Sea Offshore Basin": 126,
+      "Konkan Coast / Central West Coast": 7,
+      "South-Eastern Arabian Sea EEZ": 4,
+      "North Arabian Sea / Gujarat Shelf": 19
+    },
+    "South-Eastern Arabian Sea EEZ|||1": {
+      "Malabar Upwelling Shelf": 2
+    },
+    "Konkan Coast / Central West Coast|||3": {
+      "Central Arabian Sea Offshore Basin": 13,
+      "North Arabian Sea / Gujarat Shelf": 7,
+      "Konkan Coast / Central West Coast": 20,
+      "Lakshadweep Sea & Ridge": 4,
+      "Malabar Upwelling Shelf": 4
+    },
+    "Wadge Bank / Comorin Sector|||1": {
+      "Wadge Bank / Comorin Sector": 32,
+      "Malabar Upwelling Shelf": 80,
+      "Lakshadweep Sea & Ridge": 4,
+      "Konkan Coast / Central West Coast": 6
+    },
+    "Wadge Bank / Comorin Sector|||2": {
+      "Lakshadweep Sea & Ridge": 6,
+      "Malabar Upwelling Shelf": 52,
+      "Konkan Coast / Central West Coast": 4,
+      "Wadge Bank / Comorin Sector": 30,
+      "North Arabian Sea / Gujarat Shelf": 1
+    },
+    "Malabar Upwelling Shelf|||2": {
+      "Lakshadweep Sea & Ridge": 26,
+      "Malabar Upwelling Shelf": 467,
+      "Konkan Coast / Central West Coast": 31,
+      "Wadge Bank / Comorin Sector": 66,
+      "North Arabian Sea / Gujarat Shelf": 10
+    },
+    "Lakshadweep Sea & Ridge|||2": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 29,
+      "Lakshadweep Sea & Ridge": 56
+    },
+    "Konkan Coast / Central West Coast|||2": {
+      "Wadge Bank / Comorin Sector": 6,
+      "Malabar Upwelling Shelf": 32
+    },
+    "Lakshadweep Sea & Ridge|||1": {
+      "Malabar Upwelling Shelf": 11,
+      "Wadge Bank / Comorin Sector": 2,
+      "Lakshadweep Sea & Ridge": 55,
+      "Konkan Coast / Central West Coast": 1
+    },
+    "North Arabian Sea / Gujarat Shelf|||1": {
+      "Konkan Coast / Central West Coast": 18,
+      "Central Arabian Sea Offshore Basin": 50,
+      "North Arabian Sea / Gujarat Shelf": 109,
+      "Malabar Upwelling Shelf": 5
+    },
+    "Central Arabian Sea Offshore Basin|||3": {
+      "South-Eastern Arabian Sea EEZ": 93,
+      "Central Arabian Sea Offshore Basin": 306,
+      "North Arabian Sea / Gujarat Shelf": 117
+    },
+    "Malabar Upwelling Shelf|||3": {
+      "South-Eastern Arabian Sea EEZ": 21,
+      "Central Arabian Sea Offshore Basin": 71,
+      "North Arabian Sea / Gujarat Shelf": 30,
+      "Konkan Coast / Central West Coast": 10,
+      "Wadge Bank / Comorin Sector": 29,
+      "Malabar Upwelling Shelf": 131,
+      "Lakshadweep Sea & Ridge": 4
+    },
+    "Wadge Bank / Comorin Sector|||3": {
+      "Wadge Bank / Comorin Sector": 27,
+      "Malabar Upwelling Shelf": 10
+    },
+    "Lakshadweep Sea & Ridge|||3": {
+      "Malabar Upwelling Shelf": 5,
+      "Wadge Bank / Comorin Sector": 1,
+      "Lakshadweep Sea & Ridge": 74,
+      "North Arabian Sea / Gujarat Shelf": 4,
+      "Central Arabian Sea Offshore Basin": 6
+    },
+    "Central Arabian Sea Offshore Basin|||2": {
+      "North Arabian Sea / Gujarat Shelf": 3,
+      "Malabar Upwelling Shelf": 3,
+      "Central Arabian Sea Offshore Basin": 1,
+      "Lakshadweep Sea & Ridge": 6
+    },
+    "North Arabian Sea / Gujarat Shelf|||2": {
+      "North Arabian Sea / Gujarat Shelf": 22
+    }
+  },
+  "lvl5_counts": {
+    "Malabar Upwelling Shelf": 1297,
+    "Konkan Coast / Central West Coast": 171,
+    "Central Arabian Sea Offshore Basin": 589,
+    "South-Eastern Arabian Sea EEZ": 124,
+    "Wadge Bank / Comorin Sector": 259,
+    "Lakshadweep Sea & Ridge": 269,
+    "North Arabian Sea / Gujarat Shelf": 344
+  },
+  "species_vocabulary": [
+    "Abralia (Heterabralia) andamanica",
+    "Acanthopagrus berda",
+    "Alepes kleinii",
+    "Alpheus sp.",
+    "Amphiodia frigida",
+    "Amphioplus (Lymanella) depressus",
+    "Amphipholis misera",
+    "Amphisolenia bidentata",
+    "Amphiura (Amphiura) ambigua",
+    "Ancistrocheirus lesueurii",
+    "Aplysia oculifera",
+    "Aquilonastra burtoni",
+    "Arcania cornuta",
+    "Argyropelecus affinis",
+    "Aristaeopsis edwardsiana",
+    "Ascampbelliella armilla",
+    "Asterionella japonica",
+    "Astronesthes indopacificus",
+    "Astronesthes martensii",
+    "Astropecten polyacanthus",
+    "Astropecten vappa",
+    "Auxis sp",
+    "Babylonia spirata",
+    "Bacteriastrum hyalinum",
+    "Bathophilus novicki",
+    "Bathophilus proximus",
+    "Bathynomus keablei",
+    "Bathypectinura heros",
+    "Bathysphyraenops sp.",
+    "Biddulphia sinensis",
+    "Bleekeria murtii",
+    "Bornella stellifer",
+    "Bregmaceros macclelandi",
+    "Breviturma dentata",
+    "Brisinga insularum",
+    "Brissopsis luzonica",
+    "Bulaceros newcannorum",
+    "Caesio cuning",
+    "Calappa exanthematosa",
+    "Calappa guerini",
+    "Carcinoplax indica",
+    "Ceramaster cuenoti",
+    "Ceratium declinatum",
+    "Ceratium extensum",
+    "Ceratium furca",
+    "Ceratium fusus",
+    "Ceratium kofoidii",
+    "Ceratium macroceros",
+    "Ceratium pentagonum",
+    "Ceratium trichoceros",
+    "Ceratium tripos",
+    "Chaetoceros convolutus",
+    "Chaetoceros curvisetus",
+    "Chaetoceros decipiens",
+    "Chaetoceros laciniosus",
+    "Chaetoceros lorenzianus",
+    "Charybdis (Archias) hoplites",
+    "Charybdis (Archias) smithii",
+    "Charybdis (Charybdis) goaensis",
+    "Charybdis (Charybdis) variegata",
+    "Chauliodus pammelas",
+    "Chauliodus sloani",
+    "Chaunax apus",
+    "Chaunax multilepis",
+    "Chelidoperca investigatoris",
+    "Cirrhitichthys sp",
+    "Cistopus platinoidus",
+    "Cistopus sp.",
+    "Climacodium frauenfeldianum",
+    "Clypeaster rarispinus",
+    "Codonella acera",
+    "Codonella nationalis",
+    "Codonellopsis orthoceros",
+    "Codonellopsis tessellata",
+    "Comanthus wahlbergii",
+    "Comaster schlegelii",
+    "Coscinodiscus centralis",
+    "Crocydocinus saravananei",
+    "Dactyliosolen fragilissimus",
+    "Dadayiella ganymedes",
+    "Dendrodoris nigra",
+    "Diadema savignyi",
+    "Diaphus garmani",
+    "Dichrometra palmata",
+    "Dictyocysta lepida",
+    "Dictyocysta magna",
+    "Dinophysis miles",
+    "Dissodinium pseudolunula",
+    "Ditylum brightwellii",
+    "Doclea muricata",
+    "Dolabrifera dolabrifera",
+    "Drepane punctata",
+    "Echinothrix calamaris",
+    "Epinephelus coioides",
+    "Epinephelus diacanthus",
+    "Epinephelus erythrurus",
+    "Epiplocylis reticulata",
+    "Erythrocles schlegelii",
+    "Ethusina gracilipes",
+    "Eucampia zodiacus",
+    "Eutintinnus lususundae",
+    "Fragilaria oceanica",
+    "Fromia milleporella",
+    "Gaudichaudius cimex",
+    "Glycera lancadivae",
+    "Glycera tesselata",
+    "Goniodiscaster forficulatus",
+    "Gonyaulax polygramma",
+    "Guinardia flaccida",
+    "Halgerda tessellata",
+    "Halicmetus ruber",
+    "Halieutaea coccinea",
+    "Haslea wawrikae",
+    "Hemiaulus hauckii",
+    "Hemiaulus sinensis",
+    "Himerometra robustipinna",
+    "Histampica duplicata",
+    "Histioteuthis miranda",
+    "Histioteuthis reversa",
+    "Homolax megalops",
+    "Homolodromia rajeevani",
+    "Hyalinoecia tubicola",
+    "Hydatina velum",
+    "Ichthyococcus parini",
+    "Indian Mackerel",
+    "Indian Oil Sardine",
+    "Iphione muricata",
+    "Japanese Threadfin Bream",
+    "Johannaster superbus",
+    "Kasagia sudhakari",
+    "Krohnitta pacifica",
+    "Krohnitta subtilis",
+    "Lauridromia dehaani",
+    "Leptopentacta imbricata",
+    "Lophiodes mutilus",
+    "Lophiomus setigerus",
+    "Lophoides lugubris",
+    "Lovenia elongata",
+    "Luidia hardwicki",
+    "Lyphira perplexa",
+    "Lysirude channeri",
+    "Maretia planulata",
+    "Mene maculata",
+    "Metapenaeopsis coniger",
+    "Molpadia musculus",
+    "Monomia",
+    "Mugil cephalus",
+    "Munida andamanica",
+    "Munidopsis levis",
+    "Munidopsis scobina",
+    "Munidopsis stylirostris",
+    "Munidopsis trifida",
+    "Munidopsis wardeni",
+    "Muraenesox cinereus",
+    "Mursia bicristimana",
+    "Narrow-barred King Mackerel",
+    "Navicula directa",
+    "Neolithodes indicus",
+    "Neotrygon kuhlii",
+    "Nephropsis carpenteri",
+    "Nephropsis sulcata",
+    "Nitzschia longissima",
+    "Nitzschia pungens",
+    "Noctiluca scintillans",
+    "Notosceles serratifrons",
+    "Ochetostoma septemyotum",
+    "Octactis octonaria",
+    "Octopus sp.",
+    "Onchnesoma steenstrupii steenstrupii",
+    "Onychoteuthis banksii",
+    "Ophiacantha dallasii",
+    "Ophiochiton ambulator",
+    "Ophioconis cupida",
+    "Ophiodaphne scripta",
+    "Ophiomastix elegans",
+    "Ophiomoeris tenera",
+    "Ophiopsila pantherina",
+    "Ophiothrix (Acanthophiothrix) purpurea",
+    "Ophiuroglypha kinbergi",
+    "Ornithoteuthis volatilis",
+    "Paralomis indica",
+    "Paramicrolaimus damodarani",
+    "Parilia alcocki",
+    "Paromolopsis boasi",
+    "Peltodoris murrea",
+    "Pempheris mangula",
+    "Penaeus monodon",
+    "Petalotricha ampulla",
+    "Petrolisthes coccineus",
+    "Petrolisthes lamarckii",
+    "Petrolisthes militaris",
+    "Petrolisthes moluccensis",
+    "Petrolisthes tomentosus",
+    "Phestilla lugubris",
+    "Pholoe glabra",
+    "Phyllacanthus forcipulatus",
+    "Phyllidia alyta",
+    "Phyllidia marindica",
+    "Phyllidiella rosans",
+    "Phyllidiella zeylanica",
+    "Phyllidiopsis phiphiensis",
+    "Pisodonophis cancrivorus",
+    "Planktoniella sol",
+    "Pleurobranchus forskalii",
+    "Pleurosigma normanii",
+    "Plotosus lineatus",
+    "Polycheles typhlops",
+    "Polyipnus limatulus",
+    "Polyodontes maxillosus",
+    "Portunus sanguinolentus",
+    "Proboscia alata",
+    "Prorocentrum lima",
+    "Protoperidinium oceanicum",
+    "Psalidopus huxleyi",
+    "Pseudo-nitzschia pseudodelicatissima",
+    "Pseudo-nitzschia seriata",
+    "Pseudobiceros hancockanus",
+    "Pseudobiceros stellae",
+    "Pseudoceros bolool",
+    "Pseudoceros duplicinctus",
+    "Pseudoceros galatheensis",
+    "Pseudoceros indicus",
+    "Pseudoceros paralaticlavus",
+    "Pterosagitta draco",
+    "Puerulus sewelli",
+    "Pyrophacus steinii",
+    "Quollastria gonypetes",
+    "Rastrelliger kanagurta",
+    "Rhabdonella spiralis",
+    "Rhizosolenia hebetata",
+    "Rhizosolenia hyalina",
+    "Sagitta bedoti",
+    "Sagitta bipunctata",
+    "Sagitta enflata",
+    "Sagitta ferox",
+    "Sagitta hexaptera",
+    "Sagitta neglecta",
+    "Sagitta pacifica",
+    "Sagitta pulchra",
+    "Sagitta regularis",
+    "Sagitta robusta",
+    "Samadinia riversandersoni",
+    "Sardinella longiceps",
+    "Satyrichthys laticeps",
+    "Saurida tumbil",
+    "Scolopsis igcarensis",
+    "Sculpsitechinus auritus",
+    "Scylla olivacea",
+    "Sidonaster vaneyi",
+    "Sigmops elongatus",
+    "Silver Pomfret",
+    "Skeletonema costatum",
+    "Skipjack Tuna",
+    "Solenocera hextii",
+    "Sphyraena jello",
+    "Squilloides leptosquilla",
+    "Stellaster childreni",
+    "Stereocidaris alcocki",
+    "Stereomastis phosphorus",
+    "Stereomastis sculpta",
+    "Sternoptyx obscura",
+    "Sthenoteuthis oualaniensis",
+    "Stolephorus indicus",
+    "Stolus buccalis",
+    "Strombidium sulcatum",
+    "Stylocheilus striatus",
+    "Syllis cornuta",
+    "Teliocrinus springeri",
+    "Temnopleurus toreumaticus",
+    "Terapon jarbua",
+    "Thais lacera",
+    "Thalassionema frauenfeldii",
+    "Thalassionema nitzschioides",
+    "Thalassiosira subtilis",
+    "Thalassiothrix longissima",
+    "Thyone dura",
+    "Tintinnopsis beroidea",
+    "Tintinnopsis cylindrica",
+    "Tintinnopsis directa",
+    "Tintinnopsis incertum",
+    "Tintinnopsis mortensenii",
+    "Tintinnopsis radix",
+    "Tokoyo eburnea",
+    "Trapezionida latior",
+    "Trichiurus lepturus",
+    "Trichodesmium erythraeum",
+    "Undella dialata",
+    "Undella globosa",
+    "Undella hyalina",
+    "Uroptychus sampadae",
+    "Vinciguerria nimbaria",
+    "Yellowfin Tuna"
+  ]
+}

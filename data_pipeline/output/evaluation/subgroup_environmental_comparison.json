@@ -1,0 +1,118 @@
+{
+  "with_environmental_context": {
+    "sample_size": 32,
+    "persistence": {
+      "top_1_accuracy": 1.0,
+      "top_3_accuracy": 1.0,
+      "macro_f1": 0.1429,
+      "log_loss": 0.0,
+      "brier_score": 0.0,
+      "mean_displacement_error_km": 0.0,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 0.0
+    },
+    "markov_baseline": {
+      "top_1_accuracy": 0.9375,
+      "top_3_accuracy": 1.0,
+      "macro_f1": 0.1382,
+      "log_loss": 0.4104,
+      "brier_score": 0.2045,
+      "mean_displacement_error_km": 86.28,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 1380.5
+    },
+    "model1_structural": {
+      "top_1_accuracy": 1.0,
+      "top_3_accuracy": 1.0,
+      "macro_f1": 0.1429,
+      "log_loss": 0.055,
+      "brier_score": 0.0048,
+      "mean_displacement_error_km": 0.0,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 0.0
+    },
+    "model2_environmental": {
+      "top_1_accuracy": 1.0,
+      "top_3_accuracy": 1.0,
+      "macro_f1": 0.1429,
+      "log_loss": 0.0679,
+      "brier_score": 0.0076,
+      "mean_displacement_error_km": 0.0,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 0.0
+    },
+    "model3_full": {
+      "top_1_accuracy": 0.9375,
+      "top_3_accuracy": 1.0,
+      "macro_f1": 0.1382,
+      "log_loss": 0.4592,
+      "brier_score": 0.2254,
+      "mean_displacement_error_km": 86.28,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 1380.5
+    }
+  },
+  "without_environmental_context": {
+    "sample_size": 444,
+    "persistence": {
+      "top_1_accuracy": 0.9775,
+      "top_3_accuracy": 0.9775,
+      "macro_f1": 0.5673,
+      "log_loss": 0.7779,
+      "brier_score": 0.045,
+      "mean_displacement_error_km": 15.87,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 0.0,
+      "max_displacement_error_km": 1016.04
+    },
+    "markov_baseline": {
+      "top_1_accuracy": 0.4527,
+      "top_3_accuracy": 0.8514,
+      "macro_f1": 0.1902,
+      "log_loss": 2.98,
+      "brier_score": 0.6655,
+      "mean_displacement_error_km": 352.55,
+      "median_displacement_error_km": 328.0,
+      "p90_displacement_error_km": 1264.32,
+      "max_displacement_error_km": 1380.5
+    },
+    "model1_structural": {
+      "top_1_accuracy": 0.4077,
+      "top_3_accuracy": 0.8266,
+      "macro_f1": 0.1179,
+      "log_loss": 1.6724,
+      "brier_score": 0.8248,
+      "mean_displacement_error_km": 358.65,
+      "median_displacement_error_km": 328.0,
+      "p90_displacement_error_km": 1264.32,
+      "max_displacement_error_km": 1380.5
+    },
+    "model2_environmental": {
+      "top_1_accuracy": 0.3896,
+      "top_3_accuracy": 0.8288,
+      "macro_f1": 0.1124,
+      "log_loss": 1.6101,
+      "brier_score": 0.8077,
+      "mean_displacement_error_km": 381.14,
+      "median_displacement_error_km": 328.0,
+      "p90_displacement_error_km": 1264.32,
+      "max_displacement_error_km": 1380.5
+    },
+    "model3_full": {
+      "top_1_accuracy": 0.6104,
+      "top_3_accuracy": 0.8063,
+      "macro_f1": 0.2312,
+      "log_loss": 1.4135,
+      "brier_score": 0.5922,
+      "mean_displacement_error_km": 286.83,
+      "median_displacement_error_km": 0.0,
+      "p90_displacement_error_km": 1380.5,
+      "max_displacement_error_km": 1380.5
+    }
+  }
+}
