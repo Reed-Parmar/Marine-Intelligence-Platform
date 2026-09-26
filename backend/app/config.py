@@ -1,6 +1,11 @@
 import os
+import pathlib
 from typing import List, Union
 from pydantic import field_validator
+
+# Resolve the project root (.env lives there) regardless of CWD
+_PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
+_ENV_FILE = str(_PROJECT_ROOT / ".env")
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -17,7 +22,7 @@ except ImportError:
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         extra="ignore"
     )
