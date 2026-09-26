@@ -69,6 +69,22 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Catches unhandled exceptions so standard CORS headers and error response are preserved."""
+    import logging
+    logging.exception(f"Unhandled exception on {request.method} {request.url.path}: {exc}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "error": {
+                "code": "INTERNAL_SERVER_ERROR",
+                "message": str(exc) if settings.DEBUG else "An internal server error occurred."
+            }
+        }
+    )
+
+
 # Health Check Endpoint
 @app.get("/health", tags=["Health"])
 async def health_check():

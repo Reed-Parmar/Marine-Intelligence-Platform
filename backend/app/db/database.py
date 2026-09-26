@@ -32,12 +32,29 @@ if settings.DATABASE_URL:
         _SessionFactory = sessionmaker(bind=_engine, autocommit=False, autoflush=False)
         _init_error = None
     except Exception as e:
-        _engine = None
-        _SessionFactory = None
-        # Sanitize sensitive credentials from error message
-        import re
-        sanitized = re.sub(r':([^@/:]+)@', ':***@', str(e))
-        _init_error = sanitized
+        # If psycopg driver fails, attempt fallback to psycopg2 if available
+        if "psycopg" in str(e).lower() and not "psycopg2" in db_url:
+            try:
+                fallback_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+                _engine = create_engine(
+                    fallback_url,
+                    pool_size=5,
+                    max_overflow=10,
+                    pool_recycle=300,
+                    pool_pre_ping=True
+                )
+                _SessionFactory = sessionmaker(bind=_engine, autocommit=False, autoflush=False)
+                _init_error = None
+            except Exception as e2:
+                _engine = None
+                _SessionFactory = None
+                import re
+                _init_error = re.sub(r':([^@/:]+)@', ':***@', str(e2))
+        else:
+            _engine = None
+            _SessionFactory = None
+            import re
+            _init_error = re.sub(r':([^@/:]+)@', ':***@', str(e))
 
 
 def get_engine():
@@ -76,7 +93,8 @@ def execute_query(query_str: str, params: Optional[Dict[str, Any]] = None) -> Li
     Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        msg = f"Database engine is not initialized. Cause: {_init_error}" if _init_error else "Database engine is not initialized. Verify DATABASE_URL is configured."
+        raise RuntimeError(msg)
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         return [dict(row) for row in result.mappings()]
@@ -88,7 +106,8 @@ def execute_single(query_str: str, params: Optional[Dict[str, Any]] = None) -> O
     Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        msg = f"Database engine is not initialized. Cause: {_init_error}" if _init_error else "Database engine is not initialized. Verify DATABASE_URL is configured."
+        raise RuntimeError(msg)
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         first_row = result.mappings().first()
@@ -101,7 +120,8 @@ def execute_write(query_str: str, params: Optional[Dict[str, Any]] = None) -> Op
     Returns returning row dictionary if present. Fails explicitly if engine is not configured.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        msg = f"Database engine is not initialized. Cause: {_init_error}" if _init_error else "Database engine is not initialized. Verify DATABASE_URL is configured."
+        raise RuntimeError(msg)
     with _engine.begin() as conn:
         result = conn.execute(text(query_str), params or {})
         if result.returns_rows:
@@ -116,7 +136,8 @@ def execute_write_all(query_str: str, params: Optional[Dict[str, Any]] = None) -
     and returns all RETURNING rows as a list of dictionaries.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        msg = f"Database engine is not initialized. Cause: {_init_error}" if _init_error else "Database engine is not initialized. Verify DATABASE_URL is configured."
+        raise RuntimeError(msg)
     with _engine.begin() as conn:
         result = conn.execute(text(query_str), params or {})
         if result.returns_rows:
