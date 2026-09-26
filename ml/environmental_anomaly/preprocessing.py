@@ -113,6 +113,12 @@ class PreprocessingAuditReport:
     kelvin_converted: bool
     arabian_sea_mask_applied: bool = True
 
+    @property
+    def retention_rate_pct(self) -> float:
+        if self.initial_record_count <= 0:
+            return 0.0
+        return round((self.final_record_count / self.initial_record_count) * 100.0, 2)
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "initial_record_count": self.initial_record_count,

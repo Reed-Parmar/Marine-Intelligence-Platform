@@ -14,8 +14,18 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from .config import KELVIN_CELSIUS_OFFSET, KELVIN_DETECTION_THRESHOLD, MODELS_DIR
+from .config import (
+    DATASET_LAT_MAX,
+    DATASET_LAT_MIN,
+    DATASET_LON_MAX,
+    DATASET_LON_MIN,
+    KELVIN_CELSIUS_OFFSET,
+    KELVIN_DETECTION_THRESHOLD,
+    MODELS_DIR,
+    ROOT_DIR,
+)
 from .feature_engineering import SSTBaselineCalculator
+from .preprocessing import compute_arabian_sea_subbasin_masks
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +47,9 @@ class AnomalyPredictionResult:
     longitude: float
     timestamp: str
     contributing_features: List[Dict[str, Any]]
+    warm_cold_direction: str = "neutral"
+    in_arabian_sea: bool = True
+    subbasin: str = "Arabian Sea (Strict IHO S-23)"
     mitigation_advice: Optional[str] = None
     metadata: Dict[str, Any] = None
 
@@ -53,7 +66,14 @@ class EnvironmentalAnomalyInferenceEngine:
     """
 
     def __init__(self, models_dir: Optional[Union[str, Path]] = None):
-        self.models_dir = Path(models_dir or MODELS_DIR)
+        if models_dir is None:
+            v2_path = ROOT_DIR / "models" / "environmental_anomaly_v2"
+            if v2_path.exists():
+                self.models_dir = v2_path
+            else:
+                self.models_dir = Path(MODELS_DIR)
+        else:
+            self.models_dir = Path(models_dir)
         self.model = None
         self.baseline_calc = None
         self.feature_config = {}
@@ -144,13 +164,22 @@ class EnvironmentalAnomalyInferenceEngine:
             else:
                 df["month"] = 1
                 df["day_of_year"] = 1
+        elif "day_of_year" not in df.columns:
+            if "timestamp" in df.columns:
+                dt_series = pd.to_datetime(df["timestamp"], errors="coerce")
+                df["day_of_year"] = dt_series.dt.dayofyear.fillna(1).astype(int)
+            else:
+                df["day_of_year"] = (df["month"].astype(int) - 1) * 30 + 15
 
         # Calculate baselines and anomalies
         df = self.baseline_calc.transform(df)
 
         # Build feature matrix matching training schema
-        selected_feats = self.feature_config.get(
-            "selected_features", ["sst_anomaly", "analysed_sst", "latitude", "longitude", "month_sin", "month_cos"]
+        selected_feats = (
+            self.feature_config.get("selected_features")
+            or self.feature_config.get("features")
+            or self.metadata.get("features_used")
+            or ["sst_anomaly", "analysed_sst", "latitude", "longitude", "month_sin", "month_cos", "day_sin", "day_cos"]
         )
 
         # Compute cyclic time
@@ -173,14 +202,22 @@ class EnvironmentalAnomalyInferenceEngine:
         raw_scores = self.model.decision_function(X)
         labels = self.model.predict(X)  # -1 = anomaly, 1 = normal
 
-        norm_cfg = self.feature_config.get("score_normalization", {})
-        score_min = norm_cfg.get("score_min_raw", -0.2)
-        score_max = norm_cfg.get("score_max_raw", 0.2)
+        norm_cfg = (
+            self.feature_config.get("score_normalization")
+            or self.metadata.get("score_normalization")
+            or {}
+        )
+        score_min = norm_cfg.get("score_min_raw", -0.09017)
+        score_max = norm_cfg.get("score_max_raw", 0.10885)
         score_range = max(score_max - score_min, 1e-6)
 
         norm_scores = np.clip(((score_max - raw_scores) / score_range) * 100.0, 0.0, 100.0).round(2)
 
-        sev_cfg = self.feature_config.get("severity_thresholds", {})
+        sev_cfg = (
+            self.feature_config.get("severity_thresholds")
+            or self.metadata.get("severity_thresholds")
+            or {}
+        )
         mod_thresh = sev_cfg.get("moderate", 60.0)
         high_thresh = sev_cfg.get("high", 75.0)
         crit_thresh = sev_cfg.get("critical", 85.0)
@@ -196,6 +233,37 @@ class EnvironmentalAnomalyInferenceEngine:
             lat = float(row["latitude"])
             lon = float(row["longitude"])
             ts = str(row.get("timestamp", ""))
+
+            # Arabian Sea geographic constraint check
+            in_as = True
+            subbasin = "Arabian Sea (Strict IHO S-23)"
+            if (
+                lat < DATASET_LAT_MIN
+                or lat > DATASET_LAT_MAX
+                or lon < DATASET_LON_MIN
+                or lon > DATASET_LON_MAX
+            ):
+                in_as = False
+                subbasin = "Outside Arabian Sea Bounding Box (5-25°N, 50-78°E)"
+            else:
+                masks = compute_arabian_sea_subbasin_masks(np.array([lat]), np.array([lon]))
+                if masks["is_persian_gulf"][0]:
+                    in_as = False
+                    subbasin = "Persian Gulf (Excluded by IHO S-23)"
+                elif masks["is_gulf_of_oman"][0]:
+                    in_as = False
+                    subbasin = "Gulf of Oman (Excluded by IHO S-23)"
+                elif masks["is_gulf_of_aden"][0]:
+                    in_as = False
+                    subbasin = "Gulf of Aden (Excluded by IHO S-23)"
+
+            # Warm/Cold direction
+            if anom_val > 0.05:
+                direction = "warm"
+            elif anom_val < -0.05:
+                direction = "cold"
+            else:
+                direction = "neutral"
 
             # Severity
             if score >= crit_thresh:
@@ -215,11 +283,19 @@ class EnvironmentalAnomalyInferenceEngine:
                 anom_type = "Severe Cold Surge"
                 advice = "Strong localized upwelling or cold-core eddy. Monitor for rapid nutrient influx."
             elif is_anom:
-                anom_type = "Environmental Anomaly"
+                if direction == "warm":
+                    anom_type = "Warm Oceanographic Anomaly"
+                elif direction == "cold":
+                    anom_type = "Cold Oceanographic Anomaly"
+                else:
+                    anom_type = "Environmental Anomaly"
                 advice = "Multivariate physical anomaly detected. Cross-reference with regional CTD and sensor data."
             else:
                 anom_type = "Normal Oceanographic Conditions"
                 advice = "Observed environmental parameters remain within seasonal expected baselines."
+
+            if not in_as:
+                advice += f" Note: Point is situated in {subbasin} outside strict Arabian Sea boundaries."
 
             # Contributing Features
             contributing = [
@@ -257,8 +333,16 @@ class EnvironmentalAnomalyInferenceEngine:
                     longitude=round(lon, 4),
                     timestamp=ts,
                     contributing_features=contributing,
+                    warm_cold_direction=direction,
+                    in_arabian_sea=in_as,
+                    subbasin=subbasin,
                     mitigation_advice=advice,
-                    metadata={"model_version": self.metadata.get("model_version", "1.0.0-isolation-forest")},
+                    metadata={
+                        "model_version": self.metadata.get("model_version", "2.0.0-isolation-forest-8yr-production"),
+                        "model_name": self.metadata.get("model_name", "Marine Environmental Anomaly Detector V2"),
+                        "framework": "IsolationForest",
+                        "unsupervised_note": "The 3.39% anomaly rate on 2025 test data reflects unsupervised detection frequency, not accuracy.",
+                    },
                 )
             )
 

@@ -1,0 +1,352 @@
+{
+  "total_observations": 5195410,
+  "anomaly_count": 176295,
+  "anomaly_rate_pct": 3.39,
+  "score_distribution": {
+    "mean": 27.85,
+    "std": 12.51,
+    "min": 0.0,
+    "p10": 13.63,
+    "p25": 19.03,
+    "p50": 26.11,
+    "p75": 34.53,
+    "p90": 43.71,
+    "p95": 50.67,
+    "p99": 68.71,
+    "max": 100.0
+  },
+  "severity_breakdown": {
+    "low": 5086848,
+    "moderate": 81059,
+    "high": 21689,
+    "critical": 5814
+  },
+  "temporal_monthly_distribution": {
+    "month_1": {
+      "total": 441254,
+      "anomalies": 12272,
+      "anomaly_rate_pct": 2.78,
+      "mean_sst_anomaly": -0.069
+    },
+    "month_2": {
+      "total": 398552,
+      "anomalies": 21800,
+      "anomaly_rate_pct": 5.47,
+      "mean_sst_anomaly": 0.309
+    },
+    "month_3": {
+      "total": 441254,
+      "anomalies": 8810,
+      "anomaly_rate_pct": 2.0,
+      "mean_sst_anomaly": 0.455
+    },
+    "month_4": {
+      "total": 427020,
+      "anomalies": 2240,
+      "anomaly_rate_pct": 0.52,
+      "mean_sst_anomaly": 0.161
+    },
+    "month_5": {
+      "total": 441254,
+      "anomalies": 3765,
+      "anomaly_rate_pct": 0.85,
+      "mean_sst_anomaly": 0.012
+    },
+    "month_6": {
+      "total": 427020,
+      "anomalies": 18985,
+      "anomaly_rate_pct": 4.45,
+      "mean_sst_anomaly": -0.174
+    },
+    "month_7": {
+      "total": 441254,
+      "anomalies": 30530,
+      "anomaly_rate_pct": 6.92,
+      "mean_sst_anomaly": -0.332
+    },
+    "month_8": {
+      "total": 441254,
+      "anomalies": 29493,
+      "anomaly_rate_pct": 6.68,
+      "mean_sst_anomaly": -0.299
+    },
+    "month_9": {
+      "total": 427020,
+      "anomalies": 25614,
+      "anomaly_rate_pct": 6.0,
+      "mean_sst_anomaly": -0.348
+    },
+    "month_10": {
+      "total": 441254,
+      "anomalies": 8776,
+      "anomaly_rate_pct": 1.99,
+      "mean_sst_anomaly": -0.385
+    },
+    "month_11": {
+      "total": 427020,
+      "anomalies": 6560,
+      "anomaly_rate_pct": 1.54,
+      "mean_sst_anomaly": -0.522
+    },
+    "month_12": {
+      "total": 441254,
+      "anomalies": 7450,
+      "anomaly_rate_pct": 1.69,
+      "mean_sst_anomaly": -0.36
+    }
+  },
+  "spatial_latitudinal_distribution": {
+    "10\u00b0N-15\u00b0N": {
+      "total": 1518035,
+      "anomalies": 60785,
+      "anomaly_rate_pct": 4.0,
+      "mean_sst": 28.0
+    },
+    "15\u00b0N-20\u00b0N": {
+      "total": 1212895,
+      "anomalies": 25176,
+      "anomaly_rate_pct": 2.08,
+      "mean_sst": 27.59
+    },
+    "20\u00b0N-25\u00b0N": {
+      "total": 651525,
+      "anomalies": 45528,
+      "anomaly_rate_pct": 6.99,
+      "mean_sst": 27.41
+    },
+    "25\u00b0N-30\u00b0N": {
+      "total": 10950,
+      "anomalies": 2472,
+      "anomaly_rate_pct": 22.58,
+      "mean_sst": 27.39
+    },
+    "5\u00b0N-10\u00b0N": {
+      "total": 1802005,
+      "anomalies": 42334,
+      "anomaly_rate_pct": 2.35,
+      "mean_sst": 28.63
+    }
+  },
+  "persistence_summary": {
+    "max_consecutive_days": 77,
+    "persistent_clusters_count": 440
+  },
+  "correlation_with_sst_deviation": {
+    "pearson_r": 0.6418,
+    "pearson_p": 0.0,
+    "spearman_rho": 0.4983,
+    "spearman_p": 0.0
+  },
+  "top_positive_mhw_anomalies": [
+    {
+      "timestamp": "2025-07-13T00:00:00",
+      "latitude": 9.0,
+      "longitude": 50.833,
+      "analysed_sst": 25.57,
+      "baseline_sst": 20.904,
+      "sst_anomaly": 4.666,
+      "anomaly_score": 66.35,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-07-12T00:00:00",
+      "latitude": 9.0,
+      "longitude": 50.833,
+      "analysed_sst": 25.395,
+      "baseline_sst": 20.904,
+      "sst_anomaly": 4.491,
+      "anomaly_score": 66.48,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-10-27T00:00:00",
+      "latitude": 12.833,
+      "longitude": 51.333,
+      "analysed_sst": 31.886,
+      "baseline_sst": 27.521,
+      "sst_anomaly": 4.365,
+      "anomaly_score": 72.84,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-07-11T00:00:00",
+      "latitude": 9.0,
+      "longitude": 50.833,
+      "analysed_sst": 25.212,
+      "baseline_sst": 20.904,
+      "sst_anomaly": 4.308,
+      "anomaly_score": 66.88,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-07-14T00:00:00",
+      "latitude": 9.0,
+      "longitude": 50.833,
+      "analysed_sst": 25.15,
+      "baseline_sst": 20.904,
+      "sst_anomaly": 4.246,
+      "anomaly_score": 68.56,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-10-28T00:00:00",
+      "latitude": 12.833,
+      "longitude": 51.333,
+      "analysed_sst": 31.683,
+      "baseline_sst": 27.521,
+      "sst_anomaly": 4.162,
+      "anomaly_score": 71.87,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-10-28T00:00:00",
+      "latitude": 12.833,
+      "longitude": 51.5,
+      "analysed_sst": 31.678,
+      "baseline_sst": 27.521,
+      "sst_anomaly": 4.157,
+      "anomaly_score": 71.48,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-09-26T00:00:00",
+      "latitude": 13.833,
+      "longitude": 53.0,
+      "analysed_sst": 29.729,
+      "baseline_sst": 25.624,
+      "sst_anomaly": 4.105,
+      "anomaly_score": 63.52,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-07-10T00:00:00",
+      "latitude": 9.0,
+      "longitude": 50.833,
+      "analysed_sst": 24.979,
+      "baseline_sst": 20.904,
+      "sst_anomaly": 4.075,
+      "anomaly_score": 72.05,
+      "severity": "moderate"
+    },
+    {
+      "timestamp": "2025-10-29T00:00:00",
+      "latitude": 12.667,
+      "longitude": 51.333,
+      "analysed_sst": 31.56,
+      "baseline_sst": 27.521,
+      "sst_anomaly": 4.039,
+      "anomaly_score": 71.91,
+      "severity": "moderate"
+    }
+  ],
+  "top_negative_cold_anomalies": [
+    {
+      "timestamp": "2025-06-22T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.0,
+      "analysed_sst": 18.954,
+      "baseline_sst": 26.434,
+      "sst_anomaly": -7.48,
+      "anomaly_score": 90.14,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-05-30T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.0,
+      "analysed_sst": 21.47,
+      "baseline_sst": 28.919,
+      "sst_anomaly": -7.449,
+      "anomaly_score": 86.52,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-06-21T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.0,
+      "analysed_sst": 19.099,
+      "baseline_sst": 26.434,
+      "sst_anomaly": -7.335,
+      "anomaly_score": 90.16,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-05-31T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.0,
+      "analysed_sst": 21.604,
+      "baseline_sst": 28.919,
+      "sst_anomaly": -7.315,
+      "anomaly_score": 86.63,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-06-21T00:00:00",
+      "latitude": 7.667,
+      "longitude": 50.0,
+      "analysed_sst": 19.37,
+      "baseline_sst": 26.434,
+      "sst_anomaly": -7.064,
+      "anomaly_score": 90.16,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-06-20T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.0,
+      "analysed_sst": 19.5,
+      "baseline_sst": 26.434,
+      "sst_anomaly": -6.934,
+      "anomaly_score": 90.33,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-05-31T00:00:00",
+      "latitude": 8.667,
+      "longitude": 50.5,
+      "analysed_sst": 20.897,
+      "baseline_sst": 27.79,
+      "sst_anomaly": -6.893,
+      "anomaly_score": 87.5,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-05-30T00:00:00",
+      "latitude": 8.667,
+      "longitude": 50.5,
+      "analysed_sst": 20.94,
+      "baseline_sst": 27.79,
+      "sst_anomaly": -6.85,
+      "anomaly_score": 87.25,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-06-21T00:00:00",
+      "latitude": 7.833,
+      "longitude": 50.167,
+      "analysed_sst": 19.586,
+      "baseline_sst": 26.434,
+      "sst_anomaly": -6.848,
+      "anomaly_score": 90.16,
+      "severity": "critical"
+    },
+    {
+      "timestamp": "2025-05-31T00:00:00",
+      "latitude": 8.167,
+      "longitude": 50.333,
+      "analysed_sst": 20.972,
+      "baseline_sst": 27.79,
+      "sst_anomaly": -6.818,
+      "anomaly_score": 87.71,
+      "severity": "critical"
+    }
+  ],
+  "physical_sst_summary": {
+    "mean_sst": 28.047,
+    "std_sst": 1.724,
+    "mean_sst_anomaly": -0.132,
+    "std_sst_anomaly": 0.722,
+    "warm_anomaly_pct": 43.35,
+    "cold_anomaly_pct": 56.59
+  }
+}

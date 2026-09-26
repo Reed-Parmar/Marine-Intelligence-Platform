@@ -31,6 +31,21 @@ export const mlService = {
     }
   },
 
+  async detectEnvironmentalAnomaly(params: {
+    latitude: number;
+    longitude: number;
+    sst?: number;
+    timestamp?: string;
+  }): Promise<AnomalyDetectionResult> {
+    const res = await ApiClient.post<AnomalyDetectionResult>('/ml/anomalies/detect', params);
+    return res.data;
+  },
+
+  async getEnvironmentalAnomalyModelInfo(): Promise<any> {
+    const res = await ApiClient.get<any>('/ml/environmental-anomaly/model-info');
+    return res.data;
+  },
+
   async getHabitatSuitability(): Promise<HabitatSuitabilityResult[]> {
     try {
       const res = await ApiClient.get<HabitatSuitabilityResult[]>('/ml/habitat-suitability');

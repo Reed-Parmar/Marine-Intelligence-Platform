@@ -51,6 +51,17 @@ export const fisheriesService = {
         totalEffortHours: effortH !== null && effortH > 0 ? effortH : (t.totalEffortHours !== undefined ? Number(t.totalEffortHours) : null)
       };
     });
+  },
+
+  async predictCatch(params: any): Promise<any> {
+    const res = await ApiClient.post<any>('/fisheries/predict', params);
+    return res.data;
+  },
+
+  async getModelInfo(): Promise<any> {
+    const res = await ApiClient.get<any>('/fisheries/predict/model-info');
+    return res.data;
   }
 };
+
 

@@ -1,0 +1,265 @@
+{
+  "manifest_version": "1.0",
+  "dataset_name": "8-Year Surface SST Reanalysis (Arabian Sea)",
+  "source_product": "GLOBAL_MULTIYEAR_PHY_001_030",
+  "source_dataset": "cmems_mod_glo_phy_my_0.083deg_P1D-m",
+  "temporal_range": {
+    "start": "2018-01-01T00:00:00",
+    "end": "2025-12-31T00:00:00",
+    "total_years": 8,
+    "total_time_steps": 2922
+  },
+  "spatial_coverage": {
+    "latitude_min": 5.0,
+    "latitude_max": 25.0,
+    "longitude_min": 50.0,
+    "longitude_max": 78.0,
+    "depth_m": 0.494025,
+    "resolution_deg": 0.083333
+  },
+  "study_region_mask": "Strict IHO S-23 Arabian Sea to be applied by ML pipeline",
+  "total_storage_mb": 222.46,
+  "acquisition_duration_seconds": 833.48,
+  "files": [
+    {
+      "year": 2018,
+      "filename": "surface_thetao_2018.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2018.nc",
+      "time_start": "2018-01-01T00:00:00",
+      "time_end": "2018-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 20.803,
+        "max_celsius": 29.122,
+        "mean_celsius": 26.495
+      },
+      "file_size_bytes": 29490124,
+      "file_size_mb": 28.12,
+      "sha256": "316a1d760deb888cf3dfffc2f79a03b658ee86963164cc15167092b857209486",
+      "verified_at": "2026-09-26T05:39:31.562961+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2019,
+      "filename": "surface_thetao_2019.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2019.nc",
+      "time_start": "2019-01-01T00:00:00",
+      "time_end": "2019-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 20.188,
+        "max_celsius": 29.816,
+        "mean_celsius": 27.081
+      },
+      "file_size_bytes": 29417640,
+      "file_size_mb": 28.05,
+      "sha256": "79907f3e3d87960ed7bda3ff44f6e3c669f06d5e3fb769f02210f1fe5c3d9f96",
+      "verified_at": "2026-09-26T05:41:12.509776+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2020,
+      "filename": "surface_thetao_2020.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2020.nc",
+      "time_start": "2020-01-01T00:00:00",
+      "time_end": "2020-12-31T00:00:00",
+      "num_time_steps": 366,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 16.944,
+        "max_celsius": 30.63,
+        "mean_celsius": 27.163
+      },
+      "file_size_bytes": 29427372,
+      "file_size_mb": 28.06,
+      "sha256": "6e3a9f045e342b0b428643f414cb91f6ff71d4a2a5a1732c94a1af1b6363d103",
+      "verified_at": "2026-09-26T05:42:36.558412+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2021,
+      "filename": "surface_thetao_2021.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2021.nc",
+      "time_start": "2021-01-01T00:00:00",
+      "time_end": "2021-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 16.518,
+        "max_celsius": 30.194,
+        "mean_celsius": 26.847
+      },
+      "file_size_bytes": 28503461,
+      "file_size_mb": 27.18,
+      "sha256": "87ef5247705732f830dea86d82cf34d397227730a523f9aa5ea096778698028c",
+      "verified_at": "2026-09-26T05:45:46.858474+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2022,
+      "filename": "surface_thetao_2022.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2022.nc",
+      "time_start": "2022-01-01T00:00:00",
+      "time_end": "2022-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 19.552,
+        "max_celsius": 29.9,
+        "mean_celsius": 26.979
+      },
+      "file_size_bytes": 29282881,
+      "file_size_mb": 27.93,
+      "sha256": "b5c977002d283bcd4c647ad409a72365935cf405d1dbb87a70f31684ff352be2",
+      "verified_at": "2026-09-26T05:47:02.427720+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2023,
+      "filename": "surface_thetao_2023.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2023.nc",
+      "time_start": "2023-01-01T00:00:00",
+      "time_end": "2023-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 20.257,
+        "max_celsius": 29.959,
+        "mean_celsius": 27.082
+      },
+      "file_size_bytes": 29060916,
+      "file_size_mb": 27.71,
+      "sha256": "2632d73bbfc3161cc79ec960bd237a03c0f303906deec3ab4170eb77df34f833",
+      "verified_at": "2026-09-26T05:48:21.257729+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2024,
+      "filename": "surface_thetao_2024.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2024.nc",
+      "time_start": "2024-01-01T00:00:00",
+      "time_end": "2024-12-31T00:00:00",
+      "num_time_steps": 366,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 19.227,
+        "max_celsius": 31.176,
+        "mean_celsius": 27.759
+      },
+      "file_size_bytes": 28876984,
+      "file_size_mb": 27.54,
+      "sha256": "aafde0d399dd12e65616989ac583c11353ba7e448a825adc3ff1690ee8a5b880",
+      "verified_at": "2026-09-26T05:50:19.046425+00:00",
+      "integrity_status": "PASSED"
+    },
+    {
+      "year": 2025,
+      "filename": "surface_thetao_2025.nc",
+      "filepath": "C:\\Users\\Office Pc\\Downloads\\Marine-Intelligence-Platform-moksh-add-frontend (1)\\Marine-Intelligence-Platform-moksh-add-frontend\\historical_sst\\surface_thetao_2025.nc",
+      "time_start": "2025-01-01T00:00:00",
+      "time_end": "2025-12-31T00:00:00",
+      "num_time_steps": 365,
+      "spatial_dimensions": {
+        "latitude": 241,
+        "longitude": 337,
+        "lat_min": 5.0,
+        "lat_max": 25.0,
+        "lon_min": 50.0,
+        "lon_max": 78.0
+      },
+      "depth": 0.49402499198913574,
+      "variable": "thetao",
+      "dtype": "float64",
+      "valid_ocean_cells_day1": 59437,
+      "sst_day1_summary": {
+        "min_celsius": 17.284,
+        "max_celsius": 30.415,
+        "mean_celsius": 26.932
+      },
+      "file_size_bytes": 29225055,
+      "file_size_mb": 27.87,
+      "sha256": "3a7cac86c71b2ed769d87515303810bc40267cad969dbe4f7e78eb8b43f52c42",
+      "verified_at": "2026-09-26T05:51:37.662287+00:00",
+      "integrity_status": "PASSED"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "feature_version": "v1",
+  "features": [
+    "Fleet",
+    "Gear",
+    "EffortUnits",
+    "MonsoonSeason",
+    "Effort",
+    "Log_Effort",
+    "Latitude",
+    "Longitude",
+    "SpatialResolution",
+    "Month",
+    "Month_Sin",
+    "Month_Cos",
+    "Quarter",
+    "Year"
+  ],
+  "target": "TotalCatchMT",
+  "unit": "Metric Tons (MT)"
+}

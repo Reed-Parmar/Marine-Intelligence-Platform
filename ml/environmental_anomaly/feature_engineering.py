@@ -122,18 +122,37 @@ class SSTBaselineCalculator:
             raise RuntimeError("SSTBaselineCalculator must be fitted before transform.")
 
         result = df.copy()
-        baselines = []
-        for _, row in result.iterrows():
-            b = self.get_baseline(
-                float(row["latitude"]),
-                float(row["longitude"]),
-                int(row.get("month", 1)),
-            )
-            baselines.append(b)
+        if len(result) == 0:
+            result["baseline_sst"] = []
+            result["sst_anomaly"] = []
+            result["sst_abs_anomaly"] = []
+            return result
 
-        result["baseline_sst"] = baselines
-        result["sst_anomaly"] = (result["analysed_sst"] - result["baseline_sst"]).round(3)
-        result["sst_abs_anomaly"] = result["sst_anomaly"].abs().round(3)
+        lats = result["latitude"].values
+        lons = result["longitude"].values
+        months = result["month"].values.astype(int)
+
+        cell_lats = (np.floor(lats / self.grid_res) * self.grid_res).round(2)
+        cell_lons = (np.floor(lons / self.grid_res) * self.grid_res).round(2)
+        band_lats = (np.floor(lats / self.lat_band_width) * self.lat_band_width).round(2)
+
+        cell_keys = pd.Series([f"{lat}_{lon}_{m}" for lat, lon, m in zip(cell_lats, cell_lons, months)])
+        band_keys = pd.Series([f"{band}_{m}" for band, m in zip(band_lats, months)])
+        month_series = pd.Series(months)
+
+        # Hierarchical lookup
+        base = cell_keys.map(self.cell_monthly_baseline)
+        missing = base.isna()
+        if missing.any():
+            base.loc[missing] = band_keys.loc[missing].map(self.lat_band_monthly_baseline)
+        missing = base.isna()
+        if missing.any():
+            base.loc[missing] = month_series.loc[missing].map(self.global_monthly_baseline)
+
+        base = base.fillna(self.overall_mean).values.astype(float)
+        result["baseline_sst"] = np.round(base, 3)
+        result["sst_anomaly"] = np.round(result["analysed_sst"].values - result["baseline_sst"].values, 3)
+        result["sst_abs_anomaly"] = np.abs(result["sst_anomaly"].values)
         return result
 
     def to_dict(self) -> Dict[str, Any]:

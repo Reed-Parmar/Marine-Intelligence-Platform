@@ -1,0 +1,48 @@
+{
+  "model_name": "IOTC Surface Fisheries Catch Predictor",
+  "model_type": "XGBoost Regressor (Tuned)",
+  "model_version": "1.0.0",
+  "training_framework": "xgboost",
+  "framework_version": "2.1.4",
+  "dataset": "IOTC-2024-WPB22-DATA05-CESurface (FAO/IOTC Official)",
+  "target": "TotalCatchMT",
+  "target_units": "Metric Tons (MT)",
+  "training_period": "1970-2014 (155,605 rows)",
+  "validation_period": "2015-2018 (27,880 rows)",
+  "test_period": "2019-2022 (27,692 rows)",
+  "best_hyperparameters": {
+    "max_depth": 9,
+    "learning_rate": 0.06,
+    "subsample": 0.9,
+    "colsample_bytree": 0.9,
+    "min_child_weight": 5,
+    "n_estimators": 175
+  },
+  "validation_metrics": {
+    "MAE": 48.32837237375833,
+    "RMSE": 139.69496896006973,
+    "R2": 0.6617569003908015,
+    "MedAE": 15.867390155792236,
+    "sMAPE": 103.46498006256238,
+    "Bias": -21.79351182141953,
+    "Mean_Actual": 77.89266368309384,
+    "Mean_Predicted": 56.099151861674315,
+    "Underprediction_Pct": 48.540172166427546,
+    "Overprediction_Pct": 50.699426111908174,
+    "Exact_Pct": 0.7604017216642754
+  },
+  "final_test_metrics": {
+    "MAE": 61.68373061641046,
+    "RMSE": 164.46581337611386,
+    "R2": 0.5911450467141424,
+    "MedAE": 18.429238624572754,
+    "sMAPE": 100.0422995247375,
+    "Bias": -27.13568404345068,
+    "Mean_Actual": 89.89073219041299,
+    "Mean_Predicted": 62.7550481469623,
+    "Underprediction_Pct": 53.85670951899466,
+    "Overprediction_Pct": 45.86162068467428,
+    "Exact_Pct": 0.2816697963310703
+  },
+  "random_seed": 42
+}

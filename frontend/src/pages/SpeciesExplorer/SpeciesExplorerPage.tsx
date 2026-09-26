@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { CardSkeleton } from '../../components/ui/Skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { SpeciesVisionIdentifier } from '../../components/species/SpeciesVisionIdentifier';
 import { 
   Compass, 
   Search, 
@@ -16,7 +17,9 @@ import {
   Info, 
   Thermometer, 
   Waves,
-  Eye
+  Eye,
+  Camera,
+  Sparkles
 } from 'lucide-react';
 
 export const SpeciesExplorerPage: React.FC = () => {
@@ -26,6 +29,7 @@ export const SpeciesExplorerPage: React.FC = () => {
   const [occurrences, setOccurrences] = useState<SpeciesOccurrence[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'vision' | 'catalog'>('vision');
 
   const fetchSpecies = async () => {
     setIsLoading(true);
@@ -69,45 +73,94 @@ export const SpeciesExplorerPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header & Search */}
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Compass className="w-5 h-5 text-ocean-teal" />
-            Marine Species & Biodiversity Taxonomy
+            Marine Species & Biodiversity Intelligence
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            WoRMS / OBIS aligned marine species catalogue with occurrence records and linked eDNA evidence.
+            Deep learning visual taxonomy inference (ResNet-18) paired with WoRMS taxonomic records and survey evidence.
           </p>
         </div>
 
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search by scientific name, common name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
-          />
-        </div>
+        {activeTab === 'catalog' && (
+          <div className="relative w-full sm:w-80">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search by scientific name, common name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-marine-900 border border-marine-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-ocean-cyan font-mono"
+            />
+          </div>
+        )}
       </div>
 
-      {/* Species Cards Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <CardSkeleton rows={4} />
-          <CardSkeleton rows={4} />
-        </div>
-      ) : speciesList.length === 0 ? (
-        <EmptyState
-          title="No Marine Species Found"
-          description="Try searching with a different scientific or common name."
-          actionLabel="Clear Search"
-          onAction={() => setSearch('')}
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Primary Module Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b border-marine-800 pb-3">
+        <button
+          type="button"
+          onClick={() => setActiveTab('vision')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            activeTab === 'vision'
+              ? 'bg-gradient-to-r from-ocean-cyan to-blue-600 text-marine-950 font-bold shadow-md shadow-cyan-500/20'
+              : 'bg-marine-950 text-slate-400 hover:text-white hover:bg-marine-900 border border-marine-800'
+          }`}
+        >
+          <Camera className="w-4 h-4" />
+          <span>AI Visual Identification</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+            activeTab === 'vision' ? 'bg-marine-950/40 text-marine-950 font-extrabold' : 'bg-marine-900 text-ocean-cyan border border-ocean-cyan/30'
+          }`}>
+            Phase 14.2
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('catalog')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            activeTab === 'catalog'
+              ? 'bg-gradient-to-r from-ocean-cyan to-blue-600 text-marine-950 font-bold shadow-md shadow-cyan-500/20'
+              : 'bg-marine-950 text-slate-400 hover:text-white hover:bg-marine-900 border border-marine-800'
+          }`}
+        >
+          <Compass className="w-4 h-4" />
+          <span>WoRMS Taxonomy Catalogue</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+            activeTab === 'catalog' ? 'bg-marine-950/40 text-marine-950 font-extrabold' : 'bg-marine-900 text-slate-400 border border-marine-750'
+          }`}>
+            {speciesList.length} Species
+          </span>
+        </button>
+      </div>
+
+      {/* Tab 1: AI Visual Identification */}
+      {activeTab === 'vision' && (
+        <SpeciesVisionIdentifier />
+      )}
+
+      {/* Tab 2: Taxonomy Catalogue & Occurrences */}
+      {activeTab === 'catalog' && (
+        <>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CardSkeleton rows={4} />
+              <CardSkeleton rows={4} />
+            </div>
+          ) : speciesList.length === 0 ? (
+            <EmptyState
+              title="No Marine Species Found"
+              description="Try searching with a different scientific or common name."
+              actionLabel="Clear Search"
+              onAction={() => setSearch('')}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           {speciesList.map((sp) => (
             <Card
               key={sp.id}
@@ -185,8 +238,11 @@ export const SpeciesExplorerPage: React.FC = () => {
               </div>
             </Card>
           ))}
-        </div>
+            </div>
+          )}
+        </>
       )}
+
 
       {/* Species Detail Modal */}
       {selectedSpecies && (

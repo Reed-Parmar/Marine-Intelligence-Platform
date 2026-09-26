@@ -1,0 +1,74 @@
+{
+  "initial_rows": 211288,
+  "initial_cols": 54,
+  "raw_duplicates": 0,
+  "cleaning_rules": [
+    {
+      "rule": "Whitespace Normalization",
+      "detected": "Trailing spaces in categorical strings (Fleet, Gear, EffortUnits)",
+      "action": "Applied str.strip() across all categorical columns",
+      "affected_records": 211288,
+      "reason": "Ensure consistent categorical encoding without trailing space fragmentation"
+    },
+    {
+      "rule": "CWP Spatial Grid Decoding",
+      "detected": "7-digit CWP grid codes",
+      "action": "Decoded into standard decimal Latitude, Longitude, and SpatialResolution (degrees)",
+      "affected_records": 211288,
+      "reason": "Enable spatial feature modeling and GIS compatibility across the Indian Ocean and Arabian Sea"
+    },
+    {
+      "rule": "Non-Positive Effort Removal",
+      "detected": "111 records with Effort <= 0",
+      "action": "Removed 111 records (0.053% of dataset)",
+      "affected_records": 111,
+      "reason": "Effort of 0 indicates missing or corrupt operational effort; catch cannot be physically generated with zero effort."
+    },
+    {
+      "rule": "Target Leakage & Metadata Removal",
+      "detected": "Target leakage columns (42 species breakdowns, CatchUnits) and post-hoc reporting metadata",
+      "action": "Dropped 48 columns",
+      "affected_records": 211177,
+      "reason": "Prevent target leakage: CatchUnits reveals zero catch; individual species columns sum to the target. QualityCode/Source are post-hoc admin flags."
+    }
+  ],
+  "target_stats": {
+    "count": 211177,
+    "mean": 75.55483633008612,
+    "std": 198.9478738685722,
+    "min": 0.0,
+    "q25": 0.0,
+    "median": 15.0,
+    "q75": 68.26,
+    "q90": 193.31,
+    "q95": 340.46,
+    "q99": 874.5679999999958,
+    "max": 8829.2,
+    "skewness": 9.742149965162646,
+    "zero_count": 73994,
+    "zero_percentage": 35.03885366304096
+  },
+  "split_info": {
+    "train": {
+      "period": "1970-2014",
+      "rows": 155605,
+      "pct": 73.68463421679444,
+      "zero_pct": 41.42990263809004,
+      "mean_catch": 72.5846987717427
+    },
+    "validation": {
+      "period": "2015-2018",
+      "rows": 27880,
+      "pct": 13.202195314830686,
+      "zero_pct": 22.001434720229554,
+      "mean_catch": 77.89266368309384
+    },
+    "test": {
+      "period": "2019-2022",
+      "rows": 27692,
+      "pct": 13.113170468374872,
+      "zero_pct": 12.25263614040156,
+      "mean_catch": 89.89073219041299
+    }
+  }
+}

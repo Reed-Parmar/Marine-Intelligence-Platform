@@ -1,0 +1,38 @@
+{
+  "dataset_name": "IOTC Surface Fisheries Catch and Effort Dataset (1970-2022)",
+  "source": "Indian Ocean Tuna Commission (IOTC) / Food and Agriculture Organization of the United Nations (FAO)",
+  "url": "https://iotc.org/sites/default/files/documents/2024/07/IOTC-2024-WPB22-DATA05-CESurface.zip",
+  "license": "Public Open Access under FAO and IOTC Information Dissemination Policy (Open Data for scientific, conservation, and management purposes)",
+  "download_date": "2026-09-26",
+  "file_name": "IOTC-2024-WPB22-DATA05-CESurface.csv",
+  "raw_file_size_bytes": 26978586,
+  "raw_zip_size_bytes": 2771584,
+  "raw_rows": 211288,
+  "raw_columns": 54,
+  "target_variable": "TotalCatchMT",
+  "target_units": "Metric Tons (MT)",
+  "temporal_coverage": {
+    "start_year": 1970,
+    "end_year": 2022,
+    "total_years": 53
+  },
+  "geographic_coverage": {
+    "region": "Indian Ocean and Arabian Sea",
+    "latitude_min": -44.5,
+    "latitude_max": 29.5,
+    "longitude_min": 20.5,
+    "longitude_max": 149.5,
+    "grid_resolutions": ["1x1 degree", "5x5 degree"]
+  },
+  "raw_feature_list": [
+    "Fleet", "Gear", "Year", "MonthStart", "MonthEnd", "iGrid", "Grid",
+    "Effort", "EffortUnits", "QualityCode", "Source", "CatchUnits",
+    "YFT-FS", "YFT-LS", "YFT-UNCL", "BET-FS", "BET-LS", "BET-UNCL",
+    "SKJ-FS", "SKJ-LS", "SKJ-UNCL", "ALB-FS", "ALB-LS", "ALB-UNCL",
+    "SBF-FS", "SBF-LS", "SBF-UNCL", "LOT-FS", "LOT-LS", "LOT-UNCL",
+    "FRZ-FS", "FRZ-LS", "FRZ-UNCL", "KAW-FS", "KAW-LS", "KAW-UNCL",
+    "COM-FS", "COM-LS", "COM-UNCL", "TUX-FS", "TUX-LS", "TUX-UNCL",
+    "FAL-FS", "FAL-LS", "FAL-UNCL", "OCS-FS", "OCS-LS", "OCS-UNCL",
+    "SKH-FS", "SKH-LS", "SKH-UNCL", "NTAD-FS", "NTAD-LS", "NTAD-UNCL"
+  ]
+}
