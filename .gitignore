@@ -49,6 +49,12 @@ artifacts/
 # Data directories
 data/raw/
 data/processed/
+data_2yr/
+data_2yr.zip
+*.nc
+*.nc4
+*.hdf
+*.h5
 
 #dataset
 dataset/
