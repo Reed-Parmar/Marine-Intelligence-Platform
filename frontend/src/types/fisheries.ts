@@ -36,3 +36,38 @@ export interface FisheriesSummaryMetrics {
     landingsTons: number;
   }[];
 }
+
+export interface FisheriesCatchPredictionParams {
+  Fleet: string;
+  Gear: string;
+  Effort: number;
+  EffortUnits: string;
+  Month: number;
+  Year: number;
+  Latitude: number;
+  Longitude: number;
+  SpatialResolution?: number;
+}
+
+export interface FisheriesCatchPredictionResult {
+  predicted_catch: number;
+  predicted_catch_mt: number;
+  unit: string;
+  target_variable: string;
+  model: string;
+  model_version: string;
+  disclaimer: string;
+  input_summary: {
+    fleet: string;
+    gear: string;
+    effort: number;
+    effort_units: string;
+    month: number;
+    year: number;
+    latitude: number;
+    longitude: number;
+    season: string;
+    log_effort: number;
+  };
+}
+

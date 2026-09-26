@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnomalyDetectionResult } from '../../types/ml';
-import { AlertTriangle, MapPin, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { AlertTriangle, MapPin, Activity, ArrowUpRight, ArrowDownRight, Compass, Calendar, Thermometer } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 
 export const AnomalyCard: React.FC<{ anomaly: AnomalyDetectionResult }> = ({ anomaly }) => {
@@ -15,6 +15,10 @@ export const AnomalyCard: React.FC<{ anomaly: AnomalyDetectionResult }> = ({ ano
         return <Badge variant="cyan" size="sm">{sev} Severity</Badge>;
     }
   };
+
+  const sstDev = anomaly.sst_anomaly_celsius !== undefined
+    ? (anomaly.sst_anomaly_celsius > 0 ? `+${anomaly.sst_anomaly_celsius.toFixed(2)} °C` : `${anomaly.sst_anomaly_celsius.toFixed(2)} °C`)
+    : null;
 
   return (
     <div className="glass-panel rounded-2xl p-5 border border-marine-800 space-y-4 hover:border-ocean-coral/40 transition-all">
@@ -32,25 +36,50 @@ export const AnomalyCard: React.FC<{ anomaly: AnomalyDetectionResult }> = ({ ano
             {anomaly.region}
           </p>
         </div>
-        {getSeverityBadge(anomaly.severity)}
+        <div className="flex flex-col items-end gap-1.5">
+          {getSeverityBadge(anomaly.severity)}
+          <span className="text-[10px] font-mono text-ocean-cyan">
+            Score: <strong className="text-white">{Math.round(anomaly.anomalyScore)}/100</strong>
+          </span>
+        </div>
       </div>
 
-      {/* Baseline vs Current Values */}
-      <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+      {/* Geography & Time Context Bar */}
+      <div className="flex items-center justify-between text-[11px] px-2.5 py-1.5 rounded-lg bg-marine-900/60 border border-marine-850">
+        <div className="flex items-center gap-1 text-slate-400">
+          <Compass className="w-3.5 h-3.5 text-ocean-teal" />
+          <span>{anomaly.latitude.toFixed(2)}°N, {anomaly.longitude.toFixed(2)}°E</span>
+          <span className="text-slate-600">•</span>
+          <span className="text-slate-300 truncate max-w-[150px]">{anomaly.subbasin || 'Arabian Sea (Strict IHO S-23)'}</span>
+        </div>
+        <div className="flex items-center gap-1 text-slate-400 font-mono">
+          <Calendar className="w-3 h-3 text-ocean-amber" />
+          <span>{anomaly.detectionDate}</span>
+        </div>
+      </div>
+
+      {/* Baseline vs Observed Current Values */}
+      <div className="grid grid-cols-3 gap-2 text-xs font-mono">
         <div className="p-2.5 rounded-lg bg-marine-950/80 border border-marine-850">
-          <span className="text-[10px] text-slate-400 block font-sans">Historical Baseline:</span>
+          <span className="text-[10px] text-slate-400 block font-sans">Multi-Year Baseline:</span>
           <span className="text-slate-300">{anomaly.baselineExpectedValue}</span>
         </div>
         <div className="p-2.5 rounded-lg bg-marine-950/80 border border-ocean-coral/30">
-          <span className="text-[10px] text-slate-400 block font-sans">Observed Sensor Cast:</span>
+          <span className="text-[10px] text-slate-400 block font-sans">Surface SST Cast:</span>
           <span className="text-ocean-coral font-bold">{anomaly.observedCurrentValue}</span>
+        </div>
+        <div className="p-2.5 rounded-lg bg-marine-950/80 border border-marine-850">
+          <span className="text-[10px] text-slate-400 block font-sans">SST Anomaly:</span>
+          <span className={`font-bold ${anomaly.sst_anomaly_celsius && anomaly.sst_anomaly_celsius > 0 ? 'text-ocean-coral' : 'text-ocean-cyan'}`}>
+            {sstDev || (anomaly.sst_observed_celsius && anomaly.sst_baseline_celsius ? `${(anomaly.sst_observed_celsius - anomaly.sst_baseline_celsius).toFixed(2)} °C` : '—')}
+          </span>
         </div>
       </div>
 
       {/* Feature Importance Weights */}
       <div className="space-y-2">
         <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider block">
-          Contributing Driver Features (SHAP Weights)
+          Contributing Driver Features (MEAD-V2 Weights)
         </span>
         <div className="space-y-1.5">
           {anomaly.contributingFeatures.map((feat, idx) => (
@@ -77,3 +106,4 @@ export const AnomalyCard: React.FC<{ anomaly: AnomalyDetectionResult }> = ({ ano
     </div>
   );
 };
+

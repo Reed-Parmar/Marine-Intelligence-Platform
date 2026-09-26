@@ -945,6 +945,18 @@ export const MOCK_ML_MODELS: MLModelInfo[] = [
     inputFeatures: ['Historical_CPUE', 'Monsoon_Index', 'SST_Lag30', 'Fishing_Effort_Hours'],
     description: 'Temporal CNN-LSTM forecaster generating quarterly catch landings estimates with 95% confidence intervals.',
     status: 'active'
+  },
+  {
+    id: 'ml-mod-04',
+    name: 'Marine Species Computer Vision Classifier',
+    type: 'marine_species_identification',
+    version: '1.0.0',
+    framework: 'PyTorch ResNet-18',
+    trainingAccuracyF1: 0.978,
+    lastTrainedDate: '2026-09-26',
+    inputFeatures: ['RGB_pixels (224x224)', 'Dorsal_morphology', 'Fin_ratios', 'Coloration_bands', 'Body_profile'],
+    description: 'Fine-tuned ResNet-18 deep convolutional neural network for automated taxonomic classification of 10 reef and pelagic marine fish species.',
+    status: 'active'
   }
 ];
 

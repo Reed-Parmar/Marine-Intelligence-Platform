@@ -1,126 +1,80 @@
 import React, { useState } from 'react';
-import { Sparkles, Sliders, Play, RotateCcw, TrendingUp, AlertCircle, CheckCircle2, Fish } from 'lucide-react';
+import { Sparkles, Play, RotateCcw, TrendingUp, AlertCircle, CheckCircle2, Fish, Ship, Compass, Calendar, Anchor } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { fisheriesService } from '../../services/fisheries';
+import { FisheriesCatchPredictionParams, FisheriesCatchPredictionResult } from '../../types/fisheries';
 
-interface SimulationParams {
-  species: string;
-  historicalCpue: number; // kg/hr
-  monsoonIndex: number;   // 0.0 to 1.0
-  sstLag30: number;       // °C deviation (-2.0 to +3.0)
-  fishingEffortHours: number; // hours (10,000 to 120,000)
-}
+const FLEET_OPTIONS = [
+  { value: 'EUESP', label: 'EUESP — European Union (Spain)' },
+  { value: 'EUFRA', label: 'EUFRA — European Union (France)' },
+  { value: 'SYC', label: 'SYC — Seychelles' },
+  { value: 'MDV', label: 'MDV — Maldives' },
+  { value: 'JPN', label: 'JPN — Japan' },
+  { value: 'IND', label: 'IND — India' },
+  { value: 'IDN', label: 'IDN — Indonesia' },
+  { value: 'LKA', label: 'LKA — Sri Lanka' },
+];
 
-interface SimulationResult {
-  predictedTons: number;
-  ciLow: number;
-  ciHigh: number;
-  cpueProjected: number;
-  sustainabilityStatus: 'Sustainable Yield' | 'Precautionary Alert' | 'Overfishing Risk';
-  statusVariant: 'teal' | 'amber' | 'coral';
-  confidencePercent: number;
-  notes: string;
-}
+const GEAR_OPTIONS = [
+  { value: 'PS', label: 'PS — Purse Seine' },
+  { value: 'BB', label: 'BB — Baitboat / Pole and Line' },
+  { value: 'LL', label: 'LL — Longline' },
+  { value: 'RIN', label: 'RIN — Ring Net' },
+];
 
-const SPECIES_CONFIG: Record<string, { baseBiomass: number; optimalSST: number; optimalMonsoon: number; maxCpue: number }> = {
-  'Indian Oil Sardine (Sardinella longiceps)': {
-    baseBiomass: 68000,
-    optimalSST: 0.2,
-    optimalMonsoon: 0.85,
-    maxCpue: 210
-  },
-  'Indian Mackerel (Rastrelliger kanagurta)': {
-    baseBiomass: 52000,
-    optimalSST: 0.0,
-    optimalMonsoon: 0.65,
-    maxCpue: 185
-  },
-  'Yellowfin Tuna (Thunnus albacares)': {
-    baseBiomass: 31000,
-    optimalSST: -0.4,
-    optimalMonsoon: 0.40,
-    maxCpue: 140
-  },
-  'Karikkadi Shrimp (Parapenaeopsis stylifera)': {
-    baseBiomass: 36000,
-    optimalSST: 0.5,
-    optimalMonsoon: 0.90,
-    maxCpue: 175
-  }
-};
+const EFFORT_UNIT_OPTIONS = [
+  { value: 'FHOURS', label: 'FHOURS — Fishing Hours' },
+  { value: 'FDAYS', label: 'FDAYS — Fishing Days' },
+  { value: 'SETS', label: 'SETS — Number of Sets' },
+  { value: 'TRIPS', label: 'TRIPS — Fishing Trips' },
+];
 
-export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = ({
-  initialSpecies = 'Indian Oil Sardine (Sardinella longiceps)'
-}) => {
-  const [params, setParams] = useState<SimulationParams>({
-    species: initialSpecies,
-    historicalCpue: 145,
-    monsoonIndex: 0.75,
-    sstLag30: 0.4,
-    fishingEffortHours: 72000
+export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = () => {
+  const [params, setParams] = useState<FisheriesCatchPredictionParams>({
+    Fleet: 'EUESP',
+    Gear: 'PS',
+    Effort: 45.0,
+    EffortUnits: 'FHOURS',
+    Month: 8,
+    Year: 2024,
+    Latitude: 2.5,
+    Longitude: 55.5,
+    SpatialResolution: 1.0,
   });
 
   const [isSimulating, setIsSimulating] = useState(false);
-  const [result, setResult] = useState<SimulationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<FisheriesCatchPredictionResult | null>(null);
 
-  const calculatePrediction = (p: SimulationParams): SimulationResult => {
-    const config = SPECIES_CONFIG[p.species] || SPECIES_CONFIG['Indian Oil Sardine (Sardinella longiceps)'];
-
-    // MBLF-Net surrogate model approximation
-    const cpueFactor = p.historicalCpue / 140;
-    const effortFactor = Math.pow(p.fishingEffortHours / 70000, 0.75);
-    const sstPenalty = Math.max(0, 1 - Math.abs(p.sstLag30 - config.optimalSST) * 0.18);
-    const monsoonBoost = 0.8 + (1 - Math.abs(p.monsoonIndex - config.optimalMonsoon)) * 0.35;
-
-    const basePredicted = config.baseBiomass * cpueFactor * effortFactor * sstPenalty * monsoonBoost;
-    const predictedTons = Math.round(basePredicted);
-    const ciMargin = Math.round(predictedTons * 0.095);
-
-    const projectedCpue = Math.round((predictedTons * 1000) / p.fishingEffortHours);
-
-    let sustainabilityStatus: SimulationResult['sustainabilityStatus'] = 'Sustainable Yield';
-    let statusVariant: SimulationResult['statusVariant'] = 'teal';
-    let notes = 'Forecasted stock biomass is well within safe maximum sustainable yield (MSY) biological reference points.';
-
-    if (p.fishingEffortHours > 95000 || (p.sstLag30 > 1.8 && p.historicalCpue < 120)) {
-      sustainabilityStatus = 'Overfishing Risk';
-      statusVariant = 'coral';
-      notes = 'High fishing effort combined with elevated SST lag is projected to trigger recruitment stress and biomass contraction.';
-    } else if (p.fishingEffortHours > 80000 || p.monsoonIndex < 0.35) {
-      sustainabilityStatus = 'Precautionary Alert';
-      statusVariant = 'amber';
-      notes = 'Monsoon upwelling anomalies suggest moderate juvenile dispersion; cap additional mechanized trawling effort.';
-    }
-
-    return {
-      predictedTons,
-      ciLow: predictedTons - ciMargin,
-      ciHigh: predictedTons + ciMargin,
-      cpueProjected: projectedCpue,
-      sustainabilityStatus,
-      statusVariant,
-      confidencePercent: 91.4,
-      notes
-    };
-  };
-
-  const handleRun = () => {
+  const handleRun = async () => {
     setIsSimulating(true);
-    setTimeout(() => {
-      setResult(calculatePrediction(params));
+    setError(null);
+    try {
+      const res = await fisheriesService.predictCatch(params);
+      setResult(res);
+    } catch (err: any) {
+      console.error('Failed to run fisheries catch prediction', err);
+      setError(err?.message || 'Catch prediction failed. Please check parameters.');
+    } finally {
       setIsSimulating(false);
-    }, 450);
+    }
   };
 
   const handleReset = () => {
     setParams({
-      species: initialSpecies,
-      historicalCpue: 145,
-      monsoonIndex: 0.75,
-      sstLag30: 0.4,
-      fishingEffortHours: 72000
+      Fleet: 'EUESP',
+      Gear: 'PS',
+      Effort: 45.0,
+      EffortUnits: 'FHOURS',
+      Month: 8,
+      Year: 2024,
+      Latitude: 2.5,
+      Longitude: 55.5,
+      SpatialResolution: 1.0,
     });
     setResult(null);
+    setError(null);
   };
 
   return (
@@ -132,129 +86,189 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
               <Sparkles className="w-4 h-4" />
             </span>
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              MBLF-Net Live Catch Prediction Simulator
+              Fisheries Catch Prediction Simulator (Phase 14.3 V1)
             </h4>
           </div>
           <p className="text-xs text-slate-400">
-            Simulate forward-looking commercial harvest yields by modulating key oceanographic and operational parameters.
+            Real-time inference using the finalized <strong>XGBoost Regressor</strong> trained on official IOTC surface fisheries data (1970–2022).
           </p>
         </div>
 
         <Badge variant="cyan" size="sm" className="font-mono self-start sm:self-auto">
-          XGBoost CNN-LSTM • Live Inference
+          XGBoost V1.0.0 • TotalCatchMT
         </Badge>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Controls Column */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Target Species Selector */}
-          <div>
-            <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Target Commercial Stock
-            </label>
-            <select
-              value={params.species}
-              onChange={(e) => setParams({ ...params, species: e.target.value })}
-              className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan transition-colors font-sans"
-            >
-              {Object.keys(SPECIES_CONFIG).map((sp) => (
-                <option key={sp} value={sp}>
-                  {sp}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Fleet & Gear Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Ship className="w-3.5 h-3.5 text-ocean-cyan" />
+                Vessel Fleet Flag
+              </label>
+              <select
+                value={params.Fleet}
+                onChange={(e) => setParams({ ...params, Fleet: e.target.value })}
+                className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan transition-colors font-sans"
+              >
+                {FLEET_OPTIONS.map((f) => (
+                  <option key={f.value} value={f.value}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Historical CPUE */}
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-300 font-medium">Historical CPUE (kg/hr)</span>
-              <span className="font-mono text-ocean-cyan font-bold">{params.historicalCpue} kg/hr</span>
-            </div>
-            <input
-              type="range"
-              min={60}
-              max={240}
-              step={5}
-              value={params.historicalCpue}
-              onChange={(e) => setParams({ ...params, historicalCpue: Number(e.target.value) })}
-              className="w-full accent-ocean-cyan cursor-pointer h-1.5 bg-marine-900 rounded-lg"
-            />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>60 (Low)</span>
-              <span>150 (Mean)</span>
-              <span>240 (Peak)</span>
-            </div>
-          </div>
-
-          {/* Monsoon Index */}
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-300 font-medium">Monsoon Upwelling Index</span>
-              <span className="font-mono text-ocean-teal font-bold">{params.monsoonIndex.toFixed(2)}</span>
-            </div>
-            <input
-              type="range"
-              min={0.1}
-              max={1.0}
-              step={0.05}
-              value={params.monsoonIndex}
-              onChange={(e) => setParams({ ...params, monsoonIndex: Number(e.target.value) })}
-              className="w-full accent-ocean-teal cursor-pointer h-1.5 bg-marine-900 rounded-lg"
-            />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>0.10 (Pre-monsoon)</span>
-              <span>0.50 (Moderate)</span>
-              <span>1.00 (Intense Upwelling)</span>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Anchor className="w-3.5 h-3.5 text-ocean-amber" />
+                Fishing Gear
+              </label>
+              <select
+                value={params.Gear}
+                onChange={(e) => setParams({ ...params, Gear: e.target.value })}
+                className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan transition-colors font-sans"
+              >
+                {GEAR_OPTIONS.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* SST Lag 30 */}
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-300 font-medium">SST 30-Day Lag Anomaly (°C)</span>
-              <span className="font-mono text-ocean-amber font-bold">
-                {params.sstLag30 > 0 ? `+${params.sstLag30.toFixed(1)}°C` : `${params.sstLag30.toFixed(1)}°C`}
-              </span>
+          {/* Effort & Effort Units Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-300 font-medium">Fishing Effort</span>
+                <span className="font-mono text-ocean-cyan font-bold">{params.Effort}</span>
+              </div>
+              <input
+                type="number"
+                min={0}
+                max={500}
+                step={1}
+                value={params.Effort}
+                onChange={(e) => setParams({ ...params, Effort: Math.max(0, Number(e.target.value)) })}
+                className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan font-mono"
+              />
             </div>
-            <input
-              type="range"
-              min={-1.5}
-              max={2.5}
-              step={0.1}
-              value={params.sstLag30}
-              onChange={(e) => setParams({ ...params, sstLag30: Number(e.target.value) })}
-              className="w-full accent-ocean-amber cursor-pointer h-1.5 bg-marine-900 rounded-lg"
-            />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>-1.5°C (Cool Pool)</span>
-              <span>0.0°C (Normal)</span>
-              <span>+2.5°C (MHW Warning)</span>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                Effort Units
+              </label>
+              <select
+                value={params.EffortUnits}
+                onChange={(e) => setParams({ ...params, EffortUnits: e.target.value })}
+                className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan transition-colors font-sans"
+              >
+                {EFFORT_UNIT_OPTIONS.map((u) => (
+                  <option key={u.value} value={u.value}>
+                    {u.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Fishing Effort Hours */}
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-300 font-medium">Fleet Fishing Effort (Hours)</span>
-              <span className="font-mono text-ocean-blue font-bold">
-                {params.fishingEffortHours.toLocaleString()} hrs
-              </span>
+          {/* Month & Year Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-300 font-medium flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-ocean-teal" />
+                  Month: <strong>Month {params.Month}</strong>
+                </span>
+                <span className="font-mono text-slate-400 text-[10px]">
+                  {params.Month in [12, 1, 2] ? 'NE Monsoon' : params.Month in [6, 7, 8, 9] ? 'SW Monsoon' : 'Intermonsoon'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={1}
+                max={12}
+                step={1}
+                value={params.Month}
+                onChange={(e) => setParams({ ...params, Month: Number(e.target.value) })}
+                className="w-full accent-ocean-teal cursor-pointer h-1.5 bg-marine-900 rounded-lg"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>Jan (1)</span>
+                <span>Jun (6)</span>
+                <span>Dec (12)</span>
+              </div>
             </div>
-            <input
-              type="range"
-              min={25000}
-              max={110000}
-              step={2500}
-              value={params.fishingEffortHours}
-              onChange={(e) => setParams({ ...params, fishingEffortHours: Number(e.target.value) })}
-              className="w-full accent-ocean-blue cursor-pointer h-1.5 bg-marine-900 rounded-lg"
-            />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>25,000 h (Restricted)</span>
-              <span>70,000 h (Nominal)</span>
-              <span>110,000 h (Maximum)</span>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-300 font-medium">Operation Year</span>
+                <span className="font-mono text-ocean-cyan font-bold">{params.Year}</span>
+              </div>
+              <input
+                type="number"
+                min={1970}
+                max={2035}
+                value={params.Year}
+                onChange={(e) => setParams({ ...params, Year: Number(e.target.value) })}
+                className="w-full bg-marine-950/90 border border-marine-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-ocean-cyan font-mono"
+              />
+            </div>
+          </div>
+
+          {/* Coordinates Slider Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-300 font-medium flex items-center gap-1">
+                  <Compass className="w-3.5 h-3.5 text-ocean-cyan" />
+                  Latitude (°N)
+                </span>
+                <span className="font-mono text-ocean-cyan font-bold">{params.Latitude.toFixed(1)}°N</span>
+              </div>
+              <input
+                type="range"
+                min={-30.0}
+                max={25.0}
+                step={0.5}
+                value={params.Latitude}
+                onChange={(e) => setParams({ ...params, Latitude: Number(e.target.value) })}
+                className="w-full accent-ocean-cyan cursor-pointer h-1.5 bg-marine-900 rounded-lg"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>-30.0°S</span>
+                <span>0.0° Equator</span>
+                <span>+25.0°N</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-300 font-medium flex items-center gap-1">
+                  <Compass className="w-3.5 h-3.5 text-ocean-teal" />
+                  Longitude (°E)
+                </span>
+                <span className="font-mono text-ocean-teal font-bold">{params.Longitude.toFixed(1)}°E</span>
+              </div>
+              <input
+                type="range"
+                min={40.0}
+                max={100.0}
+                step={0.5}
+                value={params.Longitude}
+                onChange={(e) => setParams({ ...params, Longitude: Number(e.target.value) })}
+                className="w-full accent-ocean-teal cursor-pointer h-1.5 bg-marine-900 rounded-lg"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>40.0°E (West)</span>
+                <span>70.0°E</span>
+                <span>100.0°E (East)</span>
+              </div>
             </div>
           </div>
 
@@ -268,7 +282,7 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
               className="flex-1 flex items-center justify-center gap-2"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>{isSimulating ? 'Computing Inference...' : 'Run Catch Prediction'}</span>
+              <span>{isSimulating ? 'Predicting Catch (XGBoost V1)...' : 'Run V1 Catch Prediction'}</span>
             </Button>
             <Button
               variant="ghost"
@@ -280,6 +294,13 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
               <RotateCcw className="w-3.5 h-3.5" />
             </Button>
           </div>
+
+          {error && (
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
         </div>
 
         {/* Results Column */}
@@ -291,40 +312,44 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
                     Model Inference Output
                   </span>
-                  <h5 className="text-sm font-semibold text-white mt-0.5">{params.species}</h5>
+                  <h5 className="text-sm font-semibold text-white mt-0.5">
+                    {result.input_summary.fleet} • {result.input_summary.gear} • {result.input_summary.season}
+                  </h5>
                 </div>
-                <Badge variant={result.statusVariant} size="sm">
-                  {result.sustainabilityStatus}
+                <Badge variant="teal" size="sm">
+                  {result.model_version ? `Model V${result.model_version}` : 'V1 Production'}
                 </Badge>
               </div>
 
               {/* Primary Output Display */}
               <div className="p-4 rounded-xl bg-marine-900/90 border border-marine-800 space-y-2">
                 <span className="text-[10px] font-sans text-slate-400 uppercase tracking-wider block">
-                  Simulated Catch Yield (MBLF-Net)
+                  Predicted Total Catch (XGBoost V1)
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-mono font-black text-ocean-cyan tracking-tight">
-                    {result.predictedTons.toLocaleString()}
+                    {result.predicted_catch_mt.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-sm font-semibold text-slate-300 font-mono">Metric Tons</span>
+                  <span className="text-sm font-semibold text-slate-300 font-mono">{result.unit}</span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400 pt-2 border-t border-marine-800/80">
-                  <span>95% CI: <strong className="text-slate-200 font-normal">{result.ciLow.toLocaleString()} - {result.ciHigh.toLocaleString()} T</strong></span>
-                  <span>Proj. CPUE: <strong className="text-ocean-teal font-normal">{result.cpueProjected} kg/h</strong></span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-400 pt-2 border-t border-marine-800/80">
+                  <span>Effort: <strong className="text-slate-200">{result.input_summary.effort} {result.input_summary.effort_units}</strong></span>
+                  <span>Log Effort: <strong className="text-ocean-teal">{result.input_summary.log_effort}</strong></span>
+                  <span>Coordinates: <strong className="text-slate-200">{result.input_summary.latitude}°N, {result.input_summary.longitude}°E</strong></span>
+                  <span>Monsoon: <strong className="text-ocean-amber">{result.input_summary.season}</strong></span>
                 </div>
               </div>
 
-              {/* Advisory & Feature Breakdown */}
+              {/* Advisory & Scientific Disclaimer */}
               <div className="p-3 rounded-lg bg-marine-900/50 border border-marine-850 text-xs text-slate-300 space-y-1.5 leading-relaxed">
-                <span className="font-semibold text-white block">Advisory Guidance:</span>
-                <p>{result.notes}</p>
+                <span className="font-semibold text-white block">Scientific Decision Support Notice:</span>
+                <p>{result.disclaimer}</p>
               </div>
 
               <div className="text-[10px] text-slate-400 font-mono flex items-center justify-between pt-1">
-                <span>Model Confidence: <strong>{result.confidencePercent}%</strong></span>
-                <span>Inference Latency: <strong>14.2 ms</strong></span>
+                <span>Model: <strong>{result.model}</strong></span>
+                <span>Target: <strong>{result.target_variable}</strong></span>
               </div>
             </div>
           ) : (
@@ -337,7 +362,7 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
                   Ready for Simulation
                 </h5>
                 <p className="text-xs text-slate-400">
-                  Adjust the four MBLF-Net input features and click <strong>Run Catch Prediction</strong> to generate live harvest yield projections.
+                  Adjust operational stratum parameters (Fleet, Gear, Effort, Month, Location) and click <strong>Run V1 Catch Prediction</strong> to generate real XGBoost predictions.
                 </p>
               </div>
               <Button
@@ -355,3 +380,4 @@ export const CatchPredictionSimulator: React.FC<{ initialSpecies?: string }> = (
     </div>
   );
 };
+

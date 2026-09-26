@@ -1,0 +1,46 @@
+{
+  "model_name": "IOTC Fisheries Catch Predictor (XGBoost Tuned)",
+  "memory_rss_mb": 267.4921875,
+  "model_memory_delta_mb": 108.34375,
+  "model_load_time_ms": 442.5735999830067,
+  "single_prediction": {
+    "mean_latency_ms": 6.140059997560456,
+    "median_latency_ms": 6.077550002373755,
+    "p95_latency_ms": 6.71097997110337,
+    "p99_latency_ms": 6.983842975459993,
+    "min_latency_ms": 5.726599949412048,
+    "max_latency_ms": 7.007900043390691
+  },
+  "batch_benchmarks": [
+    {
+      "batch_size": 10,
+      "mean_batch_time_sec": 0.008396779978647828,
+      "throughput_records_per_sec": 1190.9327177119087,
+      "per_record_latency_ms": 0.8396779978647828
+    },
+    {
+      "batch_size": 50,
+      "mean_batch_time_sec": 0.01756880001630634,
+      "throughput_records_per_sec": 2845.9541888798835,
+      "per_record_latency_ms": 0.3513760003261268
+    },
+    {
+      "batch_size": 100,
+      "mean_batch_time_sec": 0.027618939988315105,
+      "throughput_records_per_sec": 3620.7037649637364,
+      "per_record_latency_ms": 0.27618939988315105
+    },
+    {
+      "batch_size": 500,
+      "mean_batch_time_sec": 0.10968111997935921,
+      "throughput_records_per_sec": 4558.669715390347,
+      "per_record_latency_ms": 0.21936223995871842
+    },
+    {
+      "batch_size": 1000,
+      "mean_batch_time_sec": 0.18704460002481937,
+      "throughput_records_per_sec": 5346.31847092783,
+      "per_record_latency_ms": 0.18704460002481937
+    }
+  ]
+}
