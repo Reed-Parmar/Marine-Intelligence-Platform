@@ -161,6 +161,7 @@ def run_experiments():
     logger.info("Fitting Feature Extractor on Train Set...")
     fe = DistributionFeatureExtractor()
     fe.fit(train_trans)
+    fe.save(str(MODELS_DIR / "feature_extractor.json"))
 
     # Transform Train, Val, Test across feature sets
     logger.info("Transforming datasets for Structural, Environmental, and Full experiments...")
