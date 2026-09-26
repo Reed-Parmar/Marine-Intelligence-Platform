@@ -123,8 +123,8 @@ SELECT
     MIN(depth_meters) as min_depth,
     MAX(depth_meters) as max_depth
 FROM public.oceanographic_observations
-WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
-  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
+WHERE (CAST(:date_from AS timestamptz) IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (CAST(:date_to AS timestamptz) IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
 """
 
 GET_OCEAN_TRENDS = """
@@ -136,8 +136,8 @@ SELECT
     AVG(dissolved_oxygen_mgl) as avg_dissolved_oxygen,
     AVG(chlorophyll_mg_m3) as avg_chlorophyll
 FROM public.oceanographic_observations
-WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
-  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
+WHERE (CAST(:date_from AS timestamptz) IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (CAST(:date_to AS timestamptz) IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
 GROUP BY time_bucket
 ORDER BY time_bucket ASC;
 """
@@ -170,8 +170,8 @@ SELECT
     COUNT(DISTINCT species_id) as distinct_species_count,
     COUNT(DISTINCT fishing_zone) as distinct_zones_count
 FROM public.fisheries_records
-WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
-  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
+WHERE (CAST(:date_from AS timestamptz) IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (CAST(:date_to AS timestamptz) IS NULL OR timestamp <= CAST(:date_to AS timestamptz));
 """
 
 GET_FISHERIES_TRENDS = """
@@ -182,8 +182,8 @@ SELECT
     AVG(catch_weight_kg) as avg_catch_kg,
     SUM(fishing_effort_hours) as total_effort_hours
 FROM public.fisheries_records
-WHERE (:date_from IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
-  AND (:date_to IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
+WHERE (CAST(:date_from AS timestamptz) IS NULL OR timestamp >= CAST(:date_from AS timestamptz))
+  AND (CAST(:date_to AS timestamptz) IS NULL OR timestamp <= CAST(:date_to AS timestamptz))
 GROUP BY time_bucket
 ORDER BY time_bucket ASC;
 """
@@ -201,7 +201,7 @@ SELECT
     t.kingdom, t.phylum, t.class, t.order_name as "order", t.family, t.genus
 FROM public.species s
 LEFT JOIN public.taxonomy t ON s.taxonomy_id = t.id
-WHERE (:search IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name ILIKE :search_like)
+WHERE (CAST(:search AS text) IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name ILIKE :search_like)
 ORDER BY s.scientific_name ASC
 LIMIT :limit OFFSET :offset;
 """
@@ -209,7 +209,7 @@ LIMIT :limit OFFSET :offset;
 COUNT_SEARCH_SPECIES = """
 SELECT COUNT(*) as total
 FROM public.species s
-WHERE (:search IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name ILIKE :search_like);
+WHERE (CAST(:search AS text) IS NULL OR s.scientific_name ILIKE :search_like OR s.common_name ILIKE :search_like);
 """
 
 GET_SPECIES_BY_ID = """
@@ -281,11 +281,11 @@ GET_UNIFIED_MARINE_OBSERVATIONS = """
             'chlorophyll', o.chlorophyll_mg_m3
         ) as measurements
     FROM public.oceanographic_observations o
-    WHERE (:date_from IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
-      AND (:date_to IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
-      AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
-      AND (:depth_min IS NULL OR o.depth_meters >= :depth_min)
-      AND (:depth_max IS NULL OR o.depth_meters <= :depth_max)
+    WHERE (CAST(:date_from AS timestamptz) IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
+      AND (CAST(:date_to AS timestamptz) IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
+      AND (CAST(:dataset_id AS uuid) IS NULL OR o.dataset_id = CAST(:dataset_id AS uuid))
+      AND (CAST(:depth_min AS double precision) IS NULL OR o.depth_meters >= CAST(:depth_min AS double precision))
+      AND (CAST(:depth_max AS double precision) IS NULL OR o.depth_meters <= CAST(:depth_max AS double precision))
 )
 UNION ALL
 (
@@ -307,12 +307,12 @@ UNION ALL
         ) as measurements
     FROM public.fisheries_records f
     LEFT JOIN public.species s ON f.species_id = s.id
-    WHERE (:date_from IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
-      AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
-      AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
-      AND (:species_id IS NULL OR f.species_id = :species_id)
-      AND (:depth_min IS NULL OR f.depth_meters >= :depth_min)
-      AND (:depth_max IS NULL OR f.depth_meters <= :depth_max)
+    WHERE (CAST(:date_from AS timestamptz) IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
+      AND (CAST(:date_to AS timestamptz) IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
+      AND (CAST(:dataset_id AS uuid) IS NULL OR f.dataset_id = CAST(:dataset_id AS uuid))
+      AND (CAST(:species_id AS uuid) IS NULL OR f.species_id = CAST(:species_id AS uuid))
+      AND (CAST(:depth_min AS double precision) IS NULL OR f.depth_meters >= CAST(:depth_min AS double precision))
+      AND (CAST(:depth_max AS double precision) IS NULL OR f.depth_meters <= CAST(:depth_max AS double precision))
 )
 UNION ALL
 (
@@ -333,12 +333,12 @@ UNION ALL
         ) as measurements
     FROM public.species_occurrences occ
     LEFT JOIN public.species sp ON occ.species_id = sp.id
-    WHERE (:date_from IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
-      AND (:date_to IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
-      AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
-      AND (:species_id IS NULL OR occ.species_id = :species_id)
-      AND (:depth_min IS NULL OR occ.depth_meters >= :depth_min)
-      AND (:depth_max IS NULL OR occ.depth_meters <= :depth_max)
+    WHERE (CAST(:date_from AS timestamptz) IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
+      AND (CAST(:date_to AS timestamptz) IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
+      AND (CAST(:dataset_id AS uuid) IS NULL OR occ.dataset_id = CAST(:dataset_id AS uuid))
+      AND (CAST(:species_id AS uuid) IS NULL OR occ.species_id = CAST(:species_id AS uuid))
+      AND (CAST(:depth_min AS double precision) IS NULL OR occ.depth_meters >= CAST(:depth_min AS double precision))
+      AND (CAST(:depth_max AS double precision) IS NULL OR occ.depth_meters <= CAST(:depth_max AS double precision))
 )
 ORDER BY time DESC NULLS LAST, id ASC
 LIMIT :limit OFFSET :offset;
@@ -349,31 +349,31 @@ SELECT (
     (
         SELECT COUNT(*)
         FROM public.oceanographic_observations o
-        WHERE (:date_from IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
-          AND (:date_to IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
-          AND (:dataset_id IS NULL OR o.dataset_id = :dataset_id)
-          AND (:depth_min IS NULL OR o.depth_meters >= :depth_min)
-          AND (:depth_max IS NULL OR o.depth_meters <= :depth_max)
+        WHERE (CAST(:date_from AS timestamptz) IS NULL OR o.timestamp >= CAST(:date_from AS timestamptz))
+          AND (CAST(:date_to AS timestamptz) IS NULL OR o.timestamp <= CAST(:date_to AS timestamptz))
+          AND (CAST(:dataset_id AS uuid) IS NULL OR o.dataset_id = CAST(:dataset_id AS uuid))
+          AND (CAST(:depth_min AS double precision) IS NULL OR o.depth_meters >= CAST(:depth_min AS double precision))
+          AND (CAST(:depth_max AS double precision) IS NULL OR o.depth_meters <= CAST(:depth_max AS double precision))
     ) +
     (
         SELECT COUNT(*)
         FROM public.fisheries_records f
-        WHERE (:date_from IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
-          AND (:date_to IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
-          AND (:dataset_id IS NULL OR f.dataset_id = :dataset_id)
-          AND (:species_id IS NULL OR f.species_id = :species_id)
-          AND (:depth_min IS NULL OR f.depth_meters >= :depth_min)
-          AND (:depth_max IS NULL OR f.depth_meters <= :depth_max)
+        WHERE (CAST(:date_from AS timestamptz) IS NULL OR f.timestamp >= CAST(:date_from AS timestamptz))
+          AND (CAST(:date_to AS timestamptz) IS NULL OR f.timestamp <= CAST(:date_to AS timestamptz))
+          AND (CAST(:dataset_id AS uuid) IS NULL OR f.dataset_id = CAST(:dataset_id AS uuid))
+          AND (CAST(:species_id AS uuid) IS NULL OR f.species_id = CAST(:species_id AS uuid))
+          AND (CAST(:depth_min AS double precision) IS NULL OR f.depth_meters >= CAST(:depth_min AS double precision))
+          AND (CAST(:depth_max AS double precision) IS NULL OR f.depth_meters <= CAST(:depth_max AS double precision))
     ) +
     (
         SELECT COUNT(*)
         FROM public.species_occurrences occ
-        WHERE (:date_from IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
-          AND (:date_to IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
-          AND (:dataset_id IS NULL OR occ.dataset_id = :dataset_id)
-          AND (:species_id IS NULL OR occ.species_id = :species_id)
-          AND (:depth_min IS NULL OR occ.depth_meters >= :depth_min)
-          AND (:depth_max IS NULL OR occ.depth_meters <= :depth_max)
+        WHERE (CAST(:date_from AS timestamptz) IS NULL OR occ.timestamp >= CAST(:date_from AS timestamptz))
+          AND (CAST(:date_to AS timestamptz) IS NULL OR occ.timestamp <= CAST(:date_to AS timestamptz))
+          AND (CAST(:dataset_id AS uuid) IS NULL OR occ.dataset_id = CAST(:dataset_id AS uuid))
+          AND (CAST(:species_id AS uuid) IS NULL OR occ.species_id = CAST(:species_id AS uuid))
+          AND (CAST(:depth_min AS double precision) IS NULL OR occ.depth_meters >= CAST(:depth_min AS double precision))
+          AND (CAST(:depth_max AS double precision) IS NULL OR occ.depth_meters <= CAST(:depth_max AS double precision))
     )
 ) as total;
 """

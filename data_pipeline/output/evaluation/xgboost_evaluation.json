@@ -25,45 +25,45 @@
         "max_displacement_error_km": 1380.5
       },
       "model1_structural_xgboost": {
-        "top_1_accuracy": 0.4475,
-        "top_3_accuracy": 0.8382,
-        "macro_f1": 0.1238,
-        "log_loss": 1.5637,
-        "brier_score": 0.7697,
-        "mean_displacement_error_km": 334.54,
-        "median_displacement_error_km": 328.0,
+        "top_1_accuracy": 0.542,
+        "top_3_accuracy": 0.9055,
+        "macro_f1": 0.202,
+        "log_loss": 1.3675,
+        "brier_score": 0.6794,
+        "mean_displacement_error_km": 309.93,
+        "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 1264.32,
         "max_displacement_error_km": 1380.5
       },
       "model2_environmental_xgboost": {
-        "top_1_accuracy": 0.4307,
-        "top_3_accuracy": 0.8403,
-        "macro_f1": 0.1186,
-        "log_loss": 1.5064,
-        "brier_score": 0.7539,
-        "mean_displacement_error_km": 355.52,
-        "median_displacement_error_km": 328.0,
+        "top_1_accuracy": 0.5294,
+        "top_3_accuracy": 0.895,
+        "macro_f1": 0.1992,
+        "log_loss": 1.4161,
+        "brier_score": 0.7029,
+        "mean_displacement_error_km": 325.44,
+        "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 1264.32,
         "max_displacement_error_km": 1380.5
       },
       "model3_full_xgboost": {
-        "top_1_accuracy": 0.6324,
-        "top_3_accuracy": 0.8193,
-        "macro_f1": 0.2361,
-        "log_loss": 1.3493,
-        "brier_score": 0.5675,
-        "mean_displacement_error_km": 273.35,
+        "top_1_accuracy": 0.6282,
+        "top_3_accuracy": 0.8424,
+        "macro_f1": 0.2396,
+        "log_loss": 1.3321,
+        "brier_score": 0.57,
+        "mean_displacement_error_km": 278.3,
         "median_displacement_error_km": 0.0,
-        "p90_displacement_error_km": 1198.27,
+        "p90_displacement_error_km": 1380.5,
         "max_displacement_error_km": 1380.5
       }
     },
     "per_sector_metrics_model3": {
       "Malabar Upwelling Shelf": {
         "support": 212,
-        "precision": 0.6263,
-        "recall": 0.8538,
-        "f1_score": 0.7226
+        "precision": 0.6026,
+        "recall": 0.8726,
+        "f1_score": 0.7129
       },
       "Central Arabian Sea Offshore Basin": {
         "support": 0,
@@ -73,21 +73,21 @@
       },
       "North Arabian Sea / Gujarat Shelf": {
         "support": 66,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1_score": 0.0
+        "precision": 0.0625,
+        "recall": 0.0152,
+        "f1_score": 0.0244
       },
       "Lakshadweep Sea & Ridge": {
         "support": 132,
-        "precision": 0.9524,
-        "recall": 0.9091,
-        "f1_score": 0.9302
+        "precision": 0.9825,
+        "recall": 0.8485,
+        "f1_score": 0.9106
       },
       "Wadge Bank / Comorin Sector": {
         "support": 66,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1_score": 0.0
+        "precision": 0.5,
+        "recall": 0.0152,
+        "f1_score": 0.0294
       },
       "Konkan Coast / Central West Coast": {
         "support": 0,
@@ -118,36 +118,36 @@
         "max_displacement_error_km": 1400.22
       },
       "model1_structural_xgboost": {
-        "top_1_accuracy": 0.7241,
-        "top_3_accuracy": 0.9794,
-        "macro_f1": 0.4883,
-        "log_loss": 0.7286,
-        "brier_score": 0.3926,
-        "mean_displacement_error_km": 181.43,
+        "top_1_accuracy": 0.7225,
+        "top_3_accuracy": 0.9802,
+        "macro_f1": 0.4856,
+        "log_loss": 0.738,
+        "brier_score": 0.396,
+        "mean_displacement_error_km": 182.29,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 666.63,
         "max_displacement_error_km": 1380.5
       },
       "model2_environmental_xgboost": {
-        "top_1_accuracy": 0.7233,
-        "top_3_accuracy": 0.981,
-        "macro_f1": 0.4867,
-        "log_loss": 0.7296,
-        "brier_score": 0.3932,
-        "mean_displacement_error_km": 181.78,
+        "top_1_accuracy": 0.7202,
+        "top_3_accuracy": 0.9779,
+        "macro_f1": 0.4845,
+        "log_loss": 0.7387,
+        "brier_score": 0.3961,
+        "mean_displacement_error_km": 184.44,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 666.63,
         "max_displacement_error_km": 1380.5
       },
       "model3_full_xgboost": {
-        "top_1_accuracy": 0.7342,
+        "top_1_accuracy": 0.7338,
         "top_3_accuracy": 0.986,
-        "macro_f1": 0.522,
-        "log_loss": 0.6175,
-        "brier_score": 0.3544,
-        "mean_displacement_error_km": 176.21,
+        "macro_f1": 0.5256,
+        "log_loss": 0.621,
+        "brier_score": 0.3549,
+        "mean_displacement_error_km": 176.88,
         "median_displacement_error_km": 0.0,
-        "p90_displacement_error_km": 631.62,
+        "p90_displacement_error_km": 635.95,
         "max_displacement_error_km": 1578.95
       }
     }
@@ -181,8 +181,8 @@
         "top_1_accuracy": 1.0,
         "top_3_accuracy": 1.0,
         "macro_f1": 0.1429,
-        "log_loss": 0.055,
-        "brier_score": 0.0048,
+        "log_loss": 0.0757,
+        "brier_score": 0.011,
         "mean_displacement_error_km": 0.0,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 0.0,
@@ -192,8 +192,8 @@
         "top_1_accuracy": 1.0,
         "top_3_accuracy": 1.0,
         "macro_f1": 0.1429,
-        "log_loss": 0.0679,
-        "brier_score": 0.0076,
+        "log_loss": 0.0697,
+        "brier_score": 0.0088,
         "mean_displacement_error_km": 0.0,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 0.0,
@@ -203,8 +203,8 @@
         "top_1_accuracy": 0.9375,
         "top_3_accuracy": 1.0,
         "macro_f1": 0.1382,
-        "log_loss": 0.4592,
-        "brier_score": 0.2254,
+        "log_loss": 0.4192,
+        "brier_score": 0.1983,
         "mean_displacement_error_km": 86.28,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 0.0,
@@ -236,34 +236,34 @@
         "max_displacement_error_km": 1380.5
       },
       "model1_structural": {
-        "top_1_accuracy": 0.4077,
-        "top_3_accuracy": 0.8266,
-        "macro_f1": 0.1179,
-        "log_loss": 1.6724,
-        "brier_score": 0.8248,
-        "mean_displacement_error_km": 358.65,
-        "median_displacement_error_km": 328.0,
+        "top_1_accuracy": 0.509,
+        "top_3_accuracy": 0.8986,
+        "macro_f1": 0.1964,
+        "log_loss": 1.4606,
+        "brier_score": 0.7275,
+        "mean_displacement_error_km": 332.27,
+        "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 1264.32,
         "max_displacement_error_km": 1380.5
       },
       "model2_environmental": {
-        "top_1_accuracy": 0.3896,
-        "top_3_accuracy": 0.8288,
-        "macro_f1": 0.1124,
-        "log_loss": 1.6101,
-        "brier_score": 0.8077,
-        "mean_displacement_error_km": 381.14,
+        "top_1_accuracy": 0.4955,
+        "top_3_accuracy": 0.8874,
+        "macro_f1": 0.1933,
+        "log_loss": 1.5132,
+        "brier_score": 0.753,
+        "mean_displacement_error_km": 348.9,
         "median_displacement_error_km": 328.0,
         "p90_displacement_error_km": 1264.32,
         "max_displacement_error_km": 1380.5
       },
       "model3_full": {
-        "top_1_accuracy": 0.6104,
-        "top_3_accuracy": 0.8063,
-        "macro_f1": 0.2312,
-        "log_loss": 1.4135,
-        "brier_score": 0.5922,
-        "mean_displacement_error_km": 286.83,
+        "top_1_accuracy": 0.6059,
+        "top_3_accuracy": 0.8311,
+        "macro_f1": 0.2348,
+        "log_loss": 1.3979,
+        "brier_score": 0.5968,
+        "mean_displacement_error_km": 292.14,
         "median_displacement_error_km": 0.0,
         "p90_displacement_error_km": 1380.5,
         "max_displacement_error_km": 1380.5
@@ -272,11 +272,11 @@
   },
   "spatial_block_diagnostic_gujarat": {
     "top_1_accuracy": 0.4167,
-    "top_3_accuracy": 0.7675,
-    "macro_f1": 0.1272,
-    "log_loss": 1.7297,
-    "brier_score": 0.7924,
-    "mean_displacement_error_km": 423.62,
+    "top_3_accuracy": 0.7719,
+    "macro_f1": 0.127,
+    "log_loss": 1.7455,
+    "brier_score": 0.8004,
+    "mean_displacement_error_km": 425.22,
     "median_displacement_error_km": 536.64,
     "p90_displacement_error_km": 1016.04,
     "max_displacement_error_km": 1400.22
@@ -284,81 +284,81 @@
   "feature_importance_model2": [
     {
       "feature": "month_cos",
-      "gain": 13.581722259521484,
-      "weight": 628.0,
-      "gain_pct": 22.26
+      "gain": 14.263138771057129,
+      "weight": 623.0,
+      "gain_pct": 23.77
     },
     {
       "feature": "current_lon",
-      "gain": 12.06838321685791,
-      "weight": 956.0,
-      "gain_pct": 19.78
-    },
-    {
-      "feature": "season_code",
-      "gain": 7.423643589019775,
-      "weight": 182.0,
-      "gain_pct": 12.17
+      "gain": 11.876052856445312,
+      "weight": 989.0,
+      "gain_pct": 19.79
     },
     {
       "feature": "sector_code",
-      "gain": 4.760412216186523,
-      "weight": 147.0,
-      "gain_pct": 7.8
+      "gain": 5.3498759269714355,
+      "weight": 169.0,
+      "gain_pct": 8.91
+    },
+    {
+      "feature": "season_code",
+      "gain": 4.7861008644104,
+      "weight": 223.0,
+      "gain_pct": 7.97
     },
     {
       "feature": "mean_depth_meters",
-      "gain": 3.817993640899658,
-      "weight": 1067.0,
-      "gain_pct": 6.26
-    },
-    {
-      "feature": "month_sin",
-      "gain": 3.476372241973877,
-      "weight": 380.0,
-      "gain_pct": 5.7
+      "gain": 3.7535884380340576,
+      "weight": 1183.0,
+      "gain_pct": 6.25
     },
     {
       "feature": "delta_t",
-      "gain": 3.3460772037506104,
-      "weight": 859.0,
-      "gain_pct": 5.48
+      "gain": 3.307912826538086,
+      "weight": 892.0,
+      "gain_pct": 5.51
     },
     {
-      "feature": "current_lat",
-      "gain": 2.9779648780822754,
-      "weight": 810.0,
-      "gain_pct": 4.88
-    },
-    {
-      "feature": "salinity_psu",
-      "gain": 2.419235944747925,
-      "weight": 5.0,
-      "gain_pct": 3.96
-    },
-    {
-      "feature": "historical_occurrence_rate",
-      "gain": 2.4072954654693604,
-      "weight": 987.0,
-      "gain_pct": 3.94
-    },
-    {
-      "feature": "species_code",
-      "gain": 2.231572389602661,
-      "weight": 1725.0,
-      "gain_pct": 3.66
+      "feature": "month_sin",
+      "gain": 3.2776272296905518,
+      "weight": 418.0,
+      "gain_pct": 5.46
     },
     {
       "feature": "sst_celsius",
-      "gain": 2.1364474296569824,
-      "weight": 40.0,
-      "gain_pct": 3.5
+      "gain": 2.965498924255371,
+      "weight": 46.0,
+      "gain_pct": 4.94
+    },
+    {
+      "feature": "current_lat",
+      "gain": 2.691457748413086,
+      "weight": 755.0,
+      "gain_pct": 4.48
+    },
+    {
+      "feature": "salinity_psu",
+      "gain": 2.6087992191314697,
+      "weight": 6.0,
+      "gain_pct": 4.35
+    },
+    {
+      "feature": "historical_occurrence_rate",
+      "gain": 2.234504461288452,
+      "weight": 947.0,
+      "gain_pct": 3.72
+    },
+    {
+      "feature": "species_code",
+      "gain": 2.2221477031707764,
+      "weight": 1607.0,
+      "gain_pct": 3.7
     },
     {
       "feature": "dissolved_oxygen_mgl",
-      "gain": 0.37500905990600586,
-      "weight": 1.0,
-      "gain_pct": 0.61
+      "gain": 0.6787110567092896,
+      "weight": 2.0,
+      "gain_pct": 1.13
     },
     {
       "feature": "chlorophyll_mg_m3",
@@ -376,129 +376,129 @@
   "feature_importance_model3": [
     {
       "feature": "markov_prior_0",
-      "gain": 17.299808502197266,
-      "weight": 671.0,
-      "gain_pct": 16.63
+      "gain": 21.41802406311035,
+      "weight": 578.0,
+      "gain_pct": 20.46
     },
     {
       "feature": "markov_prior_1",
-      "gain": 16.499319076538086,
-      "weight": 560.0,
-      "gain_pct": 15.86
+      "gain": 19.42133140563965,
+      "weight": 490.0,
+      "gain_pct": 18.55
     },
     {
       "feature": "markov_prior_2",
-      "gain": 10.998825073242188,
-      "weight": 407.0,
-      "gain_pct": 10.57
-    },
-    {
-      "feature": "markov_prior_4",
-      "gain": 9.706551551818848,
-      "weight": 379.0,
-      "gain_pct": 9.33
+      "gain": 9.793313026428223,
+      "weight": 489.0,
+      "gain_pct": 9.36
     },
     {
       "feature": "markov_prior_5",
-      "gain": 9.595330238342285,
-      "weight": 367.0,
-      "gain_pct": 9.22
+      "gain": 9.451370239257812,
+      "weight": 393.0,
+      "gain_pct": 9.03
     },
     {
       "feature": "markov_prior_3",
-      "gain": 9.528135299682617,
-      "weight": 315.0,
-      "gain_pct": 9.16
+      "gain": 9.108722686767578,
+      "weight": 342.0,
+      "gain_pct": 8.7
+    },
+    {
+      "feature": "markov_prior_4",
+      "gain": 8.05064868927002,
+      "weight": 388.0,
+      "gain_pct": 7.69
     },
     {
       "feature": "markov_prior_6",
-      "gain": 8.18701457977295,
-      "weight": 270.0,
-      "gain_pct": 7.87
+      "gain": 6.894639015197754,
+      "weight": 289.0,
+      "gain_pct": 6.59
     },
     {
       "feature": "month_cos",
-      "gain": 3.469499111175537,
-      "weight": 202.0,
-      "gain_pct": 3.33
-    },
-    {
-      "feature": "sector_code",
-      "gain": 3.2381160259246826,
-      "weight": 73.0,
-      "gain_pct": 3.11
+      "gain": 4.048579216003418,
+      "weight": 224.0,
+      "gain_pct": 3.87
     },
     {
       "feature": "current_lon",
-      "gain": 2.4129302501678467,
-      "weight": 538.0,
-      "gain_pct": 2.32
+      "gain": 2.1417250633239746,
+      "weight": 549.0,
+      "gain_pct": 2.05
     },
     {
       "feature": "season_code",
-      "gain": 2.395289182662964,
-      "weight": 45.0,
-      "gain_pct": 2.3
+      "gain": 1.96895170211792,
+      "weight": 24.0,
+      "gain_pct": 1.88
     },
     {
       "feature": "month_sin",
-      "gain": 1.8325588703155518,
-      "weight": 242.0,
-      "gain_pct": 1.76
-    },
-    {
-      "feature": "historical_occurrence_rate",
-      "gain": 1.7070926427841187,
-      "weight": 582.0,
-      "gain_pct": 1.64
+      "gain": 1.8157780170440674,
+      "weight": 252.0,
+      "gain_pct": 1.73
     },
     {
       "feature": "mean_depth_meters",
-      "gain": 1.6303434371948242,
-      "weight": 732.0,
-      "gain_pct": 1.57
-    },
-    {
-      "feature": "delta_t",
-      "gain": 1.4244145154953003,
-      "weight": 183.0,
-      "gain_pct": 1.37
-    },
-    {
-      "feature": "current_lat",
-      "gain": 1.0786936283111572,
-      "weight": 520.0,
-      "gain_pct": 1.04
-    },
-    {
-      "feature": "species_code",
-      "gain": 1.0516029596328735,
-      "weight": 535.0,
-      "gain_pct": 1.01
-    },
-    {
-      "feature": "salinity_psu",
-      "gain": 0.8568853735923767,
-      "weight": 7.0,
-      "gain_pct": 0.82
-    },
-    {
-      "feature": "sst_celsius",
-      "gain": 0.7696390151977539,
-      "weight": 33.0,
-      "gain_pct": 0.74
-    },
-    {
-      "feature": "chlorophyll_mg_m3",
-      "gain": 0.36536866426467896,
-      "weight": 1.0,
-      "gain_pct": 0.35
+      "gain": 1.493355393409729,
+      "weight": 782.0,
+      "gain_pct": 1.43
     },
     {
       "feature": "dissolved_oxygen_mgl",
-      "gain": 0.0,
-      "weight": 0.0,
-      "gain_pct": 0.0
+      "gain": 1.4365777969360352,
+      "weight": 1.0,
+      "gain_pct": 1.37
+    },
+    {
+      "feature": "delta_t",
+      "gain": 1.3839956521987915,
+      "weight": 187.0,
+      "gain_pct": 1.32
+    },
+    {
+      "feature": "historical_occurrence_rate",
+      "gain": 1.308907151222229,
+      "weight": 641.0,
+      "gain_pct": 1.25
+    },
+    {
+      "feature": "sector_code",
+      "gain": 1.2460029125213623,
+      "weight": 75.0,
+      "gain_pct": 1.19
+    },
+    {
+      "feature": "species_code",
+      "gain": 1.0280895233154297,
+      "weight": 513.0,
+      "gain_pct": 0.98
+    },
+    {
+      "feature": "current_lat",
+      "gain": 0.7632139921188354,
+      "weight": 473.0,
+      "gain_pct": 0.73
+    },
+    {
+      "feature": "salinity_psu",
+      "gain": 0.6558364629745483,
+      "weight": 9.0,
+      "gain_pct": 0.63
+    },
+    {
+      "feature": "sst_celsius",
+      "gain": 0.6410846710205078,
+      "weight": 36.0,
+      "gain_pct": 0.61
+    },
+    {
+      "feature": "chlorophyll_mg_m3",
+      "gain": 0.6031597256660461,
+      "weight": 1.0,
+      "gain_pct": 0.58
     },
     {
       "feature": "has_environmental_context",

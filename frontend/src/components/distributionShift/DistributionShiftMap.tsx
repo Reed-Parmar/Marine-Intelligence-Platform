@@ -160,7 +160,7 @@ export const DistributionShiftMap: React.FC<DistributionShiftMapProps> = ({
         {/* Dark Ocean Basemap */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a> | CMLRE MoES India'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_3yte_1_e1d6bb51bda7e416693b3f5a"
           maxZoom={18}
         />
 
