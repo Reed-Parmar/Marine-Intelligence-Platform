@@ -1,0 +1,86 @@
+{
+  "dataset_name": "Fish4Knowledge (F4K) Marine Species Ground-Truth Benchmark",
+  "total_images_scanned": 3551,
+  "valid_images": 3551,
+  "corrupted_images_count": 0,
+  "corrupted_files": [],
+  "exact_duplicates_count": 37,
+  "duplicates_sample": [
+    {
+      "original": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013120001_01109.png",
+      "duplicate": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013120001_01110.png",
+      "md5": "d94f0de53e433bc2bb58a6bbbf72df93"
+    },
+    {
+      "original": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013130001_01119.png",
+      "duplicate": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013130001_01120.png",
+      "md5": "1a7c280ef3252a88d8cd93994b0de76c"
+    },
+    {
+      "original": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013330001_01236.png",
+      "duplicate": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013330001_01238.png",
+      "md5": "96e0993c56d6fab0cad4493e7a953028"
+    },
+    {
+      "original": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013630001_01350.png",
+      "duplicate": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013630001_01351.png",
+      "md5": "ae7909a70a63d985adf6f4988f4a17a1"
+    },
+    {
+      "original": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013920001_01440.png",
+      "duplicate": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_02\\fish_000013920001_01441.png",
+      "md5": "5908e7504364f1735f017e3eaadfab4e"
+    }
+  ],
+  "grayscale_images_count": 0,
+  "small_images_below_threshold_count": 0,
+  "min_dimension_threshold_px": 16,
+  "width_stats": {
+    "min": 25,
+    "max": 428,
+    "mean": 101.3,
+    "median": 95.0
+  },
+  "height_stats": {
+    "min": 27,
+    "max": 401,
+    "mean": 92.2,
+    "median": 87.0
+  },
+  "number_of_species": 10,
+  "number_of_families": 7,
+  "class_distribution": {
+    "Plectroglyphidodon dickii": 600,
+    "Amphiprion clarkii": 600,
+    "Chaetodon lunulatus": 600,
+    "Myripristis kuntee": 450,
+    "Neoniphon sammara": 299,
+    "Hemigymnus fasciatus": 241,
+    "Acanthurus nigrofuscus": 218,
+    "Lutjanus fulvus": 206,
+    "Chaetodon trifascialis": 190,
+    "Canthigaster valentini": 147
+  },
+  "family_distribution": {
+    "Pomacentridae": 1200,
+    "Chaetodontidae": 790,
+    "Holocentridae": 749,
+    "Labridae": 241,
+    "Acanthuridae": 218,
+    "Lutjanidae": 206,
+    "Tetraodontidae": 147
+  },
+  "trajectories_per_class": {
+    "Acanthurus nigrofuscus": 71,
+    "Amphiprion clarkii": 33,
+    "Canthigaster valentini": 28,
+    "Chaetodon lunulatus": 130,
+    "Chaetodon trifascialis": 79,
+    "Hemigymnus fasciatus": 58,
+    "Lutjanus fulvus": 15,
+    "Myripristis kuntee": 71,
+    "Neoniphon sammara": 53,
+    "Plectroglyphidodon dickii": 150
+  },
+  "imbalance_ratio": 4.08
+}

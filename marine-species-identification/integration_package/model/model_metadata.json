@@ -1,0 +1,41 @@
+{
+  "model_name": "MarineSpeciesClassifier",
+  "architecture": "resnet18_transfer_learning",
+  "pretrained_weights": "ImageNet1K_V1",
+  "num_classes": 10,
+  "input_shape": [
+    3,
+    224,
+    224
+  ],
+  "normalization": {
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "class_mapping": {
+    "0": "Acanthurus nigrofuscus",
+    "1": "Amphiprion clarkii",
+    "2": "Canthigaster valentini",
+    "3": "Chaetodon lunulatus",
+    "4": "Chaetodon trifascialis",
+    "5": "Hemigymnus fasciatus",
+    "6": "Lutjanus fulvus",
+    "7": "Myripristis kuntee",
+    "8": "Neoniphon sammara",
+    "9": "Plectroglyphidodon dickii"
+  },
+  "best_epoch": 10,
+  "val_top1_accuracy": 0.9833,
+  "val_macro_f1": 0.9777,
+  "val_loss": 0.0721,
+  "training_time_sec": 621.7,
+  "version": "1.0.0"
+}

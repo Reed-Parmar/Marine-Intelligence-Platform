@@ -1,0 +1,11 @@
+species_name,precision,recall,f1_score,support
+Acanthurus nigrofuscus,0.9583,1.0,0.9787,23
+Amphiprion clarkii,1.0,1.0,1.0,72
+Canthigaster valentini,1.0,0.871,0.931,31
+Chaetodon lunulatus,1.0,1.0,1.0,90
+Chaetodon trifascialis,0.7778,1.0,0.875,21
+Hemigymnus fasciatus,1.0,0.9697,0.9846,33
+Lutjanus fulvus,0.963,1.0,0.9811,26
+Myripristis kuntee,1.0,1.0,1.0,64
+Neoniphon sammara,1.0,0.9268,0.962,41
+Plectroglyphidodon dickii,1.0,1.0,1.0,80

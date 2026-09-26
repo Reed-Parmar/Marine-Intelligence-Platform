@@ -1,0 +1,123 @@
+{
+  "total_test_samples": 481,
+  "total_errors": 8,
+  "overall_error_rate": 0.0166,
+  "overall_accuracy": 0.9834,
+  "top_confusion_pairs": [
+    {
+      "pair": "Canthigaster valentini -> Chaetodon trifascialis",
+      "count": 4
+    },
+    {
+      "pair": "Neoniphon sammara -> Chaetodon trifascialis",
+      "count": 2
+    },
+    {
+      "pair": "Hemigymnus fasciatus -> Acanthurus nigrofuscus",
+      "count": 1
+    },
+    {
+      "pair": "Neoniphon sammara -> Lutjanus fulvus",
+      "count": 1
+    }
+  ],
+  "confidence_calibration": {
+    "HIGH_CONFIDENCE (>= 0.70)": {
+      "sample_count": 472,
+      "percentage_of_test_set": 98.13,
+      "accuracy": 0.9979,
+      "mean_confidence": 0.9933
+    },
+    "MODERATE_CONFIDENCE (0.40 - 0.70)": {
+      "sample_count": 8,
+      "percentage_of_test_set": 1.66,
+      "accuracy": 0.25,
+      "mean_confidence": 0.586
+    },
+    "LOW_CONFIDENCE (< 0.40)": {
+      "sample_count": 1,
+      "percentage_of_test_set": 0.21,
+      "accuracy": 0.0,
+      "mean_confidence": 0.3941
+    }
+  },
+  "biological_observations": [
+    "Visually similar species within the same genus/family (e.g. Chaetodon butterflyfishes) occasionally exhibit confusion under high water turbidity or poor contrast.",
+    "Species with distinct color patterns (e.g. Amphiprion clarkii clownfish striping) achieve near-perfect discrimination.",
+    "Higher prediction confidence directly correlates with superior empirical accuracy, confirming reliable calibration."
+  ],
+  "representative_errors_sample": [
+    {
+      "image_filename": "fish_003553545474_09046.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_12\\fish_003553545474_09046.png",
+      "ground_truth": "Canthigaster valentini",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.4846,
+      "tracking_id": "3553545474",
+      "image_dimensions": "135x107"
+    },
+    {
+      "image_filename": "fish_003553545474_09049.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_12\\fish_003553545474_09049.png",
+      "ground_truth": "Canthigaster valentini",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.5238,
+      "tracking_id": "3553545474",
+      "image_dimensions": "83x78"
+    },
+    {
+      "image_filename": "fish_003553545474_09051.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_12\\fish_003553545474_09051.png",
+      "ground_truth": "Canthigaster valentini",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.3941,
+      "tracking_id": "3553545474",
+      "image_dimensions": "116x96"
+    },
+    {
+      "image_filename": "fish_003553545474_12094.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_12\\fish_003553545474_12094.png",
+      "ground_truth": "Canthigaster valentini",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.6719,
+      "tracking_id": "3553545474",
+      "image_dimensions": "120x100"
+    },
+    {
+      "image_filename": "fish_003527595419_22460.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_09\\fish_003527595419_22460.png",
+      "ground_truth": "Hemigymnus fasciatus",
+      "predicted": "Acanthurus nigrofuscus",
+      "confidence": 0.5561,
+      "tracking_id": "3527595419",
+      "image_dimensions": "76x91"
+    },
+    {
+      "image_filename": "fish_004492977264_11850.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_10\\fish_004492977264_11850.png",
+      "ground_truth": "Neoniphon sammara",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.6103,
+      "tracking_id": "4492977264",
+      "image_dimensions": "127x100"
+    },
+    {
+      "image_filename": "fish_004493047264_11823.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_10\\fish_004493047264_11823.png",
+      "ground_truth": "Neoniphon sammara",
+      "predicted": "Chaetodon trifascialis",
+      "confidence": 0.5579,
+      "tracking_id": "4493047264",
+      "image_dimensions": "99x90"
+    },
+    {
+      "image_filename": "fish_003747855941_11861.png",
+      "image_path": "R:\\PP\\Marine-Intelligence-Platform\\marine-species-identification\\data\\raw\\images\\species_10\\fish_003747855941_11861.png",
+      "ground_truth": "Neoniphon sammara",
+      "predicted": "Lutjanus fulvus",
+      "confidence": 0.8574,
+      "tracking_id": "3747855941",
+      "image_dimensions": "102x123"
+    }
+  ]
+}

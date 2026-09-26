@@ -1,0 +1,88 @@
+{
+  "evaluation_dataset": "Untouched Test Set (data/splits/test.csv)",
+  "total_test_samples": 481,
+  "test_loss": 0.037,
+  "top1_accuracy": 0.9834,
+  "top3_accuracy": 1.0,
+  "top5_accuracy": 1.0,
+  "macro_precision": 0.9699,
+  "macro_recall": 0.9767,
+  "macro_f1": 0.9713,
+  "weighted_precision": 0.9863,
+  "weighted_recall": 0.9834,
+  "weighted_f1": 0.9838,
+  "confusion_matrix_path": "confusion_matrix.png",
+  "per_class_metrics_path": "per_class_metrics.csv",
+  "per_class_summary": [
+    {
+      "species_name": "Acanthurus nigrofuscus",
+      "precision": 0.9583,
+      "recall": 1.0,
+      "f1_score": 0.9787,
+      "support": 23
+    },
+    {
+      "species_name": "Amphiprion clarkii",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 72
+    },
+    {
+      "species_name": "Canthigaster valentini",
+      "precision": 1.0,
+      "recall": 0.871,
+      "f1_score": 0.931,
+      "support": 31
+    },
+    {
+      "species_name": "Chaetodon lunulatus",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 90
+    },
+    {
+      "species_name": "Chaetodon trifascialis",
+      "precision": 0.7778,
+      "recall": 1.0,
+      "f1_score": 0.875,
+      "support": 21
+    },
+    {
+      "species_name": "Hemigymnus fasciatus",
+      "precision": 1.0,
+      "recall": 0.9697,
+      "f1_score": 0.9846,
+      "support": 33
+    },
+    {
+      "species_name": "Lutjanus fulvus",
+      "precision": 0.963,
+      "recall": 1.0,
+      "f1_score": 0.9811,
+      "support": 26
+    },
+    {
+      "species_name": "Myripristis kuntee",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 64
+    },
+    {
+      "species_name": "Neoniphon sammara",
+      "precision": 1.0,
+      "recall": 0.9268,
+      "f1_score": 0.962,
+      "support": 41
+    },
+    {
+      "species_name": "Plectroglyphidodon dickii",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 80
+    }
+  ]
+}

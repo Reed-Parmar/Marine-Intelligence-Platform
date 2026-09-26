@@ -1,0 +1,14 @@
+{
+  "model_architecture": "ResNet-18 Transfer Learning",
+  "device": "cpu",
+  "model_file_size_mb": 42.73,
+  "total_parameters": 11181642,
+  "trainable_parameters": 11181642,
+  "benchmark_samples": 150,
+  "mean_latency_ms": 13.85,
+  "median_latency_ms": 13.22,
+  "p90_latency_ms": 15.35,
+  "p95_latency_ms": 15.83,
+  "p99_latency_ms": 19.63,
+  "approximate_throughput_fps": 72.2
+}

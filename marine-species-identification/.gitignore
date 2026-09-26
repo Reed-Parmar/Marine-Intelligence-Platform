@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Data artifacts
+data/raw/*.tar
+data/raw/*.zip
+data/raw/*.gz
+
+# Model weights
+*.pt
+*.pth
+*.onnx
+
+# Results & temporary files
+.pytest_cache/
+.coverage
+htmlcov/
+*.log

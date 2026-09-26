@@ -1,0 +1,7 @@
+# Standalone / Integration Inference Dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+pillow>=10.0.0
+numpy>=1.24.0
+fastapi>=0.100.0
+python-multipart>=0.0.6

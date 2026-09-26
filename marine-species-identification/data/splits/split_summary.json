@@ -1,0 +1,63 @@
+{
+  "random_seed": 42,
+  "leakage_prevention_method": "Trajectory-Grouped Stratified Splitting (grouped by video tracking_id)",
+  "exact_duplicates_removed": 37,
+  "total_clean_images": 3514,
+  "train": {
+    "count": 2494,
+    "percentage": 70.97,
+    "unique_trajectories": 481,
+    "class_distribution": {
+      "Amphiprion clarkii": 436,
+      "Chaetodon lunulatus": 420,
+      "Plectroglyphidodon dickii": 411,
+      "Myripristis kuntee": 309,
+      "Neoniphon sammara": 209,
+      "Hemigymnus fasciatus": 167,
+      "Acanthurus nigrofuscus": 152,
+      "Lutjanus fulvus": 148,
+      "Chaetodon trifascialis": 137,
+      "Canthigaster valentini": 105
+    }
+  },
+  "validation": {
+    "count": 539,
+    "percentage": 15.34,
+    "unique_trajectories": 101,
+    "class_distribution": {
+      "Plectroglyphidodon dickii": 93,
+      "Amphiprion clarkii": 92,
+      "Chaetodon lunulatus": 90,
+      "Myripristis kuntee": 69,
+      "Neoniphon sammara": 49,
+      "Hemigymnus fasciatus": 39,
+      "Acanthurus nigrofuscus": 35,
+      "Lutjanus fulvus": 32,
+      "Chaetodon trifascialis": 29,
+      "Canthigaster valentini": 11
+    }
+  },
+  "test": {
+    "count": 481,
+    "percentage": 13.69,
+    "unique_trajectories": 106,
+    "class_distribution": {
+      "Chaetodon lunulatus": 90,
+      "Plectroglyphidodon dickii": 80,
+      "Amphiprion clarkii": 72,
+      "Myripristis kuntee": 64,
+      "Neoniphon sammara": 41,
+      "Hemigymnus fasciatus": 33,
+      "Canthigaster valentini": 31,
+      "Lutjanus fulvus": 26,
+      "Acanthurus nigrofuscus": 23,
+      "Chaetodon trifascialis": 21
+    }
+  },
+  "leakage_verification": {
+    "train_val_overlap_trajectories": 0,
+    "train_test_overlap_trajectories": 0,
+    "val_test_overlap_trajectories": 0,
+    "status": "PASSED - ZERO TRAJECTORY LEAKAGE"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id_to_class": {
+    "0": "Acanthurus nigrofuscus",
+    "1": "Amphiprion clarkii",
+    "2": "Canthigaster valentini",
+    "3": "Chaetodon lunulatus",
+    "4": "Chaetodon trifascialis",
+    "5": "Hemigymnus fasciatus",
+    "6": "Lutjanus fulvus",
+    "7": "Myripristis kuntee",
+    "8": "Neoniphon sammara",
+    "9": "Plectroglyphidodon dickii"
+  },
+  "class_to_id": {
+    "Acanthurus nigrofuscus": 0,
+    "Amphiprion clarkii": 1,
+    "Canthigaster valentini": 2,
+    "Chaetodon lunulatus": 3,
+    "Chaetodon trifascialis": 4,
+    "Hemigymnus fasciatus": 5,
+    "Lutjanus fulvus": 6,
+    "Myripristis kuntee": 7,
+    "Neoniphon sammara": 8,
+    "Plectroglyphidodon dickii": 9
+  },
+  "classes": [
+    "Acanthurus nigrofuscus",
+    "Amphiprion clarkii",
+    "Canthigaster valentini",
+    "Chaetodon lunulatus",
+    "Chaetodon trifascialis",
+    "Hemigymnus fasciatus",
+    "Lutjanus fulvus",
+    "Myripristis kuntee",
+    "Neoniphon sammara",
+    "Plectroglyphidodon dickii"
+  ],
+  "num_classes": 10
+}
