@@ -12,11 +12,12 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "backend.app.main:app",
-        host=os.environ.get("HOST", "127.0.0.1"),
+        host=os.environ.get("HOST", "0.0.0.0"),
         port=int(os.environ.get("PORT", "8000")),
         reload=True,
         reload_dirs=[
             "backend/app",
+            "ml",
             "data_pipeline/fusion",
             "data_pipeline/ingestion",
             "data_pipeline/quality_standardisation",
@@ -32,7 +33,6 @@ if __name__ == "__main__":
             "dataset/*",
             "docs/*",
             "frontend/*",
-            "ml/*",
             "rag/*",
             "pytest-cache-files-*/*",
             "scratch_*.py",

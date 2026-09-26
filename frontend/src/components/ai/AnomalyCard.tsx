@@ -77,32 +77,36 @@ export const AnomalyCard: React.FC<{ anomaly: AnomalyDetectionResult }> = ({ ano
       </div>
 
       {/* Feature Importance Weights */}
-      <div className="space-y-2">
-        <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider block">
-          Contributing Driver Features (MEAD-V2 Weights)
-        </span>
-        <div className="space-y-1.5">
-          {anomaly.contributingFeatures.map((feat, idx) => (
-            <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded bg-marine-900/60 border border-marine-850">
-              <span className="text-slate-300">{feat.feature}</span>
-              <div className="flex items-center gap-1 font-mono">
-                {feat.impactDirection === 'positive' ? (
-                  <ArrowUpRight className="w-3.5 h-3.5 text-ocean-coral" />
-                ) : (
-                  <ArrowDownRight className="w-3.5 h-3.5 text-ocean-cyan" />
-                )}
-                <span className="text-white font-bold">{(feat.importanceWeight * 100).toFixed(0)}%</span>
+      {(anomaly.contributingFeatures && anomaly.contributingFeatures.length > 0) && (
+        <div className="space-y-2">
+          <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider block">
+            Contributing Driver Features (MEAD-V2 Weights)
+          </span>
+          <div className="space-y-1.5">
+            {anomaly.contributingFeatures.map((feat, idx) => (
+              <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded bg-marine-900/60 border border-marine-850">
+                <span className="text-slate-300">{feat.feature}</span>
+                <div className="flex items-center gap-1 font-mono">
+                  {feat.impactDirection === 'positive' ? (
+                    <ArrowUpRight className="w-3.5 h-3.5 text-ocean-coral" />
+                  ) : (
+                    <ArrowDownRight className="w-3.5 h-3.5 text-ocean-cyan" />
+                  )}
+                  <span className="text-white font-bold">{(feat.importanceWeight * 100).toFixed(0)}%</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Mitigation Advice */}
-      <div className="p-3 rounded-xl bg-marine-900/40 border border-marine-800 text-xs text-slate-300 leading-relaxed">
-        <span className="font-semibold text-white">Actionable Scientific Advisory: </span>
-        {anomaly.mitigationAdvice}
-      </div>
+      {anomaly.mitigationAdvice && (
+        <div className="p-3 rounded-xl bg-marine-900/40 border border-marine-800 text-xs text-slate-300 leading-relaxed">
+          <span className="font-semibold text-white">Actionable Scientific Advisory: </span>
+          {anomaly.mitigationAdvice}
+        </div>
+      )}
     </div>
   );
 };

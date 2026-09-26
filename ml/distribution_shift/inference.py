@@ -96,12 +96,19 @@ class DistributionShiftInferenceEngine:
 
     def load(self) -> "DistributionShiftInferenceEngine":
         """Loads all model artifacts into memory."""
+        missing = []
         if not self.extractor_path.exists():
-            raise FileNotFoundError(f"Feature extractor artifact missing at: {self.extractor_path}")
+            missing.append(str(self.extractor_path))
         if not self.model_path.exists():
-            raise FileNotFoundError(f"XGBoost model artifact missing at: {self.model_path}")
+            missing.append(str(self.model_path))
         if not self.markov_path.exists():
-            raise FileNotFoundError(f"Markov baseline artifact missing at: {self.markov_path}")
+            missing.append(str(self.markov_path))
+
+        if missing:
+            logger.warning("Distribution shift model artifacts missing: %s", ", ".join(missing))
+            self._is_initialized = False
+            self._missing_artifacts = missing
+            return self
 
         # 1. Feature Extractor
         self.feature_extractor = DistributionFeatureExtractor.load(str(self.extractor_path))
@@ -125,10 +132,15 @@ class DistributionShiftInferenceEngine:
         """
         Validates input request and runs deterministic probabilistic prediction.
         """
+        validated = self._validate_and_sanitize_request(request_data)
+
         if not self._is_initialized:
             self.load()
-
-        validated = self._validate_and_sanitize_request(request_data)
+            if not self._is_initialized:
+                missing_str = ", ".join(getattr(self, "_missing_artifacts", ["model artifacts"]))
+                raise FileNotFoundError(
+                    f"Distribution shift model artifact is not deployed. Missing: {missing_str}"
+                )
 
         # Build single-row transition dictionary
         transition_row = {

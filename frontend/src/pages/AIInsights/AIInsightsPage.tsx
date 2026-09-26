@@ -33,6 +33,7 @@ export const AIInsightsPage: React.FC = () => {
   const [isDetecting, setIsDetecting] = useState<boolean>(false);
   const [liveAnomalyResult, setLiveAnomalyResult] = useState<AnomalyDetectionResult | null>(null);
   const [detectError, setDetectError] = useState<string | null>(null);
+  const [anomaliesError, setAnomaliesError] = useState<string | null>(null);
 
   const simulatorRef = useRef<HTMLDivElement>(null);
 
@@ -59,18 +60,27 @@ export const AIInsightsPage: React.FC = () => {
     const loadAI = async () => {
       setIsLoading(true);
       try {
-        const [mods, anoms, suit, fore] = await Promise.all([
+        const [mods, suit, fore] = await Promise.all([
           mlService.getModels(),
-          mlService.getAnomalies(),
           mlService.getHabitatSuitability(),
           mlService.getCatchForecasts()
         ]);
         setModels(mods);
-        setAnomalies(anoms);
         setSuitability(suit);
         setForecasts(fore);
       } catch (err) {
-        console.error('Failed to load AI insights', err);
+        console.error('Failed to load general AI models', err);
+      }
+
+      // Load production MEAD-V2 anomalies without silent mock fallback
+      try {
+        const anoms = await mlService.getAnomalies();
+        setAnomalies(anoms);
+        setAnomaliesError(null);
+      } catch (err: any) {
+        console.error('Failed to load MEAD-V2 environmental anomalies', err);
+        setAnomalies([]);
+        setAnomaliesError(err?.message || 'Unable to connect to Environmental Anomaly V2 service.');
       } finally {
         setIsLoading(false);
       }
@@ -125,25 +135,31 @@ export const AIInsightsPage: React.FC = () => {
           <span className="text-[11px] font-mono text-slate-400">Registry Active</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {models.map((mod) => (
-            <Card key={mod.id} className="p-4 space-y-3 border-marine-800 hover:border-ocean-cyan/40 transition-colors">
+          {models.map((mod, idx) => (
+            <Card key={mod.id || mod.name || idx} className="p-4 space-y-3 border-marine-800 hover:border-ocean-cyan/40 transition-colors">
               <div className="flex items-start justify-between">
                 <div>
                   <h4 className="text-xs font-bold text-white">{mod.name}</h4>
                   <p className="text-[10px] font-mono text-ocean-cyan">v{mod.version} • {mod.framework}</p>
                 </div>
                 <Badge variant="teal" size="sm">
-                  {mod.type === 'environmental_anomaly_detector' ? '3.39% Detection' : `${(mod.trainingAccuracyF1 * 100).toFixed(1)}%`}
+                  {mod.type === 'environmental_anomaly_detector'
+                    ? '3.39% Detection'
+                    : typeof mod.trainingAccuracyF1 === 'number'
+                      ? `${(mod.trainingAccuracyF1 * 100).toFixed(1)}%`
+                      : 'Production Active'}
                 </Badge>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">{mod.description}</p>
-              <div className="flex flex-wrap gap-1 pt-1 border-t border-marine-850">
-                {mod.inputFeatures.map((f, idx) => (
-                  <span key={idx} className="px-1.5 py-0.5 rounded bg-marine-900 border border-marine-800 text-[9px] font-mono text-slate-300">
-                    {f}
-                  </span>
-                ))}
-              </div>
+              {(mod.inputFeatures && mod.inputFeatures.length > 0) && (
+                <div className="flex flex-wrap gap-1 pt-1 border-t border-marine-850">
+                  {mod.inputFeatures.map((f, fIdx) => (
+                    <span key={fIdx} className="px-1.5 py-0.5 rounded bg-marine-900 border border-marine-800 text-[9px] font-mono text-slate-300">
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              )}
             </Card>
           ))}
         </div>
@@ -247,12 +263,22 @@ export const AIInsightsPage: React.FC = () => {
           )}
         </div>
 
-        {/* Existing Anomaly Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {anomalies.map((anom) => (
-            <AnomalyCard key={anom.id} anomaly={anom} />
-          ))}
-        </div>
+        {/* Real MEAD-V2 Monitored Anomaly Cards Feed */}
+        {anomaliesError ? (
+          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center justify-between">
+            <span>Failed to load MEAD-V2 environmental anomalies ({anomaliesError}). Ensure the backend server is running.</span>
+          </div>
+        ) : anomalies.length === 0 ? (
+          <div className="p-6 rounded-xl bg-marine-950/60 border border-marine-800 text-center text-xs text-slate-400 font-mono">
+            No active environmental anomalies currently reported by the MEAD-V2 pipeline.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {anomalies.map((anom) => (
+              <AnomalyCard key={anom.id} anomaly={anom} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 3. Ecological Habitat Suitability Models */}
@@ -266,49 +292,39 @@ export const AIInsightsPage: React.FC = () => {
             MaxEnt Spatial Niche
           </Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {suitability.map((suit, idx) => (
-            <HabitatSuitabilityCard key={idx} suitability={suit} />
-          ))}
-        </div>
+        {suitability.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {suitability.map((suit, idx) => (
+              <HabitatSuitabilityCard key={idx} suitability={suit} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-4 rounded-xl bg-marine-950/60 border border-marine-800 text-xs text-slate-400 font-mono">
+            MaxEnt ecological niche suitability envelopes are currently offline. Monitored environmental anomaly detection and fisheries catch prediction services remain operational.
+          </div>
+        )}
       </div>
 
-      {/* 4. Catch Prediction & Commercial Landings (MBLF-Net) */}
+      {/* 4. Catch Prediction & Commercial Landings (XGBoost V1) */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
               <Fish className="w-3.5 h-3.5 text-ocean-cyan" />
-              Catch Prediction & Commercial Biomass Yield (MBLF-Net)
+              Fisheries Catch Landings Prediction (XGBoost V1)
             </h3>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              XGBoost Temporal CNN-LSTM forecaster predicting quarterly marine landings and Catch Per Unit Effort (CPUE).
+              IOTC-trained XGBoost regression model predicting marine catch biomass and operational effort response across Indian Ocean fishing sectors.
             </p>
           </div>
           <Badge variant="cyan" size="sm" className="hidden sm:inline-flex">
-            MBLF-Net Ensemble
+            XGBoost V1 Active
           </Badge>
         </div>
 
-        {/* Live Simulator Tool */}
+        {/* Live Simulator Tool (Real V1 XGBoost Engine) */}
         <div ref={simulatorRef}>
           <CatchPredictionSimulator key={simSpecies} initialSpecies={simSpecies} />
-        </div>
-
-        {/* Forecast Cards Grid */}
-        <div className="space-y-2 pt-2">
-          <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Quarterly Landings Projections by Stock
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {forecasts.map((fore, idx) => (
-              <CatchPredictionCard
-                key={idx}
-                forecast={fore}
-                onSimulate={handleSimulateClick}
-              />
-            ))}
-          </div>
         </div>
       </div>
 

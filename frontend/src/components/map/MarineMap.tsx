@@ -81,10 +81,10 @@ export const MarineMap: React.FC<MarineMapProps> = ({
         className="w-full h-full"
         style={{ minHeight: '520px', background: '#050b14' }}
       >
-        {/* Dark Ocean Basemap (CartoDB Dark Matter) */}
+        {/* Ocean Basemap (CartoDB Voyager) */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a> | CMLRE MoES India'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_3yte_1_e1d6bb51bda7e416693b3f5a"
           maxZoom={18}
         />
 

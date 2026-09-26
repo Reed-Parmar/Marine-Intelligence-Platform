@@ -312,12 +312,16 @@ class XGBoostMovementClassifier:
         if not self.is_fitted:
             raise RuntimeError("Model must be fitted before save.")
         Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+        if not hasattr(self.model, "_estimator_type"):
+            self.model._estimator_type = "classifier"
         self.model.save_model(filepath)
 
     def load_model(self, filepath: str):
         """Loads model from JSON artifact."""
         import xgboost as xgb
         self.model = xgb.XGBClassifier()
+        if not hasattr(self.model, "_estimator_type"):
+            self.model._estimator_type = "classifier"
         self.model.load_model(filepath)
         self.is_fitted = True
 

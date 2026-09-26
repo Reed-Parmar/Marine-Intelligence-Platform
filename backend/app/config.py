@@ -60,7 +60,14 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: str = ""
     
     # CORS
-    CORS_ORIGINS: Union[List[str], str] = ["http://localhost:5173", "http://localhost:3000"]
+    CORS_ORIGINS: Union[List[str], str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ]
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
@@ -69,7 +76,14 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",") if i.strip()]
         elif isinstance(v, list):
             return [str(i).strip() for i in v if str(i).strip()]
-        return ["http://localhost:5173", "http://localhost:3000"]
+        return [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+        ]
 
 
 settings = Settings()

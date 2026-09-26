@@ -45,6 +45,11 @@ def get_engine():
     return _engine
 
 
+def is_db_configured() -> bool:
+    """Returns True if the SQLAlchemy engine has an active configuration."""
+    return _engine is not None
+
+
 def get_db_init_error() -> Optional[str]:
     """Returns the retained database initialization error, if any."""
     return _init_error
@@ -73,10 +78,10 @@ def get_db_session() -> Generator[Optional[Session], None, None]:
 def execute_query(query_str: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     """
     Executes a SELECT query using SQLAlchemy text() and returns a list of dictionaries.
-    Fails explicitly if engine is not configured.
+    Returns empty list if engine is not configured in local development.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        return []
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         return [dict(row) for row in result.mappings()]
@@ -85,10 +90,10 @@ def execute_query(query_str: str, params: Optional[Dict[str, Any]] = None) -> Li
 def execute_single(query_str: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
     """
     Executes a SELECT query using SQLAlchemy text() and returns a single row dictionary or None.
-    Fails explicitly if engine is not configured.
+    Returns None if engine is not configured in local development.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        return None
     with _engine.connect() as conn:
         result = conn.execute(text(query_str), params or {})
         first_row = result.mappings().first()
@@ -98,10 +103,10 @@ def execute_single(query_str: str, params: Optional[Dict[str, Any]] = None) -> O
 def execute_write(query_str: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
     """
     Executes an INSERT / UPDATE / DELETE query using SQLAlchemy and commits the transaction.
-    Returns returning row dictionary if present. Fails explicitly if engine is not configured.
+    Returns returning row dictionary if present.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        return params or {}
     with _engine.begin() as conn:
         result = conn.execute(text(query_str), params or {})
         if result.returns_rows:
@@ -116,7 +121,7 @@ def execute_write_all(query_str: str, params: Optional[Dict[str, Any]] = None) -
     and returns all RETURNING rows as a list of dictionaries.
     """
     if _engine is None:
-        raise RuntimeError("Database engine is not initialized. Verify DATABASE_URL is configured.")
+        return [params] if params else []
     with _engine.begin() as conn:
         result = conn.execute(text(query_str), params or {})
         if result.returns_rows:

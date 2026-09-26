@@ -36,3 +36,10 @@ api_v1_router.include_router(analysis.router, prefix="/analysis", tags=["Analysi
 api_v1_router.include_router(ml.router, prefix="/ml", tags=["Machine Learning"])
 api_v1_router.include_router(alerts.router, prefix="/alerts", tags=["Alerts"])
 api_v1_router.include_router(distribution_shift.router, prefix="/distribution-shift", tags=["Seasonal Distribution Shift"])
+
+
+@api_v1_router.get("/health", tags=["Health"])
+async def api_v1_health():
+    """Health check endpoint under API v1 prefix."""
+    return {"status": "ok"}
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   DistributionShiftPredictionRequest,
   DistributionShiftPredictionResponse,
@@ -62,6 +62,10 @@ export const DistributionShiftWorkspace: React.FC<DistributionShiftWorkspaceProp
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isEvidenceOpen, setIsEvidenceOpen] = useState<boolean>(false);
 
+  // Guard against React StrictMode duplicate requests and concurrent clicks
+  const hasInitializedRef = useRef(false);
+  const isPredictingRef = useRef(false);
+
   // Sync sector coordinates when sector dropdown changes
   const handleSectorChange = (sector: string) => {
     setCurrentSector(sector);
@@ -74,6 +78,8 @@ export const DistributionShiftWorkspace: React.FC<DistributionShiftWorkspaceProp
 
   // Execute prediction request against real FastAPI backend
   const handlePredict = async () => {
+    if (isPredictingRef.current) return;
+    isPredictingRef.current = true;
     setIsLoading(true);
     setErrorMsg(null);
 
@@ -101,16 +107,22 @@ export const DistributionShiftWorkspace: React.FC<DistributionShiftWorkspaceProp
       );
     } catch (err: any) {
       console.error('Failed to forecast distribution shift:', err);
-      const msg = err.message || 'An error occurred while executing the distribution shift model.';
+      const msg =
+        err.response?.data?.detail ||
+        err.message ||
+        'An error occurred while executing the distribution shift model.';
       setErrorMsg(msg);
       addToast('error', 'Prediction Failed', msg);
     } finally {
       setIsLoading(false);
+      isPredictingRef.current = false;
     }
   };
 
-  // Run initial prediction on mount for seamless demo load
+  // Run initial prediction once on mount for seamless demo load
   useEffect(() => {
+    if (hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
     handlePredict();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

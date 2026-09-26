@@ -268,6 +268,23 @@ class UploadService:
             row_count=len(raw_records),
             provenance_metadata=provenance
         )
+        from backend.app.db.database import is_db_configured
+        if not is_db_configured():
+            rec["status"] = "failed"
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail={
+                    "code": "DATABASE_NOT_CONFIGURED",
+                    "message": "Database connection is not configured. Real dataset registration requires DATABASE_URL to be set in environment.",
+                    "required_environment_variables": [
+                        "DATABASE_URL",
+                        "SUPABASE_URL",
+                        "SUPABASE_ANON_KEY",
+                        "SUPABASE_SERVICE_ROLE_KEY"
+                    ]
+                }
+            )
+
         ds = DatasetService.create_dataset(ds_create, user_id=user_id or rec.get("uploaded_by"))
         if not ds:
             rec["status"] = "failed"

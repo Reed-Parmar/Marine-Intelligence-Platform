@@ -135,6 +135,13 @@ async def predict_species_distribution_shift(
             detail=err_msg,
         )
 
+    except FileNotFoundError as fnf_err:
+        logger.warning(f"Distribution shift artifact missing: {fnf_err}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Distribution shift model artifact is not deployed. Please run the training pipeline to generate the model artifact.",
+        )
+
     except Exception as exc:
         logger.error(f"Unexpected error executing distribution shift prediction: {exc}", exc_info=True)
         raise HTTPException(
